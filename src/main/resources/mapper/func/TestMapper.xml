@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.TestMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.Test">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="sex" property="sex" />
+        <result column="tel" property="tel" />
+        <result column="address" property="address" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, name, sex, tel, address
+    </sql>
+
+    <select id="selectTestList" resultType="com.kalvin.kvf.modules.func.entity.Test">
+        select <include refid="Base_Column_List" /> from func_test
+        <trim prefix="where" prefixOverrides="and">
+            <if test="test.name != null and test.name != ''">
+                and name like concat(#{test.name}, "%")
+            </if>
+            <if test="test.sex != null">
+                and sex = #{test.sex}
+            </if>
+            <if test="test.tel != null and test.tel != ''">
+                and tel like concat(#{test.tel}, "%")
+            </if>
+        </trim>
+    </select>
+
+</mapper>
