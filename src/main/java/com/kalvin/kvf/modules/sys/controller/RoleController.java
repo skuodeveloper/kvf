@@ -98,6 +98,5 @@ public class RoleController extends BaseController {
         roleService.removeByIds(ids);
         return R.ok();
     }
-
 }
 
