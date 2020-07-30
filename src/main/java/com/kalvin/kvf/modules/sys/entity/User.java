@@ -83,6 +83,17 @@ public class User extends BaseEntity {
     private String jobTitle;
 
     /**
+     * 二维码
+     */
+    private String qrcode;
+
+    /**
+     * 邀请码
+     */
+    private String inviteCode;
+
+
+    /**
      * 用户状态。0：正常；1：禁用
      */
     private Integer status;

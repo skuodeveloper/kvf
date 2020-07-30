@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.PesonStatisticsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.PesonStatistics">
+        <id column="id" property="id" />
+        <result column="dept_name" property="deptName" />
+        <result column="user_name" property="userName" />
+        <result column="invite_code" property="inviteCode" />
+        <result column="total_score" property="totalScore" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, dept_name, user_name, invite_code, total_score
+    </sql>
+
+    <select id="selectPesonStatisticsList" resultType="com.kalvin.kvf.modules.func.entity.PesonStatistics">
+        select <include refid="Base_Column_List" /> from func_peson_statistics
+        <trim prefix="where" prefixOverrides="and">
+            <if test="pesonStatistics.deptName != null and pesonStatistics.deptName != ''">
+                and dept_name like concat(#{pesonStatistics.deptName}, "%")
+            </if>
+            <if test="pesonStatistics.userName != null and pesonStatistics.userName != ''">
+                and user_name like concat(#{pesonStatistics.userName}, "%")
+            </if>
+            <if test="pesonStatistics.inviteCode != null and pesonStatistics.inviteCode != ''">
+                and invite_code like concat(#{pesonStatistics.inviteCode}, "%")
+            </if>
+        </trim>
+    </select>
+
+</mapper>

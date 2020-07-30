@@ -14,6 +14,8 @@
         <result column="tel" property="tel" />
         <result column="email" property="email" />
         <result column="avatar" property="avatar" />
+        <result column="qrcode" property="qrcode" />
+        <result column="invite_code" property="invite_code" />
         <result column="job_title" property="jobTitle" />
         <result column="status" property="status" />
         <result column="sort" property="sort" />
@@ -25,7 +27,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dept_id, username, password, realname, sex, phone, tel, email, avatar, job_title, status, sort, del_flag, create_by, update_time, create_time
+        id, dept_id, username, password, realname, sex, phone, tel, email, avatar,qrcode,invite_code, job_title, status, sort, del_flag, create_by, update_time, create_time
     </sql>
 
     <select id="selectUserList" resultType="com.kalvin.kvf.modules.sys.entity.User">

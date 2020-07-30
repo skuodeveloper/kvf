@@ -1,8 +1,16 @@
 server:
   port: 8081
 
-spring:
+#微信开放平台配置
+wxopen:
+  appid: wx719c937ea903be65
+  appsecret: b22eabdd155cd8174e2791c95d513a7e
+  ##重定向url
+  ##test16web.tunnel.qydev.com 域名地址要和在微信端 回调域名配置 地址一直，否则会报回调地址参数错误
+  ##http://test16web.tunnel.qydev.com 映射 127.0.0.1:8080,所以可以回调下面接口
+  redirect_url: http://abcdef.vaiwan.com//api/v1/wechat/user/code
 
+spring:
   # jackson
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -14,8 +22,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
-      username: root
+#      url: jdbc:mysql://localhost:3306/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://60.190.149.52:33060/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+      username: nhga
       password: 0573@nhga
       filters: stat,wall,config
       max-active: 100
@@ -107,10 +116,10 @@ kvf:
   # 登录验证码是否开启
   login:
     authcode:
-      enable: true
+      enable: false
   # quartz开关
   quartz:
-    enable: true
+    enable: false
   # 缓存开关
   cache:
     enable: false

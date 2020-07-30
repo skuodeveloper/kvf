@@ -1,15 +1,17 @@
 package com.kalvin.kvf.modules.sys.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kalvin.kvf.common.controller.BaseController;
+import com.kalvin.kvf.common.dto.R;
+import com.kalvin.kvf.modules.sys.entity.Dict;
+import com.kalvin.kvf.modules.sys.mapper.DictMapper;
+import com.kalvin.kvf.modules.sys.service.DictService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import com.kalvin.kvf.common.controller.BaseController;
-import com.kalvin.kvf.common.dto.R;
-import com.kalvin.kvf.modules.sys.entity.Dict;
-import com.kalvin.kvf.modules.sys.service.DictService;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -17,12 +19,14 @@ import java.util.List;
  * <p>
  * 字典表 前端控制器
  * </p>
+ *
  * @since 2019-08-10 16:00:10
  */
 @RestController
 @RequestMapping("sys/dict")
 public class DictController extends BaseController {
-
+    @Resource
+    private DictMapper dictMapper;
     @Autowired
     private DictService dictService;
 
@@ -92,5 +96,10 @@ public class DictController extends BaseController {
         return R.ok(dictService.getById(id));
     }
 
+    @GetMapping(value = "get")
+    public R get(@RequestParam String code) {
+        List<Dict> dicts = dictMapper.selectAllDictItemByCode(code);
+        return R.ok(dicts);
+    }
 }
 

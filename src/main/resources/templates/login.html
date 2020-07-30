@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title th:replace="common/base::pagetitle"></title>
     <link th:replace="common/base::static"/>
     <style>
-        .title {
+        .title1 {
             font-size: 40px;
             -webkit-text-stroke: 1px #fbfbfb;
             -webkit-text-fill-color: transparent;
         }
-        .title2 {
+        .title {
             font-size: 40px;
             background: linear-gradient(to bottom,white,black);
             -webkit-text-fill-color: transparent;
@@ -22,7 +23,6 @@
 </head>
 <body style="background-color: #afb6c5">
 <div class="kvf-user-login" id="kUserLoginBox">
-
     <div class="kvf-user-login-main">
         <div class="kvf-user-login-box kvf-user-login-header">
             <h2 class="title">kvfAdmin</h2>
@@ -123,7 +123,6 @@
             $('#kUserGetVerCode').attr('src', api.captchaUrl);
             $('#kUserLoginVercode').val('');
         }
-
     })
 </script>
 </body>

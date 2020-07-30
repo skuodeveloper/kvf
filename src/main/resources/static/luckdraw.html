@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>码上防诈</title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css">
+
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="plugins/layui/layui.js" type="text/javascript"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .center-vertical {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .layui-form-item .layui-inline {
+            display: block;
+            margin-right: 40px;
+            margin-bottom: 0;
+            clear: both;
+        }
+
+        .more {
+            width: 200px;
+            height: 40px;
+            font-size: 20px;
+            font-family: "fantasy";
+            background-color: burlywood;
+            border-radius: 20px;
+            color: white;
+            border: white;
+        }
+    </style>
+</head>
+<body style="background-color: bisque;">
+<div class="layui-form" style="width: 100%;height: 98%;">
+    <div style="height: 100%">
+        <div class="layui-card" style="height: 95%;margin: 20px;border-radius: 8px;">
+            <div class="layui-form-item center-vertical">
+                <div class="layui-inline">
+                    <label class="layui-form-label">人员类型</label>
+                    <div class="layui-input-inline">
+                        <select class="layui-select" id="personType" name="personType" lay-verify="required"
+                                title="人员类型">
+                            <option value="">请选择</option>
+                            <option value="1">小区居民</option>
+                            <option value="2">企业员工</option>
+                            <option value="3">沿街店面</option>
+                            <option value="4">商场商铺</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">所在单位</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="companyName" name="companyName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">电话号码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="tel" name="tel" autocomplete="off" class="layui-input"
+                               lay-verify="required|phone" title="电话号码" pattern="[0-9]*">
+                    </div>
+                </div>
+                <div class="layui-inline" style="margin-right: 0px">
+                    <div style=" margin: 35px;text-align: center">
+                        <!--<button type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit"-->
+                        <!--class="layui-btn layui-btn-fluid">提交信息-->
+                        <!--</button>-->
+                        <button type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit" class="more">
+                            提交信息
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var userInfo = JSON.parse(localStorage.getItem('wxUserInfo'));//存储微信用户信息
+
+    layui.use(['form'], function () {
+        var $ = layui.$, form = layui.form;
+
+        //监听提交
+        form.on('submit(kFormSubmit)', function (data) {
+            userInfo.personType = $('#personType').val();
+            userInfo.companyName = $('#companyName').val();
+            userInfo.tel = $('#tel').val();
+
+            updateInfo();
+        })
+    })
+
+    /**
+     * 微信用户信息更新
+     */
+    function updateInfo() {
+        $.ajax({
+            url: "http://abcdef.vaiwan.com/func/wxUser/updateInfo",
+            data: JSON.stringify(userInfo),
+            // data: userInfo,
+            async: true,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            type: "post",
+            dataType: 'json',
+            success: function (r) {
+                if (r.code == 200) {
+                    WeixinJSBridge.call('closeWindow');
+                }
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+</body>
+</html>

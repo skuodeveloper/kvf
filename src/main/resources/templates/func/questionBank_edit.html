@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="common/base::pagetitle"></title>
+    <link th:replace="common/base::static"/>
+    <style>
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 74%;
+            margin-right: 10px
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">题目类型</label>
+        <div class="layui-input-inline">
+            <select multiple="multiple" name="subjectType" lay-verify="required" lay-search="">
+                <!--<option value="">请选择</option>-->
+                <option th:each="questiontype : ${questiontypes}"
+                        th:value="${questiontype.id}"
+                        th:text="${questiontype.name}"
+                        th:selected="${questiontype.id == editInfo.subjectType}">
+                </option>
+            </select>
+            <input type="text" class="layui-hide" name="st" th:value="${editInfo.subjectType}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">案例</label>
+        <div class="layui-input-inline">
+            <textarea name="example" placeholder="请输入案例" th:text="${editInfo.example}"  autocomplete="off" class="layui-textarea" ></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">问题题目</label>
+        <div class="layui-input-inline">
+            <textarea name="question" placeholder="请输入问题题目" autocomplete="off" th:text="${editInfo.question}" class="layui-textarea" lay-verify="required"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选项配置:</label>
+        <div id="answerLine" class="layui-input-inline">
+            <div style="margin-bottom: 5px" th:each="answer: ${editInfo.answerDtos}">
+                <input type="text" th:value="${answer.getAnswer()}" class="layui-input answer" value="" style="width:300px;display: inline">
+                <input type="checkbox" lay-skin="primary" th:checked="${answer.value}">
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-danger"><i class="layui-icon layui-icon-delete"></i>删除</button>
+            </div>
+        </div>
+        <button type="button" id="addAnswer" class="layui-btn layui-btn-sm" style="margin-left:111px;margin-top: 10px"><i class="layui-icon layui-icon-add-1"></i> 追加</button>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分数权重</label>
+        <div class="layui-input-inline">
+            <input type="text" name="score" th:value="${editInfo.score}" placeholder="请输入分数权重" autocomplete="off" class="layui-input" lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">宣讲类型</label>
+        <div class="layui-input-inline">
+            <select multiple="multiple" name="type" lay-verify="required" lay-search="" >
+                <!--<option value="">请选择</option>-->
+                <option th:each="xuanchuantype : ${xuanchuantypes}"
+                        th:value="${xuanchuantype.id}"
+                        th:text="${xuanchuantype.name}"
+                        th:selected="${xuanchuantype.id == editInfo.type}">
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="radio" name="status" value="0" title="正常" autocomplete="off" class="layui-input" th:checked="${editInfo.status==0}">
+            <input type="radio" name="status" value="1" title="禁用" autocomplete="off" class="layui-input" th:checked="${editInfo.status==1}">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit" value="确认添加">
+        <input type="text" name="id" th:value="${editInfo.id}" placeholder="保存ID" autocomplete="off" class="layui-input">
+        <!-- <input type="text" name="deptId" th:value="${editInfo.deptId}" placeholder="保存deptId" autocomplete="off" class="layui-input">-->
+    </div>
+</div>
+<!--<script type="text/javascript" th:inline="javascript">-->
+    <!--var answerJson = [[${editInfo.answer}]];-->
+    <!--var answer = JSON.parse(answerJson);-->
+    <!--console.log(answer);-->
+<!--</script>-->
+<script th:replace="common/base::context"></script>
+<script th:replace="common/base::mainjs"></script>
+<script>
+    /*定义选题对象*/
+    function Answer(answer,value){
+        /*定义对象的属性*/
+        this.answer = answer;
+        this.value = value;
+
+        /*定义对象的方法*/
+        this.study = function(){
+        }
+    }
+
+    layui.use(['form'], function () {
+        var $ = layui.$, form = layui.form;
+
+        //监听提交
+        form.on('submit(kFormSubmit)', function(data){
+            var field = data.field; //获取提交的字段
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+            var answers = [];
+            var questions = [];
+            var i = 0;
+            $('.answer').each(function () {
+                questions.push( $(this).val() );
+            });
+
+            $('input[type=checkbox]').each(function () {
+                var ques = new Answer();
+                ques.answer = questions[i];
+                ques.value = $(this).prop('checked');
+                answers.push(ques);
+                i++;
+            });
+
+            field.answer = JSON.stringify(answers).replace(/"/g,"PASSWWORD");// 框架把json的双引号去掉了
+
+            var url = field.id ? 'func/questionBank/edit' : 'func/questionBank/add';
+            //提交 Ajax 成功后，关闭当前弹层并重载表格
+            $.ajax({
+                type: req.type.post,
+                url: BASE_WEB + url,
+                data: field,
+                async: false,
+                success: function (r) {
+                    if (r.code === req.status.ok) {
+                        // 重载表格
+                        parent.layui.table.reload('kContentTable');
+                        parent.layer.close(index); //再执行关闭
+                    } else {
+                        kvfKit.errorMsg(r.msg);
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#addAnswer', function () {
+            var line = '   <div style="margin-bottom: 5px">\n' +
+                '                <input type="text" class="layui-input answer" style="width:300px;display: inline">\n' +
+                '                <input type="checkbox" lay-skin="primary">\n' +
+                '                <button type="button" class="layui-btn layui-btn-sm layui-btn-danger"><i class="layui-icon layui-icon-delete"></i>删除</button>\n' +
+                '          </div>';
+            $('#answerLine').append(line);
+            form.render('checkbox');
+        })
+
+        $(document).on('click', '.layui-btn-danger', function () {
+            $(this).parent().remove();
+        })
+    })
+</script>
+</body>
+</html>

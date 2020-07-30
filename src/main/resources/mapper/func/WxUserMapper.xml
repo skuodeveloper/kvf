@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.WxUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.WxUser">
+        <id column="id" property="id" />
+        <result column="openid" property="openid" />
+        <result column="nickname" property="nickname" />
+        <result column="sex" property="sex" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="country" property="country" />
+        <result column="headimgurl" property="headimgurl" />
+        <result column="privilege" property="privilege" />
+        <result column="unionid" property="unionid" />
+        <result column="person_type" property="personType" />
+        <result column="company_name" property="companyName" />
+        <result column="tel" property="tel" />
+        <result column="qrcode" property="qrcode" />
+        <result column="parent_invited_code" property="parentInvitedCode" />
+        <result column="invited_code" property="invitedCode" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, openid, nickname, sex, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code, create_time
+    </sql>
+
+    <select id="selectWxUserList" resultType="com.kalvin.kvf.modules.func.entity.WxUser">
+        select <include refid="Base_Column_List" /> from func_wx_user
+        <trim prefix="where" prefixOverrides="and">
+            <if test="wxUser.openid != null and wxUser.openid != ''">
+                and openid like concat(#{wxUser.openid}, "%")
+            </if>
+            <if test="wxUser.nickname != null and wxUser.nickname != ''">
+                and nickname like concat("%", #{wxUser.nickname}, "%")
+            </if>
+            <if test="wxUser.sex != null">
+                and sex = #{wxUser.sex}
+            </if>
+            <if test="wxUser.province != null and wxUser.province != ''">
+                and province like concat(#{wxUser.province}, "%")
+            </if>
+            <if test="wxUser.city != null and wxUser.city != ''">
+                and city like concat(#{wxUser.city}, "%")
+            </if>
+            <if test="wxUser.country != null and wxUser.country != ''">
+                and country like concat(#{wxUser.country}, "%")
+            </if>
+            <if test="wxUser.headimgurl != null and wxUser.headimgurl != ''">
+                and headimgurl like concat(#{wxUser.headimgurl}, "%")
+            </if>
+            <if test="wxUser.privilege != null and wxUser.privilege != ''">
+                and privilege like concat(#{wxUser.privilege}, "%")
+            </if>
+            <if test="wxUser.unionid != null and wxUser.unionid != ''">
+                and unionid like concat(#{wxUser.unionid}, "%")
+            </if>
+            <if test="wxUser.personType != null and wxUser.personType != ''">
+                and person_type like concat(#{wxUser.personType}, "%")
+            </if>
+            <if test="wxUser.companyName != null and wxUser.companyName != ''">
+                and company_name like concat("%", #{wxUser.companyName}, "%")
+            </if>
+            <if test="wxUser.tel != null and wxUser.tel != ''">
+                and tel like concat(#{wxUser.tel}, "%")
+            </if>
+            <if test="wxUser.invitedCode != null and wxUser.invitedCode != ''">
+                and invited_code like concat(#{wxUser.invitedCode}, "%")
+            </if>
+            <if test="wxUser.createTime != null">
+                and create_time = #{wxUser.createTime}
+            </if>
+        </trim>
+    </select>
+
+</mapper>

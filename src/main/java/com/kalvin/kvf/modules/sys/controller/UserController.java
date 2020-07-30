@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
 import com.kalvin.kvf.common.utils.CryptionKit;
+import com.kalvin.kvf.common.utils.QRCodeUtils;
 import com.kalvin.kvf.common.utils.ShiroKit;
 import com.kalvin.kvf.modules.sys.dto.UserEditDTO;
 import com.kalvin.kvf.modules.sys.dto.UserRoleGroupDTO;
@@ -16,12 +17,14 @@ import com.kalvin.kvf.modules.sys.service.IDeptService;
 import com.kalvin.kvf.modules.sys.service.IUserRoleService;
 import com.kalvin.kvf.modules.sys.service.IUserService;
 import com.kalvin.kvf.modules.sys.vo.UserQueryVO;
+import lombok.SneakyThrows;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,123 +51,147 @@ public class UserController extends BaseController {
     @RequiresPermissions("sys:user:index")
     @GetMapping("index")
     public ModelAndView index() {
-        return new ModelAndView("sys/user");
+        return new ModelAndView ("sys/user");
     }
 
     @GetMapping(value = "edit")
     public ModelAndView edit(Long id) {
-        ModelAndView mv = new ModelAndView("sys/user_edit");
-        UserEditDTO userEditDTO = new UserEditDTO();
-        UserRoleGroupDTO userRoleGroupDTO = new UserRoleGroupDTO();
+        ModelAndView mv = new ModelAndView ("sys/user_edit");
+        UserEditDTO userEditDTO = new UserEditDTO ();
+        UserRoleGroupDTO userRoleGroupDTO = new UserRoleGroupDTO ();
         if (id != null) {
-            User user = userService.getById(id);
-            Dept dept = deptService.getById(user.getDeptId());
-            userRoleGroupDTO = userRoleService.getUserRoleGroupDTOByUserId(id);
-            BeanUtil.copyProperties(user, userEditDTO);
-            userEditDTO.setDeptName(dept == null ? "" : dept.getName());
+            User user = userService.getById (id);
+            Dept dept = deptService.getById (user.getDeptId ());
+            userRoleGroupDTO = userRoleService.getUserRoleGroupDTOByUserId (id);
+            BeanUtil.copyProperties (user, userEditDTO);
+            userEditDTO.setDeptName (dept == null ? "" : dept.getName ());
         }
-        userEditDTO.setUserRole(userRoleGroupDTO);
-        mv.addObject("editInfo", userEditDTO);
+        userEditDTO.setUserRole (userRoleGroupDTO);
+        mv.addObject ("editInfo", userEditDTO);
+
+        //  以下是下拉框测试
+        List<User> users = userService.list ();
+        mv.addObject ("users", users);
+
         return mv;
     }
 
     @GetMapping(value = "info")
     public ModelAndView info() {
-        ModelAndView mv = new ModelAndView("sys/user_info");
-        User user = userService.getById(ShiroKit.getUserId());
-        mv.addObject("user", user);
+        ModelAndView mv = new ModelAndView ("sys/user_info");
+        User user = userService.getById (ShiroKit.getUserId ());
+        mv.addObject ("user", user);
         return mv;
     }
 
     @GetMapping(value = "password")
     public ModelAndView password() {
-        return new ModelAndView("sys/user_pwd");
+        return new ModelAndView ("sys/user_pwd");
     }
 
     @GetMapping(value = "list/data")
     public R listData(UserQueryVO queryVO) {
-        Page<User> page = userService.listUserPage(queryVO);
-        return R.ok(page);
+        Page<User> page = userService.listUserPage (queryVO);
+        return R.ok (page);
     }
 
     @RequiresPermissions("sys:user:add")
     @Transactional
     @PostMapping(value = "add")
     public R add(User user, @RequestParam("roleIds") List<Long> roleIds) {
-        user.setDeptId(user.getDeptId() == null ? 0 : user.getDeptId());
+        user.setQrcode (getQRCode (user));
+        user.setDeptId (user.getDeptId () == null ? 0 : user.getDeptId ());
+        user.setCreateTime (new Date ());
         // 生成用户初始密码并加密
-        user.setPassword(CryptionKit.genUserPwd());
-        userService.saveOrUpdate(user);
-        userRoleService.saveOrUpdateBatchUserRole(roleIds, user.getId());
-        return R.ok();
+        user.setPassword (CryptionKit.genUserPwd ());
+        userService.saveOrUpdate (user);
+        user.setInviteCode ("F" + (100000 + user.getId ()));
+        userService.saveOrUpdate (user);
+        userRoleService.saveOrUpdateBatchUserRole (roleIds, user.getId ());
+        return R.ok ();
     }
 
     @RequiresPermissions("sys:user:edit")
     @Transactional
     @PostMapping(value = "edit")
     public R edit(User user, @RequestParam("roleIds") List<Long> roleIds) {
-        user.setDeptId(user.getDeptId() == null ? 0 : user.getDeptId());
-        userService.updateById(user);
-        userRoleService.saveOrUpdateBatchUserRole(roleIds, user.getId());
-        return R.ok();
+        user.setQrcode (getQRCode (user));
+        user.setDeptId (user.getDeptId () == null ? 0 : user.getDeptId ());
+        userService.updateById (user);
+        userRoleService.saveOrUpdateBatchUserRole (roleIds, user.getId ());
+        return R.ok ();
+    }
+
+    @SneakyThrows
+    private String getQRCode(User user) {
+        /*******************生成反诈测试宣传二维码************************/
+        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
+        content = String.format (content, user.getInviteCode (), user.getRealname ());
+        String logoPath = "D:\\QRCode\\nhga.jpg";
+        String destPath = "D:\\QRCode\\";// 二维码保存的路径
+        String fileName = user.getInviteCode () + "-" + user.getRealname ();//UUID.randomUUID ().toString ();// 二维码的图片名
+
+        return "/qrcode/" +  QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
     }
 
     @PostMapping(value = "updateInfo")
     public R updateInfo(User user) {
-        userService.updateById(user);
-        return R.ok();
+        userService.updateById (user);
+        return R.ok ();
     }
 
     @RequiresPermissions("sys:user:del")
     @PostMapping(value = "remove/{id}")
     public R remove(@PathVariable Long id) {
-        userService.removeById(id);
-        return R.ok();
+        userService.removeById (id);
+        return R.ok ();
     }
 
     @RequiresPermissions("sys:user:del")
     @PostMapping(value = "removeBatch")
     public R removeBatch(@RequestParam("ids") List<Long> ids) {
-        userService.removeByIds(ids);
-        return R.ok();
+        userService.removeByIds (ids);
+        return R.ok ();
     }
 
     /**
      * 管理员重置某个用户密码
+     *
      * @param id 用户ID
      * @return
      */
     @RequiresPermissions("sys:user:reset")
     @PostMapping(value = "{id}/resetPwd")
     public R resetPwd(@PathVariable Long id) {
-        userService.updateUserPassword(id, CryptionKit.genUserPwd());
-        return R.ok();
+        userService.updateUserPassword (id, CryptionKit.genUserPwd ());
+        return R.ok ();
     }
 
     /**
      * 用户修改密码
+     *
      * @param oldPassword 旧密码
-     * @param password  新密码
+     * @param password    新密码
      * @return
      */
     @PostMapping(value = "changePwd")
     public R changePwd(String oldPassword, String password) {
-        if (StrUtil.isBlank(oldPassword) && StrUtil.isBlank(password)) {
-            return R.fail("修改失败，非法的参数");
+        if (StrUtil.isBlank (oldPassword) && StrUtil.isBlank (password)) {
+            return R.fail ("修改失败，非法的参数");
         }
         // 用户修改密码
-        User user = userService.getById(ShiroKit.getUserId());
-        oldPassword = CryptionKit.genUserPwd(oldPassword);
-        if (user.getPassword().equals(oldPassword)) {
-            password = CryptionKit.genUserPwd(password);
-            if (user.getPassword().equals(password)) {
-                return R.fail("新密码不能与旧密码相同");
+        User user = userService.getById (ShiroKit.getUserId ());
+        oldPassword = CryptionKit.genUserPwd (oldPassword);
+        if (user.getPassword ().equals (oldPassword)) {
+            password = CryptionKit.genUserPwd (password);
+            if (user.getPassword ().equals (password)) {
+                return R.fail ("新密码不能与旧密码相同");
             }
         } else {
-            return R.fail("旧密码不正确");
+            return R.fail ("旧密码不正确");
         }
-        userService.updateUserPassword(ShiroKit.getUserId(), password);
-        return R.ok();
+        userService.updateUserPassword (ShiroKit.getUserId (), password);
+        return R.ok ();
     }
 
 }

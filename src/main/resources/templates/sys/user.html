@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title th:replace="common/base::pagetitle"></title>
     <link th:replace="common/base::static"/>
+    <style>
+        .layui-table-cell,.laytable-cell-checkbox{
+            display:table-cell;
+            vertical-align: middle;
+            height:100px;
+            overflow:visible;
+            text-overflow:inherit;
+            white-space:normal;
+        }
+    </style>
 </head>
 <body style="background-color: #f2f2f2;">
 
@@ -83,6 +93,10 @@
     {{# } }}
 </script>
 
+<script type="text/html" id="timeTpl">
+    <span>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</span>
+</script>
+
 <!--主要为了解决当值为0时，不显示的问题（估计是layui的bug）-->
 <script type="text/html" id="sortTpl">
     {{# if(d.sort == 0){ }}
@@ -102,10 +116,16 @@
     {{# return data ? data : '<span class="layui-badge-rim">未分配</span>'; }}
 </script>
 
+
 <!--头部工具栏模板-->
 <script type="text/html" id="headToolbarTpl">
     <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
     <button class="layui-btn layui-btn-sm" lay-event="batchdel">删除</button>
+</script>
+
+<!--二维码-->
+<script type="text/html" id="qrcodeTpl">
+    <div><img style="width: 100px;height:100px" src="{{d.qrcode}}" onclick="previewImg(this)"></div>
 </script>
 
 <!--表格行工具栏模板-->
@@ -133,11 +153,13 @@
                 ,{field: 'roleNames', title: '角色', width:120, templet: '#roleNamesTpl'}
                 ,{field: 'sex', title: '性别', width:80, sort: true, templet: '#sexTpl'}
                 ,{field: 'phone', title: '手机号码', sort: true, width:150}
-                // ,{field: 'jobTitle', title: '职务名称', width:120}
+                ,{field: 'qrcode', title: '二维码', templet: '#qrcodeTpl', width:220}
+                ,{field: 'inviteCode', title: '邀请码', sort: true, width:150}
                 ,{field: 'status', title: '用户状态', align: 'center', sort: true, templet: '#statusTpl', width: 100}
-                ,{field: 'sort', title: '排序号', align: 'center', sort: true, width:80, templet: '#sortTpl'}
+                ,{field: 'createTime', title: '创建时间', width: 200, templet: "#timeTpl", align: 'center' }
                 ,{field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl'}
             ]]
+            ,height: 'full-150'
         }));
 
         var area = ['449px', '95%'];
@@ -277,6 +299,28 @@
         kvfKit.bindEnterEventForLayuiForm();
 
     });
+
+    function previewImg(obj) {
+        var img = new Image();
+        img.src = obj.src;
+        //var height = img.height + 50; // 原图片大小
+        //var width = img.width; //原图片大小
+        var imgHtml = "<img src='" + obj.src + "' width='500px' height='500px'/>";
+        //弹出层
+        layer.open({
+            type: 1,
+            shade: 0.8,
+            offset: 'auto',
+            area: [500 + 'px',550+'px'],  // area: [width + 'px',height+'px']  //原图显示
+            shadeClose:true,
+            scrollbar: false,
+            title: "图片预览", //不显示标题
+            content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+            cancel: function () {
+                //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+            }
+        });
+    }
 </script>
 
 </body>

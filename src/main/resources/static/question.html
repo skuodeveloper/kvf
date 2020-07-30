@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>码上防诈</title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css">
+
+    <script src="/static/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/static/js/vue.min.js" type="text/javascript"></script>
+    <script src="plugins/layui/layui.js" type="text/javascript"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            /*height: 100%;*/
+        }
+
+        .question_type {
+            float: left;
+            font-weight: 600;
+            font-size: 18px;
+            position: relative;
+            top: 3px;
+        }
+
+        .question {
+            padding-left: 20px;
+            padding-right: 20px;
+            word-break: break-all;
+            word-spacing: 3px;
+            letter-spacing: 2px;
+        }
+
+        .question_title {
+            padding: 10px 20px 0px 20px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .current_page {
+            font-weight: 600;
+            font-size: 30px;
+            color: orange
+        }
+
+        .all_page {
+            font-size: 18px
+        }
+
+        .answer {
+            padding: 15px;
+            margin: 20px;
+            word-break: break-all;
+            word-spacing: 3px;
+            letter-spacing: 2px;
+            border-radius: 8px;
+            background: gainsboro;
+        }
+
+        .selected {
+            color: mediumorchid;
+            background: bisque;
+        }
+
+        .correct {
+            color: #47d350;
+            background: bisque;
+            font-weight: 900;
+        }
+
+        .failed {
+            color: #d81e06;
+            background: bisque;
+            font-weight: 900;
+        }
+
+        .more {
+            width: 200px;
+            height: 40px;
+            font-size: 20px;
+            font-family: "fantasy";
+            background-color: burlywood;
+            border-radius: 20px;
+            color: white;
+            border: white;
+        }
+
+        .right {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            top: 3px;
+            display: inline-block;
+            background-image: url('image/logo/right.png');
+            -moz-background-size: 100% 100%;
+            background-size: 100% 100%;
+        }
+
+        .error {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            top: 3px;
+            display: inline-block;
+            background-image: url('image/logo/error.png');
+            -moz-background-size: 100% 100%;
+            background-size: 100% 100%;
+        }
+    </style>
+</head>
+<body style="background-color: bisque;">
+<div id="news" class="layui-card" style="margin: 15px; border-radius: 8px; padding-bottom: 15px">
+    <div class="layui-form-item" v-if="questions[index]">
+        <div class="layui-inline" style="margin: 20px 20px;top: 10px;border-bottom:1px solid #393d490f;">
+            <span class="question_type">{{questions[index].dictSubType.name}}</span>
+            <div style="float: right;">
+                <span class="current_page">{{index + 1}}</span>
+                <span class="all_page">/10</span>
+            </div>
+        </div>
+        <div class="question">
+            {{questions[index].example}}
+        </div>
+
+        <div class="question_title">
+            {{questions[index].question}}
+        </div>
+
+        <ul>
+            <li class="layui-card answer" style="cursor: pointer" v-for="(item,index) in questions[index].answerDtos">
+                <span v-if="(index+1)%4 == 1">A:</span>
+                <span v-if="(index+1)%4 == 2">B:</span>
+                <span v-if="(index+1)%4 == 3">C:</span>
+                <span v-if="(index+1)%4 == 0">D:</span>
+                <span> {{item.answer}}</span>
+            </li>
+        </ul>
+
+        <div class="layui-inline">
+            <div style=" margin: 20px;text-align: center">
+                <!--<button id="kFormSubmit" type="button" class="layui-btn layui-btn-fluid">确定</button>-->
+                <button id="kFormSubmit" type="button" class="more">确定</button>
+            </div>
+        </div>
+        <!--<div>-->
+        <!--<button id="kFormSubmit" type="button" class="more">确定</button>-->
+        <!--</div>-->
+    </div>
+</div>
+
+<script>
+    //测试总得分
+    var score = 0;
+
+    var news = new Vue({
+        el: '#news',
+        data: {
+            index: 0,
+            questions: [],
+            answers: []
+        }
+    });
+
+    getQuestions();
+
+    $(document).on('click', 'li', function () {
+        if ($('#kFormSubmit').text() != '下一题') {
+            if ($('.question_type').text() == '单选题') {
+                $("ul").find('li').each(function () {
+                    $(this).removeClass('selected');
+                })
+            }
+
+            var judge = $(this).hasClass('selected');
+            if (judge) {
+                $(this).removeClass('selected');
+            } else {
+                $(this).addClass('selected');
+            }
+        }
+    })
+
+    $(document).on('click', 'button', function () {
+        var isSelected = false;
+        var isCorrect = false;
+
+        if ($('#kFormSubmit').text() == '下一题' || $('#kFormSubmit').text() == '提交测试') {
+            var awr = JSON.stringify(news.answers[news.index].answerDtos);
+            if (news.questions[news.index].answer == awr) {
+                score += 10;
+            }
+
+            news.answers[news.index].answer = '';
+            news.index++;
+
+            $("ul").find('li').removeClass('selected');
+            $("ul").find('li').removeClass('correct');
+            $("ul").find('li').removeClass('failed');
+            $("ul").find('li').find('span').removeClass('error');
+            $("ul").find('li').find('span').removeClass('right');
+            $("ul").find('li').each(function (i,e) {
+                var dom = $(this).find('span')[0];
+                switch (i){
+                    case 0:
+                        $(dom).text('A:');
+                        break;
+                    case 1:
+                        $(dom).text('B:');
+                        break;
+                    case 2:
+                        $(dom).text('C:');
+                        break;
+                    case 3:
+                        $(dom).text('D:');
+                        break;
+                }
+            })
+
+            if (news.index === 9) {
+                $('#kFormSubmit').text('提交测试');
+            }
+
+            if (news.index === 10) {
+                //成绩合格才提交
+                submit();
+            }
+
+            $('#kFormSubmit').text('确定');
+        } else {
+            $("ul").find('li').each(function (i, e) {
+                isSelected = isSelected || $(this).hasClass('selected');
+                news.answers[news.index].answerDtos[i].value = $(this).hasClass('selected');
+            })
+
+            //news.answers[news.index].answer = JSON.stringify(news.answers[news.index].answerDtos);
+            var awr = JSON.stringify(news.answers[news.index].answerDtos);
+            if (news.questions[news.index].answer == awr) {
+                score += 10;
+
+                isCorrect = true;
+            }
+
+            news.answers[news.index].answer = '';
+
+            if (!isCorrect) {
+                if (news.index === 9)
+                    $('#kFormSubmit').text('提交测试');
+                else
+                    $('#kFormSubmit').text('下一题');
+
+                $("ul").find('li').each(function (i, e) {
+                    var dom = $(this).find('span')[0];
+                    if (news.questions[news.index].answerDtos[i].value) {
+                        $(this).addClass('correct');
+                        $(dom).text('');
+                        $(dom).addClass('right');
+                    }else{
+                        if($(this).hasClass('selected')){
+                            $(this).addClass('failed');
+                            $(dom).text('');
+                            $(dom).addClass('error');
+                        }
+                    }
+                })
+                return;
+            }
+
+            if (isSelected) {
+                news.index++;
+                $("ul").find('li').removeClass('selected');
+                $("ul").find('li').removeClass('correct');
+                $("ul").find('li').removeClass('failed');
+                $("ul").find('li').find('span').removeClass('error');
+                $("ul").find('li').find('span').removeClass('right');
+
+                $("ul").find('li').each(function (i,e) {
+                    var dom = $(this).find('span')[0];
+                    switch (i){
+                        case 0:
+                            $(dom).text('A:');
+                            break;
+                        case 1:
+                            $(dom).text('B:');
+                            break;
+                        case 2:
+                            $(dom).text('C:');
+                            break;
+                        case 3:
+                            $(dom).text('D:');
+                            break;
+                    }
+                })
+            }
+
+            if (news.index === 9)
+                $('#kFormSubmit').text('提交测试');
+
+            if (news.index === 10) {
+                //成绩合格才提交
+                submit();
+            }
+        }
+    })
+
+    /*
+    获取随机题目
+     */
+    function getQuestions() {
+        $.ajax({
+            url: "http://abcdef.vaiwan.com/func/questionBank/getRandQuestion",
+            // data:{'id':id},
+            type: "get",
+            dataType: "json",
+            success: function (r) {
+                news.questions = r.data;
+                news.answers = JSON.parse(JSON.stringify(r.data));
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    /**
+     * 答题数据上传
+     */
+    function submit() {
+        $.ajax({
+            url: "http://abcdef.vaiwan.com/func/wxUser/submitTestdata",
+            data: {
+                'userInfo': localStorage.getItem('userInfo').replace(/"/g, "PASSWWORD"),//框架把双引号去掉了，先换成汉字的双引号，到后台再换回来
+                'testData': JSON.stringify(news.answers).replace(/"/g, "PASSWWORD"),
+                'score': score
+            },
+            type: "post",
+            dataType: "json",
+            success: function (r) {
+                if (r.code == 200) {
+                    localStorage.setItem('wxUserInfo', JSON.stringify(r.data));
+                    if (score >= 60) {
+                        $(location).prop('href', 'success.html?score=' + score);
+                    } else {
+                        $(location).prop('href', 'fail.html?score=' + score);
+                    }
+                }
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+</body>
+</html>

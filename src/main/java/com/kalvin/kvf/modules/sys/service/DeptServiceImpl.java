@@ -28,7 +28,9 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         if (parentId == null) {
             parentId = 0L;
         }
-        return list(new LambdaQueryWrapper<Dept>().eq(Dept::getParentId, parentId));
+
+        List<Dept> depts = list(new LambdaQueryWrapper<Dept>().eq(Dept::getParentId, parentId));
+        return depts;
     }
 
     @Override

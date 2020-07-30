@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,6 +62,7 @@ public class DeptController extends BaseController {
     @RequiresPermissions("sys:dept:add")
     @PostMapping(value = "add")
     public R add(Dept dept) {
+        dept.setCreateTime(new Date());
         deptService.save(dept);
         return R.ok();
     }

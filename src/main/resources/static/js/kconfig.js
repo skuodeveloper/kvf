@@ -107,8 +107,8 @@ var api = {
         userRoleRmBatch: BASE_WEB + 'sys/userRole/removeBatch',
         userRoleCount: BASE_WEB + 'sys/userRole/count',
         getUserRoleNames: BASE_WEB + 'sys/userRole/get/roleNames/',
-        logListData: BASE_WEB + 'sys/log/list/data'
-
+        logListData: BASE_WEB + 'sys/log/list/data',
+        dictData: BASE_WEB + 'sys/dict/get/'
     },
     gen: {
         tableListData: BASE_WEB + 'generator/list/tableData',

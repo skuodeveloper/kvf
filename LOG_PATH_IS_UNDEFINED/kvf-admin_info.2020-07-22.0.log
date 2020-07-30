@@ -1,0 +1,78 @@
+2020-07-22 08:39:27.869 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 08:39:28.700 [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: Failed to load property source from location 'classpath:/application-test.yml'
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.load(ConfigFileApplicationListener.java:545)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.loadForFileExtension(ConfigFileApplicationListener.java:483)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.load(ConfigFileApplicationListener.java:464)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.lambda$null$7(ConfigFileApplicationListener.java:443)
+	at java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.lambda$load$8(ConfigFileApplicationListener.java:443)
+	at java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.load(ConfigFileApplicationListener.java:440)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.lambda$load$0(ConfigFileApplicationListener.java:335)
+	at org.springframework.boot.context.config.FilteredPropertySource.apply(FilteredPropertySource.java:54)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.load(ConfigFileApplicationListener.java:323)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener.addPropertySources(ConfigFileApplicationListener.java:214)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener.postProcessEnvironment(ConfigFileApplicationListener.java:198)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener.onApplicationEnvironmentPreparedEvent(ConfigFileApplicationListener.java:188)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener.onApplicationEvent(ConfigFileApplicationListener.java:176)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:172)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:165)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:139)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:127)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:76)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:53)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:345)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1215)
+	at com.kalvin.kvf.KvfAdminApplication.main(KvfAdminApplication.java:11)
+Caused by: org.yaml.snakeyaml.scanner.ScannerException: while scanning a simple key
+ in 'reader', line 6, column 1:
+    wxopen.appid=wx2a6cf9373f278ed2
+    ^
+could not find expected ':'
+ in 'reader', line 7, column 1:
+    wxopen.appsecret=b32af04d9062ebc ... 
+    ^
+
+	at org.yaml.snakeyaml.scanner.ScannerImpl.stalePossibleSimpleKeys(ScannerImpl.java:464)
+	at org.yaml.snakeyaml.scanner.ScannerImpl.needMoreTokens(ScannerImpl.java:278)
+	at org.yaml.snakeyaml.scanner.ScannerImpl.checkToken(ScannerImpl.java:226)
+	at org.yaml.snakeyaml.parser.ParserImpl$ParseBlockMappingKey.produce(ParserImpl.java:558)
+	at org.yaml.snakeyaml.parser.ParserImpl.peekEvent(ParserImpl.java:158)
+	at org.yaml.snakeyaml.parser.ParserImpl.checkEvent(ParserImpl.java:148)
+	at org.yaml.snakeyaml.composer.Composer.composeMappingNode(Composer.java:217)
+	at org.yaml.snakeyaml.composer.Composer.composeNode(Composer.java:144)
+	at org.yaml.snakeyaml.composer.Composer.composeValueNode(Composer.java:239)
+	at org.yaml.snakeyaml.composer.Composer.composeMappingChildren(Composer.java:230)
+	at org.yaml.snakeyaml.composer.Composer.composeMappingNode(Composer.java:218)
+	at org.yaml.snakeyaml.composer.Composer.composeNode(Composer.java:144)
+	at org.yaml.snakeyaml.composer.Composer.getNode(Composer.java:85)
+	at org.yaml.snakeyaml.constructor.BaseConstructor.getData(BaseConstructor.java:125)
+	at org.yaml.snakeyaml.Yaml$1.next(Yaml.java:548)
+	at org.springframework.beans.factory.config.YamlProcessor.process(YamlProcessor.java:160)
+	at org.springframework.beans.factory.config.YamlProcessor.process(YamlProcessor.java:134)
+	at org.springframework.boot.env.OriginTrackedYamlLoader.load(OriginTrackedYamlLoader.java:75)
+	at org.springframework.boot.env.YamlPropertySourceLoader.load(YamlPropertySourceLoader.java:50)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.loadDocuments(ConfigFileApplicationListener.java:562)
+	at org.springframework.boot.context.config.ConfigFileApplicationListener$Loader.load(ConfigFileApplicationListener.java:518)
+	... 25 common frames omitted
+2020-07-22 08:40:31.990 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 08:44:39.225 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 08:50:19.493 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 08:54:49.094 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 10:42:20.577 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 10:44:53.565 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 10:46:08.390 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 10:48:40.849 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 10:51:15.413 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 11:19:52.373 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 11:24:55.537 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 14:48:52.239 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 14:59:18.558 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 15:07:05.817 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 15:15:13.768 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 16:09:38.223 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 16:14:53.513 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-22 16:53:40.410 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active

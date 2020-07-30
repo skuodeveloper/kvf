@@ -104,5 +104,11 @@ public class LoginController extends BaseController {
         ImageIO.write(image, "jpg", out);
     }
 
-
+    /**
+     * 获取微信公众号授权文件
+     */
+    @GetMapping("/MP_verify_9i8sAdAFW5cS7aym.txt")
+    public void get_mp_verify(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/static/MP_verify_9i8sAdAFW5cS7aym.txt");
+    }
 }

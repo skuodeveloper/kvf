@@ -1,0 +1,2 @@
+2020-07-25 11:04:12.357 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
+2020-07-25 11:53:51.037 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active

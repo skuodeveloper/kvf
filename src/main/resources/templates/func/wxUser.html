@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title th:replace="common/base::pagetitle"></title>
+    <link th:replace="common/base::static"/>
+
+    <style>
+        .layui-table-cell{
+            display:table-cell;
+            vertical-align: middle;
+            height:100px;
+            overflow:visible;
+            text-overflow:inherit;
+            white-space:normal;
+        }
+
+        .layui-table tr {
+            height: 100px;
+        }
+    </style>
+</head>
+<body style="background-color: #f2f2f2;">
+
+<div id="kPage" class="layui-fluid" style="padding: 0">
+    <div class="layui-row">
+        <div class="layui-col-md12" id="kMainContentCol">
+            <div class="layui-fluid kvf-fluid-padding15">
+                <div class="layui-card">
+                    <form>
+                        <div class="layui-form layui-card-header kvf-card-header-auto">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">昵称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="nickname" placeholder="请输入昵称" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">人员类别</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="type" placeholder="请输入人员类别" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">公司单位</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="companyName" placeholder="请输入公司单位" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <button class="layui-btn " lay-submit="" lay-filter="kTableSearchFilter">
+                                        <i class="layui-icon layui-icon-search"></i>
+                                    </button>
+                                    <button class="layui-btn " type="reset" data-event="refresh">
+                                        <i class="layui-icon layui-icon-refresh-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="layui-card-body">
+                        <table id="kContentTable" lay-filter="kContentTable"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:replace="common/base::context"></script>
+<script th:replace="common/base::mainjs"></script>
+
+<!--头部工具栏模板-->
+<script type="text/html" id="headToolbarTpl">
+    <button class="layui-btn layui-btn-sm " lay-event="add">添加</button>
+    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchdel">批量删除</button>
+</script>
+
+<script type="text/html" id="sexTpl">
+    {{#  if(d.sex == 1){ }}
+    <span class="layui-badge layui-bg-blue">男</span>
+    {{#  } else if(d.sex == 2) { }}
+    <span class="layui-badge">女</span>
+    {{#  } else { }}
+    <span class="layui-badge layui-bg-gray">未知</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="personTypeTpl">
+    {{#  if(d.personType == 1){ }}
+    <span>小区居民</span>
+    {{#  } else if(d.personType == 2) { }}
+    <span>企业员工</span>
+    {{#  } else if(d.personType == 3) { }}
+    <span>沿街店面</span>
+    {{#  } else if(d.personType == 4) { }}
+    <span>三产三铺</span>
+    {{#  } else { }}
+    <span class="layui-badge layui-bg-gray">未知</span>
+    {{# } }}
+</script>
+
+<!--二维码-->
+<script type="text/html" id="qrcodeTpl">
+    <div><img style="width: 80px;height:80px" src="{{d.qrcode}}" onclick="previewImg(this)"></div>
+</script>
+
+<!--二维码-->
+<script type="text/html" id="headimgTpl">
+    <div><img style="width: 80px;height:80px" src="{{d.headimgurl}}" onclick="previewImg(this)"></div>
+</script>
+
+<script type="text/html" id="timeTpl">
+    <span>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</span>
+</script>
+
+<!--表格行工具栏模板-->
+<script type="text/html" id="rowToolbarTpl">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
+</script>
+
+<!--表格列格式化模板 start-->
+<!--表格列格式化模板 end-->
+
+<script type="text/javascript" th:inline="javascript">
+    layui.use(['element', 'form', 'layer', 'table', 'laydate'], function () {
+        var elemet = layui.element, form = layui.form, layer = layui.layer, table = layui.table,
+            laydate = layui.laydate;
+        var tableId = 'kContentTable';
+        var area = ['449px', '95%'];
+
+        // 实例化table
+        var tableIns = table.render($.extend(config.layui.table, {
+            elem: '#' + tableId
+            , url: BASE_WEB + 'func/wxUser/list/data' // 数据接口
+            , toolbar: '#headToolbarTpl'
+            , height: 'full-150' //距离底部高度
+            , cols: [[ //表头
+                  {type: 'checkbox', fixed: 'left'}
+                , {field: 'nickname', title: '昵称', width: 130, align: 'center'}
+                , {field: 'sex', title: '性别', width: 130, templet: '#sexTpl', align: 'center'}
+                , {field: 'province', title: '省份', width: 130, align: 'center'}
+                , {field: 'city', title: '城市', width: 130, align: 'center'}
+                , {field: 'headimgurl', title: '头像', templet: '#headimgTpl', width: 130, align: 'center'}
+                , {
+                    field: 'personType',
+                    title: '人员类型',
+                    sort: true,
+                    width: 130,
+                    templet: '#personTypeTpl',
+                    align: 'center'
+                }
+                , {field: 'companyName', title: '单位名称', sort: true, width: 130, align: 'center'}
+                , {field: 'tel', title: '电话号码', width: 130, align: 'center'}
+                , {field: 'qrcode', title: '二维码', templet: '#qrcodeTpl', width: 130, align: 'center'}
+                , {field: 'parentInvitedCode', title: '父邀请码', width: 130, align: 'center'}
+                , {field: 'invitedCode', title: '本人邀请码', width: 130, align: 'center'}
+                , {field: 'createTime', title: '注册时间', width: 200, templet: "#timeTpl", align: 'center' }
+                , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}
+            ]]
+        }));
+
+        // 监听表格头部事件
+        table.on('toolbar(' + tableId + ')', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            var checkData = checkStatus.data; // 得到选中的数据
+            switch (obj.event) {
+                case 'add':
+                    layer.open({
+                        type: 2
+                        , title: '添加'
+                        , content: BASE_WEB + 'func/wxUser/edit'
+                        , maxmin: true
+                        , area: area   // 宽高
+                        , btn: ['确定', '取消']
+                        , yes: function (index, layero) {
+                            //点击确认触发 iframe 内容中的按钮提交
+                            var submit = layero.find('iframe').contents().find("#kFormSubmit");
+                            submit.click();
+                        }
+                    });
+                    break;
+                case 'batchdel':
+                    if (checkData.length === 0) {
+                        return kvfKit.warningMsg('请选择数据');
+                    }
+                    layer.confirm('确定删除吗？', function (index) {
+                        var ids = [];
+                        $.each(checkData, function (i, n) {
+                            ids[i] = n.id;
+                        });
+
+                        //执行 Ajax 后重载
+                        $.ajax({
+                            type: req.type.post,
+                            url: BASE_WEB + 'func/wxUser/batchdel',
+                            data: {ids: ids.toString()},
+                            success: function (r) {
+                                if (r.code === req.status.ok) {
+                                    table.reload(tableId);
+                                    kvfKit.sucessMsg('已删除');
+                                } else {
+                                    kvfKit.errorMsg(r.msg);
+                                }
+                            }
+                        });
+                    });
+                    break;
+            }
+        });
+
+        // 表格行按钮 监听事件
+        table.on('tool(' + tableId + ')', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'edit') {
+                layer.open({
+                    type: 2
+                    , title: '编辑'
+                    , content: BASE_WEB + 'func/wxUser/edit?id=' + data.id
+                    , maxmin: true
+                    , area: area   // 宽高
+                    , btn: ['确定', '取消']
+                    , yes: function (index, layero) {
+                        //点击确认触发 iframe 内容中的按钮提交
+                        var submit = layero.find('iframe').contents().find("#kFormSubmit");
+                        submit.click();
+                    }
+                });
+            }
+            if (layEvent === 'del') {
+                layer.confirm('确定删除吗？', function (index) {
+                    //执行 Ajax 后重载
+                    $.ajax({
+                        type: req.type.post,
+                        url: BASE_WEB + 'func/wxUser/del/' + data.id,
+                        async: false,
+                        success: function (r) {
+                            if (r.code === req.status.ok) {
+                                table.reload(tableId);
+                                kvfKit.sucessMsg('已删除');
+                            } else {
+                                kvfKit.errorMsg(r.msg);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+
+        // 监听查询
+        form.on('submit(kTableSearchFilter)', function (obj) {
+            renderTableData(obj.field);
+            return false;
+        });
+
+        var active = {
+            refresh: function () {
+                var $form = $('form');
+                $form[0].reset();
+                renderTableData(kvfKit.getFormJson($form));
+            }
+        };
+
+        kvfKit.activeInit(active);
+
+        function renderTableData(params) {
+            params = params ? params : {};
+
+            tableIns.reload({
+                where: params,
+                page: {current: 1}
+            });
+        }
+
+        // 绑定监听回车事件
+        kvfKit.bindEnterEventForLayuiForm();
+
+    });
+
+    function previewImg(obj) {
+        var img = new Image();
+        img.src = obj.src;
+        //var height = img.height + 50; // 原图片大小
+        //var width = img.width; //原图片大小
+        var imgHtml = "<img src='" + obj.src + "' width='500px' height='500px'/>";
+        //弹出层
+        layer.open({
+            type: 1,
+            shade: 0.8,
+            offset: 'auto',
+            area: [500 + 'px', 550 + 'px'],  // area: [width + 'px',height+'px']  //原图显示
+            shadeClose: true,
+            scrollbar: false,
+            title: "图片预览", //不显示标题
+            content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+            cancel: function () {
+                //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

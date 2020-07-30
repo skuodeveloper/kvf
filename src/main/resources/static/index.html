@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>码上防诈</title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css">
+
+    <script src="/static/js/jquery.min.js" type="text/javascript"></script>
+    <script src="plugins/layui/layui.js" type="text/javascript"></script>
+</head>
+<body style="background-color: #f2f2f2;">
+<script>
+    $(function () {
+        function getUrlParameter(name) {
+            name = name.replace(/[]/, "\[").replace(/[]/, "\[").replace(/[]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.parent.location.href);
+            if (results == null)
+                return "";
+            else {
+                return results[1];
+            }
+        }
+
+        function wxLogin() {
+            var inviteCode =  getUrlParameter('inviteCode');
+            var realname = getUrlParameter('realname');
+
+            var appId = 'wx5b66c0f1cfaae239';
+            var redirect_url = 'http://abcdef.vaiwan.com/static/wxclient.html?inviteCode=' + inviteCode + ',' + realname;
+
+            var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appId + "&redirect_uri=" + redirect_url
+                + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+
+            sessionStorage.setItem('hasToken', 1);
+            window.location = url;
+        }
+
+        wxLogin();
+    })
+</script>
+</body>
+</html>
