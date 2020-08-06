@@ -29,6 +29,7 @@
                 and invite_code like concat(#{answerRecord.inviteCode}, "%")
             </if>
         </trim>
+        order by create_time desc
     </select>
 
 </mapper>

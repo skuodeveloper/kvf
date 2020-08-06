@@ -44,9 +44,27 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">openid</label>
+        <div class="layui-input-inline">
+            <input type="text" name="openid" th:value="${editInfo.openid}" placeholder="openid" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">unionid</label>
         <div class="layui-input-inline">
-            <input type="text" name="unionid" th:value="${editInfo.unionid}" placeholder="请输入" autocomplete="off" class="layui-input">
+            <input type="text" name="unionid" th:value="${editInfo.unionid}" placeholder="请输入unionid" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">父邀请码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="parentInvitedCode" th:value="${editInfo.parentInvitedCode}" placeholder="请输入父邀请码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邀请码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="invitedCode" th:value="${editInfo.invitedCode}" placeholder="请输入邀请码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">

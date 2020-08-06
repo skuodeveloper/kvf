@@ -113,7 +113,7 @@
         $('.score').html(score);
 
         if (score >= 90) {
-            var wxUserInfo = JSON.parse(localStorage.getItem('wxUserInfo'));
+            var wxUserInfo = JSON.parse(sessionStorage.getItem('wxUserInfo'));
             $('.inviteCode').html(wxUserInfo.invitedCode);
             $('.qrcode').attr('src', 'http://abcdef.vaiwan.com/' + wxUserInfo.qrcode);
 

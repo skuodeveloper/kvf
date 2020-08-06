@@ -35,7 +35,7 @@
         .more {
             width: 200px;
             height: 40px;
-            font-size: 20px;
+            font-size: 15px;
             font-family: "fantasy";
             background-color: burlywood;
             border-radius: 20px;
@@ -63,6 +63,13 @@
                     </div>
                 </div>
 
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label">姓名</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" id="realname" name="realname" autocomplete="off" class="layui-input">-->
+                    <!--</div>-->
+                <!--</div>-->
+
                 <div class="layui-inline">
                     <label class="layui-form-label">所在单位</label>
                     <div class="layui-input-inline">
@@ -77,13 +84,22 @@
                                lay-verify="required|phone" title="电话号码" pattern="[0-9]*">
                     </div>
                 </div>
+
+                <div style="margin: 20px 40px;color: burlywood; font-size: 15px">
+                    <p>1.主办方将从成功参与答题的人员中随机抽取幸运奖200名，请填写真实手机号码，您所填写的信息仅用于抽奖登记及信息核实！</p>
+                    <p style="margin-top: 10px">2.不填写信息，视为放弃抽奖。</p>
+                </div>
                 <div class="layui-inline" style="margin-right: 0px">
                     <div style=" margin: 35px;text-align: center">
                         <!--<button type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit"-->
                         <!--class="layui-btn layui-btn-fluid">提交信息-->
                         <!--</button>-->
                         <button type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit" class="more">
-                            提交信息
+                            提交信息，参与抽奖
+                        </button>
+
+                        <button type="button" id="kClose" class="more" style="margin-top: 20px">
+                            放弃抽奖，查看成绩
                         </button>
                     </div>
                 </div>
@@ -92,20 +108,47 @@
     </div>
 </div>
 <script>
-    var userInfo = JSON.parse(localStorage.getItem('wxUserInfo'));//存储微信用户信息
+    function getUrlParameter(name) {
+        name = name.replace(/[]/, "\[").replace(/[]/, "\[").replace(/[]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.parent.location.href);
+        if (results == null)
+            return "";
+        else {
+            return results[1];
+        }
+    }
 
-    layui.use(['form'], function () {
-        var $ = layui.$, form = layui.form;
+    var score = getUrlParameter('score');
 
-        //监听提交
-        form.on('submit(kFormSubmit)', function (data) {
-            userInfo.personType = $('#personType').val();
-            userInfo.companyName = $('#companyName').val();
-            userInfo.tel = $('#tel').val();
+    var inviteCode = getUrlParameter('inviteCode');
+    var realname = getUrlParameter('realname');
 
-            updateInfo();
+    //微信用户信息
+    var userInfoJs = sessionStorage.getItem('userInfo');
+    if(userInfoJs == null){
+        $(location).prop('href', 'test.html?inviteCode=' + inviteCode + '&realname=' + realname);
+    }else {
+        var userInfo = JSON.parse(userInfoJs);//存储微信用户信息
+
+        layui.use(['form'], function () {
+            var $ = layui.$, form = layui.form;
+
+            //监听提交
+            form.on('submit(kFormSubmit)', function (data) {
+                userInfo.personType = $('#personType').val();
+                userInfo.companyName = $('#companyName').val();
+                userInfo.tel = $('#tel').val();
+
+                updateInfo();
+            })
+
+            $(document).on('click', '#kClose', function () {
+                $(location).prop('href', 'success.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
+            })
         })
-    })
+    }
 
     /**
      * 微信用户信息更新
@@ -114,7 +157,6 @@
         $.ajax({
             url: "http://abcdef.vaiwan.com/func/wxUser/updateInfo",
             data: JSON.stringify(userInfo),
-            // data: userInfo,
             async: true,
             headers: {
                 'Content-Type': 'application/json'
@@ -123,7 +165,7 @@
             dataType: 'json',
             success: function (r) {
                 if (r.code == 200) {
-                    WeixinJSBridge.call('closeWindow');
+                    $(location).prop('href', 'success.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                 }
             },
             error: function (data) {

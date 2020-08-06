@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.LastdayDeptStatisticsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.LastdayDeptStatistics">
+        <id column="deptid" property="deptid" />
+        <result column="deptname" property="deptname" />
+        <result column="person_count" property="personCount" />
+        <result column="all_scores" property="allScores" />
+        <result column="last_day_count" property="lastDayCount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       deptid, deptname, person_count, all_scores, last_day_count
+    </sql>
+
+    <select id="selectLastdayDeptStatisticsList" resultType="com.kalvin.kvf.modules.func.entity.LastdayDeptStatistics">
+        select <include refid="Base_Column_List" /> from func_lastday_dept_statistics
+        <trim prefix="where" prefixOverrides="and">
+            <if test="lastdayDeptStatistics.deptname != null and lastdayDeptStatistics.deptname != ''">
+                and deptname like concat(#{lastdayDeptStatistics.deptname}, "%")
+            </if>
+            <if test="lastdayDeptStatistics.personCount != null">
+                and person_count = #{lastdayDeptStatistics.personCount}
+            </if>
+            <if test="lastdayDeptStatistics.allScores != null">
+                and all_scores = #{lastdayDeptStatistics.allScores}
+            </if>
+            <if test="lastdayDeptStatistics.lastDayCount != null">
+                and last_day_count = #{lastdayDeptStatistics.lastDayCount}
+            </if>
+        </trim>
+    </select>
+
+</mapper>

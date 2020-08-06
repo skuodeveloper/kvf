@@ -1,6 +1,7 @@
 package com.kalvin.kvf.modules.func.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.kalvin.kvf.common.entity.BaseEntity;
@@ -112,5 +113,13 @@ public class WxUser extends BaseEntity {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    @TableField(exist = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startdate;
+
+    @TableField(exist = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date enddate;
 
 }

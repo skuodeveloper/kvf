@@ -64,16 +64,26 @@
             <if test="wxUser.companyName != null and wxUser.companyName != ''">
                 and company_name like concat("%", #{wxUser.companyName}, "%")
             </if>
+            <if test="wxUser.parentInvitedCode != null and wxUser.parentInvitedCode != ''">
+                and parent_invited_code like concat("%", #{wxUser.parentInvitedCode}, "%")
+            </if>
+            <if test="wxUser.invitedCode != null and wxUser.invitedCode != ''">
+                and invited_code like concat("%", #{wxUser.invitedCode}, "%")
+            </if>
             <if test="wxUser.tel != null and wxUser.tel != ''">
                 and tel like concat(#{wxUser.tel}, "%")
             </if>
             <if test="wxUser.invitedCode != null and wxUser.invitedCode != ''">
                 and invited_code like concat(#{wxUser.invitedCode}, "%")
             </if>
-            <if test="wxUser.createTime != null">
-                and create_time = #{wxUser.createTime}
+            <if test="wxUser.startdate != null">
+                and create_time &gt;= #{wxUser.startdate}
+            </if>
+            <if test="wxUser.enddate != null">
+                and create_time &lt;= #{wxUser.enddate}
             </if>
         </trim>
+        order by create_time desc
     </select>
 
 </mapper>

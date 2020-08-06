@@ -44,7 +44,14 @@ public class QuestionBankController extends BaseCrudRestController {
     @RequiresPermissions("func:questionBank:index")
     @GetMapping("index")
     public ModelAndView index() {
-        return new ModelAndView ("func/questionBank");
+        ModelAndView mv = new ModelAndView ("func/questionBank");
+
+        List<Dict> questiontypedicts = dictMapper.selectAllDictItemByCode ("QUESTION_TYPE");
+        mv.addObject ("questiontypes", questiontypedicts);
+
+        List<Dict> xuanchuantypedicts = dictMapper.selectAllDictItemByCode ("XUANCHUAN_TYPE");
+        mv.addObject ("xuanchuantypes", xuanchuantypedicts);
+        return mv;
     }
 
     @GetMapping(value = "edit")

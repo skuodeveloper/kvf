@@ -1,5 +1,15 @@
 server:
   port: 8081
+  tomcat:
+      uri-encoding: UTF-8
+      #最大工作线程数，默认200, 4核8g内存，线程数经验值800
+      #操作系统做线程之间的切换调度是有系统开销的，所以不是越多越好。
+      max-threads: 1000
+      # 等待队列长度，默认100
+      accept-count: 1000
+      max-connections: 20000
+      # 最小工作空闲线程数，默认10, 适当增大一些，以便应对突然增长的访问量
+      min-spare-threads: 100
 
 #微信开放平台配置
 wxopen:
@@ -16,14 +26,18 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
+  logging:
+    level:
+      com.kalvin.kvf: error
+
   # druid数据源配置
   datasource:
     name: druidDataSource
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-#      url: jdbc:mysql://localhost:3306/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
-      url: jdbc:mysql://60.190.149.52:33060/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+#      url: jdbc:mysql://localhost:10086/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://10.120.1.42:33060/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
       username: nhga
       password: 0573@nhga
       filters: stat,wall,config
@@ -105,6 +119,7 @@ mybatis-plus:
   type-aliases-package: com.kalvin.kvf.entity.*
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     db-config:
       id-type: auto

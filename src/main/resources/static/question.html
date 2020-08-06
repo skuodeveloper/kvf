@@ -147,16 +147,12 @@
                 <button id="kFormSubmit" type="button" class="more">确定</button>
             </div>
         </div>
-        <!--<div>-->
-        <!--<button id="kFormSubmit" type="button" class="more">确定</button>-->
-        <!--</div>-->
     </div>
 </div>
 
 <script>
     //测试总得分
     var score = 0;
-
     var news = new Vue({
         el: '#news',
         data: {
@@ -166,7 +162,16 @@
         }
     });
 
-    getQuestions();
+    //微信用户信息
+    var userInfo = sessionStorage.getItem('userInfo');
+    var inviteCode = getUrlParameter('inviteCode');
+    var realname = getUrlParameter('realname');
+
+    if(userInfo == null){
+        $(location).prop('href', 'test.html?inviteCode=' + inviteCode + '&realname=' + realname);
+    }else {
+        getQuestions();
+    }
 
     $(document).on('click', 'li', function () {
         if ($('#kFormSubmit').text() != '下一题') {
@@ -307,6 +312,18 @@
         }
     })
 
+    function getUrlParameter(name) {
+        name = name.replace(/[]/, "\[").replace(/[]/, "\[").replace(/[]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.parent.location.href);
+        if (results == null)
+            return "";
+        else {
+            return results[1];
+        }
+    }
+
     /*
     获取随机题目
      */
@@ -333,7 +350,7 @@
         $.ajax({
             url: "http://abcdef.vaiwan.com/func/wxUser/submitTestdata",
             data: {
-                'userInfo': localStorage.getItem('userInfo').replace(/"/g, "PASSWWORD"),//框架把双引号去掉了，先换成汉字的双引号，到后台再换回来
+                'userInfo': sessionStorage.getItem('userInfo').replace(/"/g, "PASSWWORD"),//框架把双引号去掉了，先换成汉字的双引号，到后台再换回来
                 'testData': JSON.stringify(news.answers).replace(/"/g, "PASSWWORD"),
                 'score': score
             },
@@ -341,11 +358,11 @@
             dataType: "json",
             success: function (r) {
                 if (r.code == 200) {
-                    localStorage.setItem('wxUserInfo', JSON.stringify(r.data));
+                    sessionStorage.setItem('wxUserInfo', JSON.stringify(r.data));
                     if (score >= 60) {
-                        $(location).prop('href', 'success.html?score=' + score);
+                        $(location).prop('href', 'luckdraw.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                     } else {
-                        $(location).prop('href', 'fail.html?score=' + score);
+                        $(location).prop('href', 'fail.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                     }
                 }
             },

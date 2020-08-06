@@ -7,13 +7,13 @@
     <link th:replace="common/base::static"/>
 
     <style>
-        .layui-table-cell{
-            display:table-cell;
+        .layui-table-cell {
+            display: table-cell;
             vertical-align: middle;
-            height:100px;
-            overflow:visible;
-            text-overflow:inherit;
-            white-space:normal;
+            height: 100px;
+            overflow: visible;
+            text-overflow: inherit;
+            white-space: normal;
         }
 
         .layui-table tr {
@@ -40,9 +40,9 @@
                                 </div>
 
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">人员类别</label>
+                                    <label class="layui-form-label">电话号码</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="type" placeholder="请输入人员类别" autocomplete="off"
+                                        <input type="text" name="tel" placeholder="请输入电话号码" autocomplete="off"
                                                class="layui-input">
                                     </div>
                                 </div>
@@ -52,6 +52,36 @@
                                     <div class="layui-input-inline">
                                         <input type="text" name="companyName" placeholder="请输入公司单位" autocomplete="off"
                                                class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">父邀请码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="parentInvitedCode" placeholder="请输入父邀请码"
+                                               autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">邀请码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="invitedCode" placeholder="请输入邀请码" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">注册日期</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="startdate" name="startdate" autocomplete="off" placeholder="yyyy-MM-dd">
+                                    </div>
+                                </div>
+                                <span style="margin-right: 20px">~~</span>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="enddate" name="enddate" placeholder="yyyy-MM-dd">
                                     </div>
                                 </div>
 
@@ -136,11 +166,20 @@
 
 <script type="text/javascript" th:inline="javascript">
     layui.use(['element', 'form', 'layer', 'table', 'laydate'], function () {
-        var elemet = layui.element, form = layui.form, layer = layui.layer, table = layui.table,
-            laydate = layui.laydate;
+        var form = layui.form, layer = layui.layer, table = layui.table,
+            laydate = layui.laydate, elemet = layui.element;
+
         var tableId = 'kContentTable';
         var area = ['449px', '95%'];
 
+        //常规用法
+        laydate.render({
+            elem: '#startdate'
+        });
+
+        laydate.render({
+            elem: '#enddate'
+        });
         // 实例化table
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
@@ -148,7 +187,7 @@
             , toolbar: '#headToolbarTpl'
             , height: 'full-150' //距离底部高度
             , cols: [[ //表头
-                  {type: 'checkbox', fixed: 'left'}
+                {type: 'checkbox', fixed: 'left'}
                 , {field: 'nickname', title: '昵称', width: 130, align: 'center'}
                 , {field: 'sex', title: '性别', width: 130, templet: '#sexTpl', align: 'center'}
                 , {field: 'province', title: '省份', width: 130, align: 'center'}
@@ -167,7 +206,7 @@
                 , {field: 'qrcode', title: '二维码', templet: '#qrcodeTpl', width: 130, align: 'center'}
                 , {field: 'parentInvitedCode', title: '父邀请码', width: 130, align: 'center'}
                 , {field: 'invitedCode', title: '本人邀请码', width: 130, align: 'center'}
-                , {field: 'createTime', title: '注册时间', width: 200, templet: "#timeTpl", align: 'center' }
+                , {field: 'createTime', title: '注册时间', width: 200, templet: "#timeTpl", align: 'center'}
                 , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}
             ]]
         }));

@@ -86,8 +86,12 @@ public class JobController {
     @RequiresPermissions("schedule:job:edit")
     @PostMapping(value = "update")
     public R update(Job job) {
-        jobService.updateJob(job);
-        return R.ok();
+        try {
+            jobService.updateJob (job);
+            return R.ok ();
+        }catch (Exception ex){
+            return R.fail (ex.getMessage ());
+        }
     }
 
     /**

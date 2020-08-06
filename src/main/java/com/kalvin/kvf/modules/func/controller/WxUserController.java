@@ -2,19 +2,14 @@ package com.kalvin.kvf.modules.func.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
 import com.kalvin.kvf.common.utils.HttpUtils;
 import com.kalvin.kvf.common.utils.QRCodeUtils;
-import com.kalvin.kvf.modules.func.entity.AnswerRecord;
-import com.kalvin.kvf.modules.func.entity.QuestionBank;
-import com.kalvin.kvf.modules.func.entity.TestPaper;
-import com.kalvin.kvf.modules.func.entity.WxUser;
-import com.kalvin.kvf.modules.func.service.AnswerRecordService;
-import com.kalvin.kvf.modules.func.service.QuestionBankService;
-import com.kalvin.kvf.modules.func.service.TestPaperService;
-import com.kalvin.kvf.modules.func.service.WxUserService;
+import com.kalvin.kvf.modules.func.entity.*;
+import com.kalvin.kvf.modules.func.service.*;
 import com.kalvin.kvf.modules.func.vo.QuestionBankVo;
 import lombok.SneakyThrows;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
 
 
 /**
@@ -69,6 +64,14 @@ public class WxUserController extends BaseController {
 
     @GetMapping(value = "list/data")
     public R listData(WxUser wxUser) {
+        if (wxUser.getEnddate () != null) {
+            Calendar calendar = new GregorianCalendar ();
+            calendar.setTime (wxUser.getEnddate ());
+            //把日期往后增加一天,整数  往后推,负数往前移动
+            calendar.add (calendar.DATE, 1);
+            //这个时间就是日期往后推一天的结果
+            wxUser.setEnddate (calendar.getTime ());
+        }
         Page<WxUser> page = wxUserService.listWxUserPage (wxUser);
 
         return R.ok (page);
@@ -91,6 +94,8 @@ public class WxUserController extends BaseController {
     @RequiresPermissions("func:wxUser:edit")
     @PostMapping(value = "edit")
     public R edit(WxUser wxUser) {
+        //生成二维码
+        wxUser.setQrcode (getQRCode (wxUser));
         wxUserService.updateById (wxUser);
         return R.ok ();
     }
@@ -118,9 +123,7 @@ public class WxUserController extends BaseController {
     @PostMapping(value = "updateInfo")
     public R updateInfo(@RequestBody WxUser userInfo) {
         try {
-            // replaceAll 把所有的大写引号再替换回来
-//            WxUser wxUser = JSON.parseObject (userInfo.replaceAll ("PASSWWORD", "\""), WxUser.class);
-            wxUserService.saveOrUpdate (userInfo);
+            wxUserService.update (userInfo, new UpdateWrapper<WxUser> ().eq ("openid", userInfo.getOpenid ()));
             return R.ok (userInfo);
         } catch (Exception ex) {
             return R.fail (ex.getMessage ());
@@ -132,7 +135,7 @@ public class WxUserController extends BaseController {
         try {
             WxUser wxUser = wxUserService.getOne (new QueryWrapper<WxUser> ().eq ("openid", openid));
             AnswerRecord answerRecord = answerRecordService.getOne (new QueryWrapper<AnswerRecord> ()
-                    .eq ("userid",wxUser.getId ())
+                    .eq ("userid", wxUser.getId ())
                     .orderByDesc ("score")
                     .last ("limit 1"));
 
@@ -142,6 +145,7 @@ public class WxUserController extends BaseController {
             return R.fail (ex.getMessage ());
         }
     }
+
 
     @PostMapping(value = "submitTestdata")
     public R submit(@RequestParam String userInfo, @RequestParam String testData, @RequestParam Integer score) {
@@ -204,35 +208,16 @@ public class WxUserController extends BaseController {
     @SneakyThrows
     private String getQRCode(WxUser user) {
         /*******************生成反诈测试宣传二维码************************/
-//        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
-//        content = String.format (content, user.getInvitedCode (), user.getNickname ());
-//        String path = "F:/QRCode/";// 二维码保存的路径
-//        String codeName = user.getInvitedCode () + "-" + user.getNickname ();//UUID.randomUUID ().toString ();// 二维码的图片名
-//        String imageType = "jpg";// 图片类型
-//        MultiFormatWriter multiFormatWriter = new MultiFormatWriter ();
-//        Map<EncodeHintType, String> hints = new HashMap<> ();
-//        hints.put (EncodeHintType.CHARACTER_SET, "UTF-8");
-//        BitMatrix bitMatrix = null;
-//        try {
-//            bitMatrix = multiFormatWriter.encode (content, BarcodeFormat.QR_CODE, 400, 400, hints);
-//            File file1 = new File (path, codeName + "." + imageType);
-//            QRCodeUtil.writeToFile (bitMatrix, imageType, file1);
-//        } catch (Exception e) {
-//            e.printStackTrace ();
-//        }
-//
-//        return "/qrcode/" + codeName  + "." + imageType;
-
-        /*******************生成反诈测试宣传二维码************************/
         String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
         content = String.format (content, user.getInvitedCode (), user.getNickname ());
 
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
         HttpUtils.download (user.getHeadimgurl (), logoPath);
 
-//        String logoPath = "D:\\QRCode\\nhga.jpg";
-        String destPath = "D:\\QRCode\\";// 二维码保存的路径
-        String fileName = user.getInvitedCode () + "-" + user.getNickname ();//UUID.randomUUID ().toString ();// 二维码的图片名
+        // 二维码保存的路径
+        String destPath = "D:\\QRCode\\";
+        // 二维码的图片名
+        String fileName = UUID.randomUUID ().toString ();
 
         return "/qrcode/" + QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
     }

@@ -26,6 +26,9 @@
     <select id="selectQuestionBankList" resultType="com.kalvin.kvf.modules.func.entity.QuestionBank">
         select <include refid="Base_Column_List" /> from func_question_bank
         <trim prefix="where" prefixOverrides="and">
+            <if test="questionBank.subjectType != null and questionBank.subjectType != ''">
+                and subject_type = #{questionBank.subjectType}
+            </if>
             <if test="questionBank.type != null and questionBank.type != ''">
                 and type = #{questionBank.type}
             </if>
@@ -33,5 +36,6 @@
                 and status = #{questionBank.status}
             </if>
         </trim>
+        order by create_time desc
     </select>
 </mapper>

@@ -1,12 +1,36 @@
 server:
-  port: 80
+  port: 8081
+  tomcat:
+        uri-encoding: UTF-8
+        #最大工作线程数，默认200, 4核8g内存，线程数经验值800
+        #操作系统做线程之间的切换调度是有系统开销的，所以不是越多越好。
+        max-threads: 1000
+        # 等待队列长度，默认100
+        accept-count: 1000
+        max-connections: 20000
+        # 最小工作空闲线程数，默认10, 适当增大一些，以便应对突然增长的访问量
+        min-spare-threads: 100
+
+#微信开放平台配置
+wxopen:
+  appid: wx719c937ea903be65
+  appsecret: b22eabdd155cd8174e2791c95d513a7e
+  ##重定向url
+  ##test16web.tunnel.qydev.com 域名地址要和在微信端 回调域名配置 地址一直，否则会报回调地址参数错误
+  ##http://test16web.tunnel.qydev.com 映射 127.0.0.1:8080,所以可以回调下面接口
+  redirect_url: http://abcdef.vaiwan.com//api/v1/wechat/user/code
 
 spring:
-
   # jackson
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
+  #配置日志
+  logging:
+    level:
+      root: error
+      com.kalvin.kvf: debug
 
   # druid数据源配置
   datasource:
@@ -14,9 +38,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:10086/kvf_admin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
       username: root
-      password: root
+      password: 0573@nhga
       filters: stat,wall,config
       max-active: 100
       initial-size: 1
@@ -96,6 +120,7 @@ mybatis-plus:
   type-aliases-package: com.kalvin.kvf.entity.*
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     db-config:
       id-type: auto
@@ -104,13 +129,13 @@ mybatis-plus:
 
 # kvf自定义配置
 kvf:
-  # 登录验证码是否开启，开发环境配置false方便测试
+  # 登录验证码是否开启
   login:
     authcode:
       enable: false
   # quartz开关
   quartz:
-    enable: true
+    enable: false
   # 缓存开关
   cache:
     enable: false

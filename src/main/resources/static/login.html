@@ -159,7 +159,7 @@
                 userInfo.tel = $('#tel').val();
                 userInfo.privilege = '';
 
-                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
                 $(location).prop('href', 'question.html')
             })
         })

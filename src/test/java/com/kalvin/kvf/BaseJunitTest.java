@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Kalvin
  * @Date 2019年04月29日 15:42
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public abstract class BaseJunitTest {
     protected final static Logger LOGGER = LoggerFactory.getLogger(BaseJunitTest.class);
 }

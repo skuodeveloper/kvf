@@ -17,14 +17,27 @@
                         <div class="layui-form layui-card-header kvf-card-header-auto">
                             <div class="layui-form-item">
                                 <div class="layui-inline">
+                                    <label class="layui-form-label">题目类型</label>
+                                    <div class="layui-input-inline">
+                                        <select multiple="multiple" name="subjectType" lay-search="">
+                                            <option value="">请选择</option>
+                                            <option th:each="questiontype : ${questiontypes}"
+                                                    th:value="${questiontype.id}"
+                                                    th:text="${questiontype.name}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
                                     <label class="layui-form-label">宣讲类型</label>
                                     <div class="layui-input-inline">
-                                        <select multiple="multiple" id="type" name="type" lay-search="">
+                                        <select multiple="multiple" name="type" lay-search="" >
                                             <option value="">请选择</option>
-                                            <!--<option th:each="xuanchuantype : ${xuanchuantypes}"-->
-                                            <!--th:value="${xuanchuantype.id}"-->
-                                            <!--th:text="${xuanchuantype.name}"-->
-                                            <!--</option>-->
+                                            <option th:each="xuanchuantype : ${xuanchuantypes}"
+                                                    th:value="${xuanchuantype.id}"
+                                                    th:text="${xuanchuantype.name}">
+                                            </option>
                                         </select>
                                     </div>
                                 </div>

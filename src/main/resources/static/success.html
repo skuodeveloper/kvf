@@ -34,7 +34,7 @@
         .more {
             width: 600px;
             height: 100px;
-            /*margin-top: 100px;*/
+            margin-top: 10px;
             font-size: 50px;
             font-family: "fantasy";
             background-color: burlywood;
@@ -66,7 +66,7 @@
     </style>
 </head>
 <body style="background-color: bisque">
-<div style="text-align: center;margin: 50px;padding-bottom: 80px;background-color: white;border-radius:20px">
+<div style="text-align: center;height:95%;margin: 50px;padding-bottom: 80px;background-color: white;border-radius:20px">
     <img style="height: 400px;margin-top: 50px" src="/static/image/logo/success.jpg">
     <div>
         <p style="font-size: 80px;margin-top: 20px">本次得分<span class="score">90</span></p>
@@ -81,10 +81,45 @@
 
     <div>
         <button id="finish" class="more">完成测试</button>
-        <button id="luckdraw" class="more" style="margin-top: 30px"> 填写信息，参与抽奖</button>
+        <!--<button id="luckdraw" class="more" style="margin-top: 30px"> 填写信息，参与抽奖</button>-->
     </div>
 </div>
 <script>
+    function getUrlParameter(name) {
+        name = name.replace(/[]/, "\[").replace(/[]/, "\[").replace(/[]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.parent.location.href);
+        if (results == null)
+            return "";
+        else {
+            return results[1];
+        }
+    }
+
+    var score = getUrlParameter('score');
+
+    var inviteCode = getUrlParameter('inviteCode');
+    var realname = getUrlParameter('realname');
+
+    // //微信用户信息
+    var userInfo = sessionStorage.getItem('userInfo');
+    if(userInfo == null){
+        $(location).prop('href', 'test.html?inviteCode=' + inviteCode + '&realname=' + realname);
+    }else {
+        layui.use(['form'], function () {
+            $('.score').html(score);
+
+            var wxUserInfo = JSON.parse(sessionStorage.getItem('wxUserInfo'));
+            var stmp = new Date().getTime();
+            $('.qrcode').attr('src', 'http://abcdef.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
+
+            $(document).on('click', '#finish', function () {
+                WeixinJSBridge.call('closeWindow');
+            })
+        })
+    }
+
     function toBigImg() {
         $(".opacityBottom").addClass("opacityBottom");//添加遮罩层
         $(".opacityBottom").show();
@@ -105,32 +140,7 @@
         toBigImg();//变大函数
     });
 
-    layui.use(['form'], function () {
-        var $ = layui.$, form = layui.form;
-        (function ($) {
-            $.getUrlParam = function (name) {
-                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-                var r = window.location.search.substr(1).match(reg);
-                if (r != null) return unescape(r[2]);
-                return null;
-            }
-        })(jQuery);
 
-        var score = $.getUrlParam('score');
-        $('.score').html(score);
-
-        var wxUserInfo = JSON.parse(localStorage.getItem('wxUserInfo'));
-        var stmp = new Date().getTime();
-        $('.qrcode').attr('src', 'http://abcdef.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
-
-        $(document).on('click', '#finish', function () {
-            WeixinJSBridge.call('closeWindow');
-        })
-
-        $(document).on('click', '#luckdraw', function () {
-            $(location).prop('href', 'luckdraw.html');
-        })
-    })
 </script>
 </body>
 </html>

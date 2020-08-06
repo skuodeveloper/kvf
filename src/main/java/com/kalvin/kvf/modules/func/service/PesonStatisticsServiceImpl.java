@@ -6,6 +6,7 @@ import com.kalvin.kvf.modules.func.entity.LevelCount;
 import org.springframework.stereotype.Service;
 import com.kalvin.kvf.modules.func.entity.PesonStatistics;
 import com.kalvin.kvf.modules.func.mapper.PesonStatisticsMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,7 +32,32 @@ public class PesonStatisticsServiceImpl extends ServiceImpl<PesonStatisticsMappe
     }
 
     @Override
-    public List<LevelCount> getLevelCount() {
-        return baseMapper.getLevelCount ();
+    public void createDeptTempTable(String inviteCode) {
+        baseMapper.createDeptTempTable (inviteCode);
+    }
+
+    @Override
+    public List<LevelCount> getLevelCount(String inviteCode) {
+        return baseMapper.getLevelCount (inviteCode);
+    }
+
+    @Override
+    public List<LevelCount> getDeptLevelCount() {
+        return baseMapper.getDeptLevelCount ();
+    }
+
+    @Override
+    public void deleteTempInvited(String inviteCode) {
+        baseMapper.deleteTempInvited (inviteCode);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<LevelCount> getLevelCounts(String inviteCode){
+        createTempTable (inviteCode);
+        List<LevelCount> levelCounts = getLevelCount (inviteCode);
+        deleteTempInvited (inviteCode);
+
+        return  levelCounts;
     }
 }
