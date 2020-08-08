@@ -18,7 +18,7 @@ wxopen:
   ##重定向url
   ##test16web.tunnel.qydev.com 域名地址要和在微信端 回调域名配置 地址一直，否则会报回调地址参数错误
   ##http://test16web.tunnel.qydev.com 映射 127.0.0.1:8080,所以可以回调下面接口
-  redirect_url: http://abcdef.vaiwan.com//api/v1/wechat/user/code
+  redirect_url: http://nhmsfz.fanchance.com//api/v1/wechat/user/code
 
 spring:
   # jackson
@@ -119,7 +119,7 @@ mybatis-plus:
   type-aliases-package: com.kalvin.kvf.entity.*
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+#    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     db-config:
       id-type: auto

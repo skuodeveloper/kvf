@@ -32,9 +32,9 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">乡</label>
+        <label class="layui-form-label">国家</label>
         <div class="layui-input-inline">
-            <input type="text" name="country" th:value="${editInfo.country}" placeholder="请输入乡" autocomplete="off" class="layui-input">
+            <input type="text" name="country" th:value="${editInfo.country}" placeholder="请输入国家" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -83,6 +83,27 @@
         <label class="layui-form-label">电话</label>
         <div class="layui-input-inline">
             <input type="text" name="tel" th:value="${editInfo.tel}" placeholder="请输入电话" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <input type="text" name="calculate" th:value="${editInfo.calculate}" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <label class="layui-form-label">推广人数</label>
+        <div class="layui-input-inline">
+            <input type="text" name="tgrs" th:value="${editInfo.tgrs}" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <label class="layui-form-label">积分</label>
+        <div class="layui-input-inline">
+            <input type="text" name="jf" th:value="${editInfo.jf}" class="layui-input">
         </div>
     </div>
 

@@ -28,7 +28,7 @@ public class LastdayMemberStatistics extends BaseEntity {
     /**
      * 
      */
-    @TableId(value = "deptid", type = IdType.AUTO)
+    @TableId(value = "deptid", type = IdType.INPUT)
     private Integer deptid;
 
     /**

@@ -28,8 +28,8 @@ public class TempMemberStatistics extends BaseEntity {
     /**
      * 
      */
-    @TableId(value = "deptid", type = IdType.AUTO)
-    private Integer deptid;
+    @TableId(value = "deptid",type = IdType.INPUT)
+    private Long deptid;
 
     /**
      * 

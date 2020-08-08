@@ -2,16 +2,16 @@ package com.kalvin.kvf.modules.func.schedule;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.kalvin.kvf.modules.func.entity.LastdayDeptStatistics;
-import com.kalvin.kvf.modules.func.entity.LevelCount;
-import com.kalvin.kvf.modules.func.entity.TempDeptStatistics;
-import com.kalvin.kvf.modules.func.service.LastdayDeptStatisticsService;
-import com.kalvin.kvf.modules.func.service.PesonStatisticsService;
-import com.kalvin.kvf.modules.func.service.TempDeptStatisticsService;
+import com.kalvin.kvf.common.utils.HttpUtils;
+import com.kalvin.kvf.common.utils.QRCodeUtils;
+import com.kalvin.kvf.modules.func.entity.*;
+import com.kalvin.kvf.modules.func.service.*;
 import com.kalvin.kvf.modules.sys.entity.Dept;
 import com.kalvin.kvf.modules.sys.entity.User;
 import com.kalvin.kvf.modules.sys.mapper.DeptMapper;
 import com.kalvin.kvf.modules.sys.mapper.UserMapper;
+import lombok.SneakyThrows;
+import org.apache.http.util.TextUtils;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -21,7 +21,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Component
 @EnableScheduling
@@ -33,13 +37,22 @@ public class ScheduledConfig implements SchedulingConfigurer {
     private DeptMapper deptMapper;
 
     @Resource
+    private WxUserService wxUserService;
+
+    @Resource
     private PesonStatisticsService pesonStatisticsService;
 
     @Resource
     private TempDeptStatisticsService tempDeptStatisticsService;
 
     @Resource
+    private TempMemberStatisticsService tempMemberStatisticsService;
+
+    @Resource
     private LastdayDeptStatisticsService lastdayDeptStatisticsService;
+
+    @Resource
+    private LastdayMemberStatisticsService lastdayMemberStatisticsService;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
@@ -47,11 +60,12 @@ public class ScheduledConfig implements SchedulingConfigurer {
         scheduledTaskRegistrar.setScheduler (Executors.newScheduledThreadPool (10));
     }
 
+    /**
+     * 镇街道数据统计
+     */
     @Scheduled(fixedDelay = 10)
     public void schedule_1() {
         try {
-            System.out.println ("dept 数据统计开始!");
-
             List<Dept> depts = deptMapper.selectList (new QueryWrapper<Dept> ()
                     .between ("id", 4, 14));
 
@@ -99,10 +113,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
             }
 
             tempDeptStatisticsService.saveOrUpdateBatch (list);
-
-            System.out.println ("dept 数据统计结束!");
         } catch (Exception ex) {
-            System.out.println ("dept 数据统计出现错误!");
             System.out.println (ex.getMessage ());
         }
     }
@@ -119,5 +130,124 @@ public class ScheduledConfig implements SchedulingConfigurer {
         } catch (Exception ex) {
             ex.printStackTrace ();
         }
+    }
+
+    /**
+     * 成员单位数据统计
+     */
+    @Scheduled(fixedDelay = 20000)
+    public void schedule_3() {
+        try {
+            List<Dept> depts = deptMapper.selectList (new QueryWrapper<Dept> ()
+                    .eq ("parent_id", 16));
+
+            List<TempMemberStatistics> list = new ArrayList<> ();
+
+            for (Dept dept : depts) {
+                List<User> users = userMapper.selectList (new QueryWrapper<User> ()
+                        .eq ("dept_id", dept.getId ()));
+
+                //推广人数
+                int personCount = 0;
+                //积分
+                float allScores = 0;
+
+                for (User user : users) {
+                    pesonStatisticsService.createMemberTempTable (user.getInviteCode ());
+                    List<LevelCount> levelCounts = pesonStatisticsService.getMemberLevelCount ();
+
+                    for (int i = 0; i < levelCounts.size (); i++) {
+                        personCount += levelCounts.get (i).getCount ();
+
+                        switch (levelCounts.get (i).getNLevel ()) {
+                            case 1:
+                                allScores += levelCounts.get (i).getCount ();
+                                break;
+                            case 2:
+                                allScores += levelCounts.get (i).getCount () * 0.3;
+                                break;
+                            case 3:
+                                allScores += levelCounts.get (i).getCount () * 0.1;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                TempMemberStatistics tempMemberStatistics = new TempMemberStatistics ();
+                tempMemberStatistics.setDeptid (dept.getId ());
+                tempMemberStatistics.setDeptname (dept.getName ());
+                tempMemberStatistics.setPersonCount (personCount);
+                tempMemberStatistics.setAllScores (allScores);
+
+                list.add (tempMemberStatistics);
+            }
+
+            tempMemberStatisticsService.saveOrUpdateBatch (list);
+        } catch (Exception ex) {
+            System.out.println (ex.getMessage ());
+        }
+    }
+
+    @Scheduled(cron = "1 0 0 * * ?")
+    public void schedule_4() {
+        try {
+            List<TempMemberStatistics> tempMemberStatistics = tempMemberStatisticsService.list ();
+            String jsonstr = JSONObject.toJSONString (tempMemberStatistics);
+
+            List<LastdayMemberStatistics> lastdayMemberStatistics = JSONObject.parseArray (jsonstr, LastdayMemberStatistics.class);
+
+            lastdayMemberStatisticsService.saveOrUpdateBatch (lastdayMemberStatistics);
+        } catch (Exception ex) {
+            ex.printStackTrace ();
+        }
+    }
+
+
+    //    @Scheduled(initialDelay = 1000, fixedRate = Long.MAX_VALUE)
+    public void schedule_xx() {
+
+        List<WxUser> wxUsers = wxUserService.list ();
+        for (WxUser wxUser : wxUsers) {
+            //生成二维码
+            try {
+                wxUser.setQrcode (getQRCode (wxUser));
+                wxUserService.saveOrUpdate (wxUser);
+            } catch (Exception ex) {
+                ex.printStackTrace ();
+            }
+        }
+    }
+
+    private static String StringFilter(String str) throws PatternSyntaxException {
+        // 只允许字母和数字 // String regEx ="[^a-zA-Z0-9]";
+        // 清除掉所有特殊字符
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile (regEx);
+        Matcher m = p.matcher (str);
+        return m.replaceAll ("").trim ();
+    }
+
+    @SneakyThrows
+    private String getQRCode(WxUser user) {
+        /*******************生成反诈测试宣传二维码************************/
+        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
+        content = String.format (content, user.getInvitedCode (), StringFilter (user.getNickname ()));
+
+        String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
+
+        if (!TextUtils.isEmpty (user.getHeadimgurl ())) {
+            HttpUtils.download (user.getHeadimgurl (), logoPath);
+        } else {
+            logoPath = "D:\\QRCode\\nhga.jpg";
+        }
+
+        // 二维码保存的路径
+        String destPath = "D:\\QRCode\\";
+        // 二维码的图片名
+        String fileName = UUID.randomUUID ().toString ();
+
+        return "/qrcode/" + QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
     }
 }

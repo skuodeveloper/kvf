@@ -17,6 +17,13 @@
                         <div class="layui-form layui-card-header kvf-card-header-auto">
                             <div class="layui-form-item">
                                 <div class="layui-inline">
+                                    <label class="layui-form-label">用户id</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="userid" placeholder="请输入用户昵称" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
                                     <label class="layui-form-label">用户昵称</label>
                                     <div class="layui-input-inline">
                                         <input type="text" name="nickname" placeholder="请输入用户昵称" autocomplete="off"
@@ -97,18 +104,17 @@
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
             , url: BASE_WEB + 'func/answerRecord/list/data' // 数据接口
-            , toolbar: '#headToolbarTpl'
+            // , toolbar: '#headToolbarTpl'
             , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'userid', title: '用户id', width: 130, align: 'center'}
-                // ,{title: '用户昵称', width: 130, templet: '#nicknameTpl', align: 'center'}
                 , {field: 'nickname', title: '用户昵称', width: 130, align: 'center'}
                 , {field: 'inviteCode', title: '邀请码', width: 130, align: 'center'}
                 , {field: 'score', title: '得分', width: 130, align: 'center'}
                 , {field: 'correctNum', title: '正确题数', width: 130, align: 'center'}
                 , {field: 'questionNum', title: '答题题数', width: 130, align: 'center'}
                 , {field: 'createTime', title: '测试时间', width: 200, templet: "#timeTpl", align: 'center'}
-                , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}
+                // , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}
             ]]
         }));
 

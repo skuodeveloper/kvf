@@ -22,6 +22,9 @@
     <select id="selectAnswerRecordList" resultType="com.kalvin.kvf.modules.func.entity.AnswerRecord">
         select <include refid="Base_Column_List" /> from func_answer_record
         <trim prefix="where" prefixOverrides="and">
+            <if test="answerRecord.userid != null and answerRecord.userid != ''">
+                and userid = #{answerRecord.userid}
+            </if>
             <if test="answerRecord.nickname != null">
                 and nickname like concat("%", #{answerRecord.nickname}, "%")
             </if>

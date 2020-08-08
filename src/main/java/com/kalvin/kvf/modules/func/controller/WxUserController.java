@@ -2,14 +2,19 @@ package com.kalvin.kvf.modules.func.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
 import com.kalvin.kvf.common.utils.HttpUtils;
 import com.kalvin.kvf.common.utils.QRCodeUtils;
-import com.kalvin.kvf.modules.func.entity.*;
-import com.kalvin.kvf.modules.func.service.*;
+import com.kalvin.kvf.modules.func.entity.AnswerRecord;
+import com.kalvin.kvf.modules.func.entity.QuestionBank;
+import com.kalvin.kvf.modules.func.entity.TestPaper;
+import com.kalvin.kvf.modules.func.entity.WxUser;
+import com.kalvin.kvf.modules.func.service.AnswerRecordService;
+import com.kalvin.kvf.modules.func.service.QuestionBankService;
+import com.kalvin.kvf.modules.func.service.TestPaperService;
+import com.kalvin.kvf.modules.func.service.WxUserService;
 import com.kalvin.kvf.modules.func.vo.QuestionBankVo;
 import lombok.SneakyThrows;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -17,8 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 
 /**
@@ -123,7 +130,10 @@ public class WxUserController extends BaseController {
     @PostMapping(value = "updateInfo")
     public R updateInfo(@RequestBody WxUser userInfo) {
         try {
-            wxUserService.update (userInfo, new UpdateWrapper<WxUser> ().eq ("openid", userInfo.getOpenid ()));
+//          wxUserService.update (userInfo, new UpdateWrapper<WxUser> ().eq ("openid", userInfo.getOpenid ()));
+
+            //只更新人员类别、电话、单位三个字段
+            wxUserService.updWxInfo (userInfo);
             return R.ok (userInfo);
         } catch (Exception ex) {
             return R.fail (ex.getMessage ());
@@ -146,15 +156,29 @@ public class WxUserController extends BaseController {
         }
     }
 
+    @GetMapping(value = "getWxRank")
+    public R getWxRank() {
+        try {
+            List<WxUser> wxUsers = wxUserService.list (new QueryWrapper<WxUser> ().
+                    orderByDesc ("jf").last ("limit 20"));
+
+            return R.ok (wxUsers);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
+    }
 
     @PostMapping(value = "submitTestdata")
     public R submit(@RequestParam String userInfo, @RequestParam String testData, @RequestParam Integer score) {
         try {
             // replaceAll 把所有的大写引号再替换回来
             WxUser wxUser = JSON.parseObject (userInfo.replaceAll ("PASSWWORD", "\""), WxUser.class);
-            WxUser isWxUser = wxUserService.getOne (new QueryWrapper<WxUser> ().eq ("openid", wxUser.getOpenid ()));
-            if (isWxUser != null) {
-                wxUser = isWxUser;
+            List<WxUser> wxUsers = wxUserService.list (new QueryWrapper<WxUser> ()
+                    .eq ("openid", wxUser.getOpenid ()));
+
+            if (wxUsers.size () > 0) {
+//            if (isWxUser != null) {
+                wxUser = wxUsers.get (0);
             } else if (score >= 60) {
                 wxUserService.save (wxUser);
                 //生成邀请码
@@ -205,11 +229,20 @@ public class WxUserController extends BaseController {
         }
     }
 
+    private static String StringFilter(String str) throws PatternSyntaxException {
+        // 只允许字母和数字 // String regEx ="[^a-zA-Z0-9]";
+        // 清除掉所有特殊字符
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile (regEx);
+        Matcher m = p.matcher (str);
+        return m.replaceAll ("").trim ();
+    }
+
     @SneakyThrows
     private String getQRCode(WxUser user) {
         /*******************生成反诈测试宣传二维码************************/
         String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
-        content = String.format (content, user.getInvitedCode (), user.getNickname ());
+        content = String.format (content, user.getInvitedCode (), StringFilter (user.getNickname ()));
 
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
         HttpUtils.download (user.getHeadimgurl (), logoPath);

@@ -74,8 +74,8 @@ public class PesonStatisticsController extends BaseController {
     /**
      * 获取推广人数
      */
-    @GetMapping(value = "getPersonStatistics")
-    public R getPersonStatistics(@RequestParam String inviteCode) {
+    @GetMapping(value = "getPersonStatisticsold")
+    public R getPersonStatistics_old(@RequestParam String inviteCode) {
         try {
 //            pesonStatisticsService.createTempTable (inviteCode);
 //            List<LevelCount> levelCounts = pesonStatisticsService.getLevelCount (inviteCode);
@@ -113,6 +113,18 @@ public class PesonStatisticsController extends BaseController {
             statistics.setAllScores (allScores);
 
             return R.ok (statistics);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
+    }
+
+    /**
+     * 获取推广人数
+     */
+    @GetMapping(value = "getPersonStatistics")
+    public R getPersonStatistics(@RequestParam String inviteCode) {
+        try {
+            return R.ok ();
         } catch (Exception ex) {
             return R.fail (ex.getMessage ());
         }

@@ -22,8 +22,7 @@
         .qrcode {
             width: 500px;
             height: 500px;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            margin: 20px;
         }
 
         .score {
@@ -70,20 +69,24 @@
 <div style="text-align: center;margin: 50px;padding-bottom: 80px;background-color: white;border-radius:20px">
     <img style="height: 400px;margin-top: 50px" src="/static/image/logo/success.jpg">
     <div>
-        <p style="font-size: 80px;margin-top: 20px">历史最高得分<span class="score">90</span></p>
+        <p style="font-size: 80px;margin: 20px">历史最高得分<span class="score">--</span></p>
     </div>
 
     <div id="successDiv">
-        <div style="margin-top: 20px;">
-            <p style="font-size: 50px">您已成功邀请<span id="p_count">--</span>人</p>
-            <p style="font-size: 50px">目前您的总积分<span id="p_percent">--</span>分</p>
+        <div style="margin: 0 auto;width: 500px;height: 150px;border-radius: 10px;
+            border: solid #eee;">
+            <!--<p style="font-size: 50px">您已成功邀请<span id="p_count">&#45;&#45;</span>人</p>-->
+            <!--<p style="font-size: 50px">目前您的总积分<span id="p_percent">&#45;&#45;</span>分</p>-->
+            <!--<img src="image/logo/in.png" style="width: 800px;height: 200px">-->
+            <div id="p_count" style="width: 248px;font-size: 60px;float: left;text-align: center;height: 150px;line-height: 150px;color: orange">-</div>
+            <div style="width: 4px; height: 120px;float:left; margin-top: 15px;background-color: #eee"></div>
+            <div id="p_percent" style="width: 248px;font-size: 60px;float: left;text-align: center;height: 150px;line-height: 150px;color: orange">-</div>
         </div>
         <div><img class="qrcode" src="#"></div>
     </div>
 
     <div>
         <button id="finish" class="more">再次测试</button>
-        <!--<button id="luckdraw" class="more" style="margin-top: 30px"> 填写信息，参与抽奖</button>-->
     </div>
 </div>
 <script>
@@ -115,24 +118,6 @@
     }
 
     //获取推广人数和积分
-    function getPersonStatistics(code) {
-        $.ajax({
-            type: 'GET',
-            url: 'http://abcdef.vaiwan.com/func/pesonStatistics/getPersonStatistics',
-            data: { inviteCode: code},
-            dataType: 'json',
-            success: function (r) {
-                if (r.code == 200) {
-                    $('#p_count').text(r.data.personCount);
-                    $('#p_percent').text(r.data.allScores);
-                }
-            },
-            error: function (error) {
-                throw new Error(error);
-            }
-        })
-    }
-
     $('.qrcode').click(function () {
         //获取图片路径
         var imgsrc = $(this).attr("src");
@@ -153,10 +138,11 @@
 
             var wxUserInfo = JSON.parse(sessionStorage.getItem('userInfo'));
             var stmp = new Date().getTime();
-            $('.qrcode').attr('src', 'http://abcdef.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
+            $('.qrcode').attr('src', 'http://nhmsfz.fanchance.com/' + wxUserInfo.qrcode + '?v=' + stmp);
 
             //获取推广人数和积分，并显示
-            // getPersonStatistics(wxUserInfo.invitedCode);
+            $('#p_count').text(wxUserInfo.tgrs);
+            $('#p_percent').text(wxUserInfo.jf);
 
             $(document).on('click', '#finish', function () {
                 $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);

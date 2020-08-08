@@ -23,4 +23,9 @@ public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> impleme
         List<WxUser> wxUsers = baseMapper.selectWxUserList(wxUser, page);
         return page.setRecords(wxUsers);
     }
+
+    @Override
+    public int updWxInfo(WxUser wxUser){
+        return baseMapper.updWxInfo (wxUser);
+    }
 }

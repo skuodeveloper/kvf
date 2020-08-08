@@ -329,7 +329,7 @@
      */
     function getQuestions() {
         $.ajax({
-            url: "http://abcdef.vaiwan.com/func/questionBank/getRandQuestion",
+            url: "http://nhmsfz.fanchance.com/func/questionBank/getRandQuestion",
             // data:{'id':id},
             type: "get",
             dataType: "json",
@@ -348,7 +348,7 @@
      */
     function submit() {
         $.ajax({
-            url: "http://abcdef.vaiwan.com/func/wxUser/submitTestdata",
+            url: "http://nhmsfz.fanchance.com/func/wxUser/submitTestdata",
             data: {
                 'userInfo': sessionStorage.getItem('userInfo').replace(/"/g, "PASSWWORD"),//框架把双引号去掉了，先换成汉字的双引号，到后台再换回来
                 'testData': JSON.stringify(news.answers).replace(/"/g, "PASSWWORD"),

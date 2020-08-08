@@ -37,6 +37,11 @@ public class PesonStatisticsServiceImpl extends ServiceImpl<PesonStatisticsMappe
     }
 
     @Override
+    public void createMemberTempTable(String inviteCode) {
+        baseMapper.createMemberTempTable (inviteCode);
+    }
+
+    @Override
     public List<LevelCount> getLevelCount(String inviteCode) {
         return baseMapper.getLevelCount (inviteCode);
     }
@@ -45,6 +50,12 @@ public class PesonStatisticsServiceImpl extends ServiceImpl<PesonStatisticsMappe
     public List<LevelCount> getDeptLevelCount() {
         return baseMapper.getDeptLevelCount ();
     }
+
+    @Override
+    public List<LevelCount> getMemberLevelCount() {
+        return baseMapper.getMemberLevelCount ();
+    }
+
 
     @Override
     public void deleteTempInvited(String inviteCode) {

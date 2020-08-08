@@ -19,4 +19,5 @@ public interface WxUserService extends IService<WxUser> {
      */
     Page<WxUser> listWxUserPage(WxUser wxUser);
 
+    int updWxInfo(WxUser wxUser);
 }

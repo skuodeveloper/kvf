@@ -23,4 +23,5 @@ public interface WxUserMapper extends BaseMapper<WxUser> {
      */
     List<WxUser> selectWxUserList(@Param ("wxUser") WxUser wxUser, IPage page);
 
+    int updWxInfo(@Param ("wxUser") WxUser wxUser);
 }

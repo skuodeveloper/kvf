@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>微信用户统计</title>
+
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/vue.min.js" type="text/javascript"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            /*height: 100%;*/
+        }
+
+        li {
+            list-style: none;
+            height: 45px;
+            line-height: 45px;
+        }
+
+        .title {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            border: 1px solid bisque;
+            border-radius: 8px;
+            background-color: #1E90FF;
+            position: relative;
+            top: 5px;
+            margin: 0px auto;
+            color: white;
+        }
+
+        .div1 {
+            width: 100%;
+            height: 40px;
+            text-align: center;
+            margin: 0px auto;
+            border-radius: 10px;
+            padding-top: 15px;
+        }
+
+        .ljrs {
+            width: 49%;
+            float: left;
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 5px 0px;
+        }
+
+        .jrrs {
+            width: 49%;
+            float: left;
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 5px 0px;
+            margin-left: 2%;
+        }
+    </style>
+</head>
+<body style="background-color: bisque">
+<div id="news" style="margin: 10px; height: 96%;border-radius: 8px">
+    <div style="width:100%;text-align: center;height: 40px;">
+        <p class="title">微信用户排行榜（个人）</p></div>
+
+    <ul style="margin-top: 20px;border-radius: 8px;background-color: white;">
+        <li>
+            <div style="float: left; width: 20%;text-align: center;font-size: 20px;font-weight: 500;color: #d84f4b;">
+                排名
+            </div>
+            <div style="float: left; width: 55%;text-align: center;font-size: 20px;font-weight: 500;color: #d84f4b;">
+                微信昵称
+            </div>
+            <div style="float: left; width: 25%;text-align: center;font-size: 20px;font-weight: 500;color: #d84f4b;">
+                积分
+            </div>
+        </li>
+
+        <li v-for="(item,index) in wxRank">
+            <div v-if="index == 0" style="float: left; width: 20%;text-align: center;height: 45px;"><img src="image/logo/冠军.png" width="32" style="vertical-align: middle;"></div>
+            <div v-else-if="index == 1" style="float: left; width: 20%;text-align: center;height: 45px;"><img src="image/logo/亚军.png" width="32" style="vertical-align: middle;"></div>
+            <div v-else-if="index == 2" style="float: left; width: 20%;text-align: center;height: 45px;"><img src="image/logo/季军.png" width="32" style="vertical-align: middle;"></div>
+            <div v-else style="float: left; width: 20%;height:45px;text-align: center;">{{index+1}}</div>
+            <div style="float: left; width: 55%;height:45px;text-align: left;font-weight: 600">
+                <img style="width: 32px; border-radius: 50%; margin: 7px;" :src=item.headimgurl>
+                <span style="position: absolute;font-size: 14px">{{item.nickname}}</span>
+            </div>
+            <div style="float: left; width: 25%;height:45px;text-align: center;font-size: 20px;font-weight: 500">
+                {{item.jf}}
+            </div>
+        </li>
+    </ul>
+
+    <div style="margin: 20px">
+        <p id="time" style="font-size: 13px; color: blue; text-align: right;"></p>
+    </div>
+</div>
+<script>
+    var news = new Vue({
+        el: '#news',
+        data: {
+            wxRank: []
+        }
+    });
+
+    getDeptrank();
+
+    function getDeptrank() {
+        $.ajax({
+            url: "http://nhmsfz.fanchance.com/func/wxUser/getWxRank",
+            type: "get",
+            dataType: "json",
+            success: function (r) {
+                news.wxRank = r.data;
+                $('#time').text('统计截止时间：' + getNowFormatDate());
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+
+        return currentdate;
+    }
+</script>
+</body>
+</html>

@@ -109,10 +109,31 @@ public class WxUser extends BaseEntity {
     private String invitedCode;
 
     /**
+    是否计算过
+     */
+    private String calculate;
+
+    /**
+    推广人数
+     */
+    private Integer tgrs;
+
+    /**
+     * 积分
+     */
+    private float jf;
+
+    /**
      * 创建时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 
     @TableField(exist = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

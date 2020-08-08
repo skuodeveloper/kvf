@@ -21,16 +21,24 @@
         <result column="parent_invited_code" property="parentInvitedCode" />
         <result column="invited_code" property="invitedCode" />
         <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="tgrs" property="tgrs" />
+        <result column="jf" property="jf" />
+        <result column="calculate" property="calculate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-       id, openid, nickname, sex, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code, create_time
+       id, openid, nickname, sex, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code,
+       create_time, update_time,calculate,tgrs,jf
     </sql>
 
     <select id="selectWxUserList" resultType="com.kalvin.kvf.modules.func.entity.WxUser">
         select <include refid="Base_Column_List" /> from func_wx_user
         <trim prefix="where" prefixOverrides="and">
+            <if test="wxUser.id != null and wxUser.id != ''">
+                and id = #{wxUser.id}
+            </if>
             <if test="wxUser.openid != null and wxUser.openid != ''">
                 and openid like concat(#{wxUser.openid}, "%")
             </if>
@@ -86,4 +94,13 @@
         order by create_time desc
     </select>
 
+    <!-- 更新审批表-->
+    <update id="updWxInfo" parameterType="com.kalvin.kvf.modules.func.entity.WxUser">
+        UPDATE func_wx_user
+        SET
+        person_type = #{wxUser.personType},
+        company_name = #{wxUser.companyName},
+        tel = #{wxUser.tel}
+        where  openid = #{wxUser.openid}
+    </update>
 </mapper>

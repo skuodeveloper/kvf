@@ -6,13 +6,11 @@
     <title th:replace="common/base::pagetitle"></title>
     <link th:replace="common/base::static"/>
     <style>
-        .layui-table-cell,.laytable-cell-checkbox{
-            display:table-cell;
-            vertical-align: middle;
-            height:100px;
-            overflow:visible;
-            text-overflow:inherit;
-            white-space:normal;
+        .layui-table-cell {
+            text-align: center;
+            height: 101px;
+            line-height: 101px;
+            white-space: normal;
         }
     </style>
 </head>
@@ -28,15 +26,15 @@
                         <div class="layui-form layui-card-header kvf-card-header-auto">
                             <div class="layui-form-item">
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">用户账号</label>
+                                    <label class="layui-form-label">姓名</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="username" placeholder="请输入" autocomplete="off" class="layui-input">
+                                        <input type="text" name="realname" placeholder="请输入" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">用户姓名</label>
+                                    <label class="layui-form-label">用户名</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="realname" placeholder="请输入" autocomplete="off" class="layui-input">
+                                        <input type="text" name="username" placeholder="请输入" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-inline">

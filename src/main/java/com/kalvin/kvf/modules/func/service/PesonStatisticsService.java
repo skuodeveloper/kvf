@@ -27,9 +27,13 @@ public interface PesonStatisticsService extends IService<PesonStatistics> {
 
     void createDeptTempTable(String inviteCode);
 
+    void createMemberTempTable(String inviteCode);
+
     List<LevelCount> getLevelCount(String inviteCode);
 
     List<LevelCount> getDeptLevelCount();
+
+    List<LevelCount> getMemberLevelCount();
 
     void deleteTempInvited(String inviteCode);
 

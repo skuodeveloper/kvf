@@ -73,9 +73,9 @@
     </div>
 
     <div id="successDiv">
-        <div style="margin-top: 20px;">
-            <p style="font-size: 50px">您的邀请码</p>
-        </div>
+        <!--<div style="margin-top: 20px;">-->
+            <!--<p style="font-size: 50px">您的邀请码</p>-->
+        <!--</div>-->
         <div><img class="qrcode" src="#" ></div>
     </div>
 
@@ -112,7 +112,7 @@
 
             var wxUserInfo = JSON.parse(sessionStorage.getItem('wxUserInfo'));
             var stmp = new Date().getTime();
-            $('.qrcode').attr('src', 'http://abcdef.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
+            $('.qrcode').attr('src', 'http://nhmsfz.fanchance.com/' + wxUserInfo.qrcode + '?v=' + stmp);
 
             $(document).on('click', '#finish', function () {
                 WeixinJSBridge.call('closeWindow');
