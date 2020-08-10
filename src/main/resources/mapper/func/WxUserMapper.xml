@@ -100,7 +100,8 @@
         SET
         person_type = #{wxUser.personType},
         company_name = #{wxUser.companyName},
-        tel = #{wxUser.tel}
+        tel = #{wxUser.tel},
+        update_time = #{wxUser.updateTime}
         where  openid = #{wxUser.openid}
     </update>
 </mapper>

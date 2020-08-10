@@ -364,6 +364,8 @@
                     } else {
                         $(location).prop('href', 'fail.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                     }
+                }else{
+                    alert(r.data);
                 }
             },
             error: function (data) {

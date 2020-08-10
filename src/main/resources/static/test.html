@@ -185,7 +185,7 @@
         </div>
     </div>
     <div class="divB">
-        <button>进入挑战</button>
+        <button id="start">进入挑战</button>
     </div>
 </div>
 
@@ -213,6 +213,33 @@
             }
         });
 
+        /**
+         * 判断父邀请码是否存在
+         */
+        $.ajax({
+            type: 'GET',
+            url: 'http://nhmsfz.fanchance.com/func/wxUser/getParentWxInfo',
+            data: {
+                inviteCode: inviteCode
+            },
+            dataType: 'json',
+            success: function (r) {
+                if (r.code === 200) {
+                    if (r.data == null) {
+                        $('#start').css('background-color', 'grey');
+                        $('#start').text('非法链接,点击关闭');
+
+                        confirm('您点击了非法链接!将无法参与答题！');
+
+                        WeixinJSBridge.call('closeWindow');
+                    }
+                }
+            },
+            error: function (error) {
+                throw new Error(error);
+            }
+        })
+
         $.ajax({
             type: 'GET',
             url: 'http://nhmsfz.fanchance.com/func/wxUser/getLastPersons',
@@ -235,8 +262,12 @@
             $('.ur-mask').hide();
         })
 
-        $('button').click(function () {
-            $(location).prop('href', 'index.html?inviteCode=' + inviteCode + '&realname=' + realname);
+        $('#start').click(function () {
+            if ($('#start').text() === '进入挑战') {
+                $(location).prop('href', 'index.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            } else {
+                WeixinJSBridge.call('closeWindow');
+            }
         })
     })
 </script>

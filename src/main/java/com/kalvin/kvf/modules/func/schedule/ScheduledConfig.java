@@ -1,6 +1,7 @@
 package com.kalvin.kvf.modules.func.schedule;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kalvin.kvf.common.utils.HttpUtils;
 import com.kalvin.kvf.common.utils.QRCodeUtils;
@@ -63,7 +64,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
     /**
      * 镇街道数据统计
      */
-    @Scheduled(fixedDelay = 10)
+    @Scheduled(fixedDelay = 20000)
     public void schedule_1() {
         try {
             List<Dept> depts = deptMapper.selectList (new QueryWrapper<Dept> ()
@@ -205,19 +206,25 @@ public class ScheduledConfig implements SchedulingConfigurer {
     }
 
 
-    //    @Scheduled(initialDelay = 1000, fixedRate = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 1000, fixedRate = Long.MAX_VALUE)
     public void schedule_xx() {
 
-        List<WxUser> wxUsers = wxUserService.list ();
+        List<WxUser> wxUsers = wxUserService.list (new LambdaQueryWrapper<WxUser> ()
+        .isNull (WxUser::getInvitedCode));
+//        List<WxUser> wxUsers = wxUserService.list ();
+
         for (WxUser wxUser : wxUsers) {
             //生成二维码
             try {
+                wxUser.setInvitedCode ("H" + (100000 + wxUser.getId ()));
                 wxUser.setQrcode (getQRCode (wxUser));
                 wxUserService.saveOrUpdate (wxUser);
             } catch (Exception ex) {
                 ex.printStackTrace ();
             }
         }
+
+        System.out.println ("aaa");
     }
 
     private static String StringFilter(String str) throws PatternSyntaxException {

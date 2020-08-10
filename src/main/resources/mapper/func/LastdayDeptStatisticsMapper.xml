@@ -8,7 +8,6 @@
         <result column="deptname" property="deptname" />
         <result column="person_count" property="personCount" />
         <result column="all_scores" property="allScores" />
-        <result column="last_day_count" property="lastDayCount" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

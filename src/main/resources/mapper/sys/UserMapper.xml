@@ -15,7 +15,7 @@
         <result column="email" property="email" />
         <result column="avatar" property="avatar" />
         <result column="qrcode" property="qrcode" />
-        <result column="invite_code" property="invite_code" />
+        <result column="invite_code" property="inviteCode" />
         <result column="job_title" property="jobTitle" />
         <result column="status" property="status" />
         <result column="sort" property="sort" />

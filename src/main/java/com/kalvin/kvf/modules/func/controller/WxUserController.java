@@ -1,6 +1,7 @@
 package com.kalvin.kvf.modules.func.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
@@ -16,7 +17,11 @@ import com.kalvin.kvf.modules.func.service.QuestionBankService;
 import com.kalvin.kvf.modules.func.service.TestPaperService;
 import com.kalvin.kvf.modules.func.service.WxUserService;
 import com.kalvin.kvf.modules.func.vo.QuestionBankVo;
+import com.kalvin.kvf.modules.sys.entity.User;
+import com.kalvin.kvf.modules.sys.service.IUserService;
 import lombok.SneakyThrows;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.util.TextUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +45,9 @@ import java.util.regex.PatternSyntaxException;
 public class WxUserController extends BaseController {
     @Autowired
     private WxUserService wxUserService;
+
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     private AnswerRecordService answerRecordService;
@@ -130,11 +138,39 @@ public class WxUserController extends BaseController {
     @PostMapping(value = "updateInfo")
     public R updateInfo(@RequestBody WxUser userInfo) {
         try {
-//          wxUserService.update (userInfo, new UpdateWrapper<WxUser> ().eq ("openid", userInfo.getOpenid ()));
-
-            //只更新人员类别、电话、单位三个字段
+            //只更新人员类别、电话、单位三个字段、更新时间
+            userInfo.setUpdateTime (new Date ());
             wxUserService.updWxInfo (userInfo);
             return R.ok (userInfo);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
+    }
+
+    /**
+     * 查看invitedCode是否存在
+     *
+     * @param inviteCode
+     * @return
+     */
+    @GetMapping(value = "getParentWxInfo")
+    public R getParentWxInfo(@RequestParam String inviteCode) {
+        if (StringUtils.isEmpty (inviteCode)) {
+            return R.ok ();
+        }
+
+        try {
+            List<WxUser> wxUsers = wxUserService.list (new LambdaQueryWrapper<WxUser> ()
+                    .eq (WxUser::getInvitedCode, inviteCode));
+
+            List<User> users = userService.list (new LambdaQueryWrapper<User> ()
+                    .eq (User::getInviteCode, inviteCode));
+
+            if ((wxUsers.size () == 0 && users.size () == 0)) {
+                return R.ok ();
+            } else {
+                return R.ok ("successful!");
+            }
         } catch (Exception ex) {
             return R.fail (ex.getMessage ());
         }
@@ -177,9 +213,12 @@ public class WxUserController extends BaseController {
                     .eq ("openid", wxUser.getOpenid ()));
 
             if (wxUsers.size () > 0) {
-//            if (isWxUser != null) {
                 wxUser = wxUsers.get (0);
             } else if (score >= 60) {
+                if (StringUtils.isEmpty (wxUser.getParentInvitedCode ())) {
+                    return R.fail ("父邀请码为空");
+                }
+
                 wxUserService.save (wxUser);
                 //生成邀请码
                 wxUser.setInvitedCode ("H" + (100000 + wxUser.getId ()));
@@ -190,7 +229,6 @@ public class WxUserController extends BaseController {
 
             /***************测试记录表**************/
             String json = testData.replaceAll ("PASSWWORD", "\"");
-            System.out.println (json);
 
             List<QuestionBankVo> answerBankVos = JSON.parseArray (json, QuestionBankVo.class);
 
@@ -245,7 +283,11 @@ public class WxUserController extends BaseController {
         content = String.format (content, user.getInvitedCode (), StringFilter (user.getNickname ()));
 
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
-        HttpUtils.download (user.getHeadimgurl (), logoPath);
+        if (!TextUtils.isEmpty (user.getHeadimgurl ())) {
+            HttpUtils.download (user.getHeadimgurl (), logoPath);
+        } else {
+            logoPath = "D:\\QRCode\\nhga.jpg";
+        }
 
         // 二维码保存的路径
         String destPath = "D:\\QRCode\\";
