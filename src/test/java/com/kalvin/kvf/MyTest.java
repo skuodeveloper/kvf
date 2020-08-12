@@ -1,5 +1,6 @@
 package com.kalvin.kvf;
 
+import com.kalvin.kvf.common.utils.PastUtil;
 import com.kalvin.kvf.modules.generator.utils.VelocityKit;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
@@ -13,7 +14,8 @@ public class MyTest {
     private final static Logger LOGGER = LoggerFactory.getLogger(MyTest.class);
 
     public static void main(String[] args) throws Exception {
-        velocity();
+//        velocity();
+        getTickets();
     }
 
     public static void velocity() {
@@ -21,7 +23,11 @@ public class MyTest {
         ctx.put("name", "velocity");
         String destPath = "D:\\vm\\";
         VelocityKit.toFile("table.vm", ctx, destPath + "_table.html");
-//        String path = AuxiliaryKit.getGenerateCodePath(TemplateTypeEnum.ENTITY, "user");
-//        System.out.println("path = " + path);
+    }
+
+    public static void getTickets(){
+//        String json = PastUtil.getParam ("wx719c937ea903be65", "b22eabdd155cd8174e2791c95d513a7e");
+//
+//        System.out.println (json);
     }
 }

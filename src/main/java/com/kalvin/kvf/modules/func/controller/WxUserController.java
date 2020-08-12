@@ -209,6 +209,7 @@ public class WxUserController extends BaseController {
         try {
             // replaceAll 把所有的大写引号再替换回来
             WxUser wxUser = JSON.parseObject (userInfo.replaceAll ("PASSWWORD", "\""), WxUser.class);
+            String parentInvitedCode = wxUser.getParentInvitedCode ();
             List<WxUser> wxUsers = wxUserService.list (new QueryWrapper<WxUser> ()
                     .eq ("openid", wxUser.getOpenid ()));
 
@@ -228,21 +229,20 @@ public class WxUserController extends BaseController {
             }
 
             /***************测试记录表**************/
-            String json = testData.replaceAll ("PASSWWORD", "\"");
-
-            List<QuestionBankVo> answerBankVos = JSON.parseArray (json, QuestionBankVo.class);
-
             AnswerRecord answerRecord = new AnswerRecord ();
-            answerRecord.setUserid (wxUser.getId ());
+            if (score >= 60) {
+                answerRecord.setUserid (wxUser.getId ());
+            }
             answerRecord.setNickname (wxUser.getNickname ());
+            answerRecord.setInviteCode (parentInvitedCode);
             answerRecord.setScore (score);
-            answerRecord.setInviteCode (wxUser.getParentInvitedCode ());
             answerRecord.setCorrectNum (score / 10);
             answerRecord.setQuestionNum (10);
-
             answerRecordService.save (answerRecord);
 
             /***************答题记录表****************/
+            String json = testData.replaceAll ("PASSWWORD", "\"");
+            List<QuestionBankVo> answerBankVos = JSON.parseArray (json, QuestionBankVo.class);
             List<TestPaper> testPapers = new ArrayList<> ();
             answerBankVos.forEach (o -> {
                 TestPaper testPaper = new TestPaper ();

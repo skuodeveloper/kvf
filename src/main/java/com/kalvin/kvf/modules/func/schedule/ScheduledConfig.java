@@ -64,7 +64,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
     /**
      * 镇街道数据统计
      */
-    @Scheduled(fixedDelay = 20000)
+    @Scheduled(fixedDelay = 300000)
     public void schedule_1() {
         try {
             List<Dept> depts = deptMapper.selectList (new QueryWrapper<Dept> ()
@@ -136,7 +136,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
     /**
      * 成员单位数据统计
      */
-    @Scheduled(fixedDelay = 20000)
+    @Scheduled(fixedDelay = 300000)
     public void schedule_3() {
         try {
             List<Dept> depts = deptMapper.selectList (new QueryWrapper<Dept> ()

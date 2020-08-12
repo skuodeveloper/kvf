@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.WxUserJfMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.WxUserJf">
+        <id column="id" property="id" />
+        <result column="origin_invited_code" property="originInvitedCode" />
+        <result column="orgin_nickname" property="orginNickname" />
+        <result column="orgin_headimgurl" property="orginHeadimgurl" />
+        <result column="target_invited_code" property="targetInvitedCode" />
+        <result column="origin_jf" property="originJf" />
+        <result column="add_jf" property="addJf" />
+        <result column="level" property="level" />
+        <result column="target_jf" property="targetJf" />
+        <result column="zc_time" property="zcTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, origin_invited_code, orgin_nickname, orgin_headimgurl, target_invited_code, origin_jf, add_jf, level, target_jf, zc_time
+    </sql>
+
+    <select id="selectWxUserJfList" resultType="com.kalvin.kvf.modules.func.entity.WxUserJf">
+        select <include refid="Base_Column_List" /> from func_wx_user_jf
+        <trim prefix="where" prefixOverrides="and">
+            <if test="wxUserJf.originInvitedCode != null and wxUserJf.originInvitedCode != ''">
+                and origin_invited_code like concat(#{wxUserJf.originInvitedCode}, "%")
+            </if>
+            <if test="wxUserJf.orginNickname != null and wxUserJf.orginNickname != ''">
+                and orgin_nickname like concat(#{wxUserJf.orginNickname}, "%")
+            </if>
+            <if test="wxUserJf.orginHeadimgurl != null and wxUserJf.orginHeadimgurl != ''">
+                and orgin_headimgurl like concat(#{wxUserJf.orginHeadimgurl}, "%")
+            </if>
+            <if test="wxUserJf.targetInvitedCode != null and wxUserJf.targetInvitedCode != ''">
+                and target_invited_code like concat(#{wxUserJf.targetInvitedCode}, "%")
+            </if>
+            <if test="wxUserJf.originJf != null">
+                and origin_jf = #{wxUserJf.originJf}
+            </if>
+            <if test="wxUserJf.addJf != null">
+                and add_jf = #{wxUserJf.addJf}
+            </if>
+            <if test="wxUserJf.level != null">
+                and level = #{wxUserJf.level}
+            </if>
+            <if test="wxUserJf.targetJf != null">
+                and target_jf = #{wxUserJf.targetJf}
+            </if>
+            <if test="wxUserJf.zcTime != null">
+                and zc_time = #{wxUserJf.zcTime}
+            </if>
+        </trim>
+    </select>
+
+</mapper>

@@ -2,8 +2,8 @@ package com.kalvin.kvf.common.utils;
 
 import com.kalvin.kvf.common.entity.MyX509TrustManager;
 import com.kalvin.kvf.common.entity.WeChatAccessToken;
-
 import com.kalvin.kvf.common.entity.WechatUserinfo;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -19,8 +19,8 @@ import java.net.URL;
 
 public class weChatUtils {
     // 微信公众号的appId以及secret
-//    private static String appId = "wx719c937ea903be65";
-//    private static String secret = "b22eabdd155cd8174e2791c95d513a7e";
+    private static String test_appId = "wx719c937ea903be65";
+    private static String test_secret = "b22eabdd155cd8174e2791c95d513a7e";
 
     private static String appId = "wx5b66c0f1cfaae239";
     private static String secret = "856f2467cc71f138586c5a44b668c377";
@@ -33,6 +33,10 @@ public class weChatUtils {
     private static String checkAccessTokenUrl = "https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID";
     // 获取用户信息的Url
     private static String getWXUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+    // 调用微信JS接口的临时Token
+    private static String getJsApiToken = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+    // 调用微信JS接口的临时票据
+    private static String getJsApiTicket = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
 
     /**
      * 根据code获取到网页授权access_token
@@ -45,6 +49,47 @@ public class weChatUtils {
                 .replace ("CODE", code);
         JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
         return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
+    }
+
+    /**
+     * 获取接口访问Token
+     */
+    public static String getJsApiToken() {
+        //凭证获取(GET)
+        String url = weChatUtils.getJsApiToken.replace ("APPID", test_appId).replace ("APPSECRET", test_secret);
+        // 发起GET请求获取凭证
+        JSONObject jsonObject = JSONObject.fromObject (httpRequest (url, "GET", null));
+        String access_token = null;
+        if (null != jsonObject) {
+            try {
+                access_token = jsonObject.getString ("access_token");
+            } catch (JSONException e) {
+                // 获取token失败
+            }
+        }
+        return access_token;
+    }
+
+    /**
+     * 调用微信JS接口的临时票据
+     *
+     * @param jsApiToken 接口访问凭证
+     * @return
+     */
+    public static String getJsApiTicket(String jsApiToken) {
+        String url = weChatUtils.getJsApiTicket.replace ("ACCESS_TOKEN", jsApiToken);
+        // 发起GET请求获取凭证
+        JSONObject jsonObject = JSONObject.fromObject (httpRequest (url, "GET", null));
+        String ticket = null;
+        if (null != jsonObject) {
+            try {
+                ticket = jsonObject.getString ("ticket");
+            } catch (JSONException e) {
+                // 获取token失败
+//                e.printStackTrace (e.getMessage ());
+            }
+        }
+        return ticket;
     }
 
     /**
@@ -112,8 +157,9 @@ public class weChatUtils {
             httpUrlConn.setUseCaches (false);
             // 设置请求方式（GET/POST）
             httpUrlConn.setRequestMethod (requestMethod);
-            if ("GET".equalsIgnoreCase (requestMethod))
+            if ("GET".equalsIgnoreCase (requestMethod)) {
                 httpUrlConn.connect ();
+            }
             // 当有数据需要提交时
             if (null != outputStr) {
                 OutputStream outputStream = httpUrlConn.getOutputStream ();

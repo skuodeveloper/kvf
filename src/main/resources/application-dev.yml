@@ -42,7 +42,7 @@ spring:
       username: root
       password: 0573@nhga
       filters: stat,wall,config
-      max-active: 100
+      max-active: 1000
       initial-size: 1
       max-wait: 60000
       min-idle: 1

@@ -263,6 +263,11 @@
         })
 
         $('#start').click(function () {
+            if(news.users == null || news.users == ''){
+                alert('网络忙，请稍后再试！');
+                return;
+            }
+
             if ($('#start').text() === '进入挑战') {
                 $(location).prop('href', 'index.html?inviteCode=' + inviteCode + '&realname=' + realname);
             } else {
