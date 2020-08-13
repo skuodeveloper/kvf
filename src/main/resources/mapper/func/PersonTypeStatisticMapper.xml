@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.PersonTypeStatisticMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.PersonTypeStatistic">
+        <id column="invited_code" property="invitedCode" />
+        <result column="person_type" property="personType" />
+        <result column="nLevel" property="nLevel" />
+        <result column="create_time" property="createTime" />
+        <result column="dept_invited_code" property="deptInvitedCode" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       invited_code, person_type, nLevel, create_time, dept_invited_code
+    </sql>
+
+    <select id="selectPersonTypeStatisticList" resultType="com.kalvin.kvf.modules.func.entity.PersonTypeStatistic">
+        select <include refid="Base_Column_List" /> from func_person_type_statistic
+        <trim prefix="where" prefixOverrides="and">
+            <if test="personTypeStatistic.personType != null and personTypeStatistic.personType != ''">
+                and person_type like concat(#{personTypeStatistic.personType}, "%")
+            </if>
+            <if test="personTypeStatistic.nLevel != null">
+                and nLevel = #{personTypeStatistic.nLevel}
+            </if>
+            <if test="personTypeStatistic.createTime != null">
+                and create_time = #{personTypeStatistic.createTime}
+            </if>
+            <if test="personTypeStatistic.deptInvitedCode != null and personTypeStatistic.deptInvitedCode != ''">
+                and dept_invited_code like concat(#{personTypeStatistic.deptInvitedCode}, "%")
+            </if>
+        </trim>
+    </select>
+
+</mapper>

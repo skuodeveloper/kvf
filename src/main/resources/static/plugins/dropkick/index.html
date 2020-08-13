@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset='utf-8'>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+    <title>Robdel12/DropKick</title>
+
+    <link rel="stylesheet" href="example.css" type="text/css">
+
+    <link rel="stylesheet" href="css/dropkick.css" type="text/css">
+
+
+    <script src="http://www.jq22.com/jquery/1.11.1/jquery.min.js"></script>
+
+    <script src="jquery.dropkick-min.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        $.fn.ready(function () {
+            $('.change').dropkick({
+                change: function (value, label) {
+                    alert('You picked: ' + label + ':' + value);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="content">
+
+    <form action="#" method="post" accept-charset="utf-8" class="examples part">
+
+        <fieldset class="example">
+
+            <h2>Custom 'change' callback</h2>
+
+            <div class="fields">
+
+                <select name="color" class="change" tabindex="4">
+
+                    <option value="">Please select a color</option>
+
+                    <option value="#0084c7">Blue</option>
+
+                    <option value="#E15A01">Orange</option>
+
+                    <option value="#604A42">Brown</option>
+
+                </select>
+
+            </div>
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>
+

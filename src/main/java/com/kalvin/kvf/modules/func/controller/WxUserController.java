@@ -213,13 +213,13 @@ public class WxUserController extends BaseController {
             List<WxUser> wxUsers = wxUserService.list (new QueryWrapper<WxUser> ()
                     .eq ("openid", wxUser.getOpenid ()));
 
+            if (StringUtils.isEmpty (parentInvitedCode)) {
+                return R.fail ("父邀请码为空");
+            }
+
             if (wxUsers.size () > 0) {
                 wxUser = wxUsers.get (0);
             } else if (score >= 60) {
-                if (StringUtils.isEmpty (wxUser.getParentInvitedCode ())) {
-                    return R.fail ("父邀请码为空");
-                }
-
                 wxUserService.save (wxUser);
                 //生成邀请码
                 wxUser.setInvitedCode ("H" + (100000 + wxUser.getId ()));

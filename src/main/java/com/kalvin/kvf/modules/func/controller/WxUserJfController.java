@@ -8,6 +8,7 @@ import com.kalvin.kvf.modules.func.entity.WxUser;
 import com.kalvin.kvf.modules.func.entity.WxUserJf;
 import com.kalvin.kvf.modules.func.service.WxUserJfService;
 import com.kalvin.kvf.modules.func.service.WxUserService;
+import com.kalvin.kvf.modules.func.vo.WxUserJfVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,11 @@ public class WxUserJfController extends BaseController {
                     .eq (WxUserJf::getTargetInvitedCode, invitedCode)
                     .apply ("date_format(zc_time,'%Y-%m-%d') = '" + targetDate + "'")
                     .orderByDesc (WxUserJf::getZcTime));
-            return R.ok (userJfs);
+
+            WxUserJfVo wxUserJfVo = new WxUserJfVo ();
+            wxUserJfVo.setWxUser (wxUser.get (0));
+            wxUserJfVo.setWxUserJfs (userJfs);
+            return R.ok (wxUserJfVo);
         }else{
             return R.fail ("该邀请码不存在！");
         }

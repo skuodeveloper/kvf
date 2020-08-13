@@ -19,12 +19,35 @@
             margin: 5px;
             width: 40px;
         }
+
+        .hide {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <div id="news">
-    <div id="test-n1" style="margin: 1%"></div>
+    <div style="background: #eeeeee;height: 100px;border-radius: 8px;margin:1%; margin-bottom:10px;margin-top: 50px;">
+        <div style="width:100%; margin:0 auto;text-align: center;">
+            <img style="width:60px;margin-top: -30px;" :src="wxuser.headimgurl">
+        </div>
+
+        <div style="margin-top: -10px;">
+            <div style="width:50%; float:left; text-align:center;color:grey; font-size:14px;">
+                总人数
+                <span style="font-size:30px; height:30px;line-height:30px;display:block;color:black; padding-top:8px; font-weight:bold;">{{wxuser.tgrs}}</span>
+            </div>
+
+            <div style="width:50%; float:right; text-align:center;color:grey;font-size:14px;">
+                总积分
+                <span style="font-size:30px; height:30px;line-height:30px;display:block;color:black; padding-top:8px; font-weight:bold;">{{wxuser.jf}}</span>
+            </div>
+        </div>
+    </div>
+
+    <button id="selectDate" style="width: 96%;height: 30px; margin-left: 2%;border-radius: 6px">选择日期</button>
+    <div id="test-n1" class="hide" style="margin: 1%"></div>
 
     <div style="margin: 10px">
         <span style="color: red;font-weight: 600">当日人数：{{jrrs}}</span><span
@@ -36,7 +59,8 @@
             <i class="layui-icon layui-timeline-axis"></i>
             <div class="layui-timeline-content layui-text">
                 <div>
-                    <span class="layui-timeline-title" style="font-size: 16px;font-weight: 600">{{item.zcTime|getHms}}</span>
+                    <span class="layui-timeline-title"
+                          style="font-size: 16px;font-weight: 600">{{item.zcTime|getHms}}</span>
                     <span style="float: right;font-size: 15px;font-weight: 600;color: red;margin-right: 10px">+{{item.addJf}}分</span>
                 </div>
                 <div style="height: 50px;line-height: 50px;">
@@ -65,6 +89,7 @@
         var news = new Vue({
             el: '#news',
             data: {
+                wxuser: {},
                 jrjf: {},
                 jrrs: {},
                 jrdate: getNowFormatDate(),
@@ -78,6 +103,16 @@
             showOtherMonths: true
         })
 
+        $('#selectDate').click(function () {
+            if ($('#test-n1').hasClass('hide')) {
+                $('#test-n1').removeClass('hide');
+                $(this).text('隐藏日历');
+            }else {
+                $('#test-n1').addClass('hide');
+                $(this).text('选择日期');
+            }
+        })
+
         getWxUserJf();
 
         $(document).on('change', '#test-n1', function (e) {
@@ -88,6 +123,7 @@
         function getWxUserJf() {
             $.ajax({
                 type: 'GET',
+                // url: 'http://nhmsfz.fanchance.com/func/wxUserJf/getByInvitedCode',
                 url: 'http://nhmsfz.fanchance.com/func/wxUserJf/getByInvitedCode',
                 data: {
                     invitedCode: inviteCode,
@@ -96,7 +132,9 @@
                 dataType: 'json',
                 success: function (r) {
                     if (r.code === 200) {
-                        news.wxuserJf = r.data;
+                        news.wxuser = r.data.wxUser;
+
+                        news.wxuserJf = r.data.wxUserJfs;
                         news.jrrs = news.wxuserJf.length;
 
                         var jrjf = 0.0;

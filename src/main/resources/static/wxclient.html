@@ -151,6 +151,7 @@
             success: function (r) {
                 if (r.code == 200) {
                     if (r.data != null) {
+                        r.data.parentInvitedCode = inviteCode; //将父邀请码重新置给userInfo
                         sessionStorage.setItem('userInfo', JSON.stringify(r.data));
                         $(location).prop('href', 'highscore.html?score=' + r.data.privilege + '&inviteCode=' + inviteCode + '&realname=' + realname);
                     }
@@ -173,6 +174,7 @@
             userInfo.parentInvitedCode = $('#invitedCode').val();
             userInfo.privilege = '';
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+
             $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
         })
     })
