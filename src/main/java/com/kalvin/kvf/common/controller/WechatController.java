@@ -36,19 +36,6 @@ public class WechatController {
         return R.ok (qrcodeUrl);
     }
 
-    /**
-     * 用户授权成功，获取微信回调的code
-     */
-//    @GetMapping("/user/code")
-//    public void wechatUserCallback(@RequestParam(value = "code",required = true) String code, String state, HttpServletResponse response){
-//        try {
-//            WeChatAccessToken weChatAccessToken = weChatUtils.getAccessToken (code);
-//            WechatUserinfo wechatUserinfo = weChatUtils.getWXUserInfoUrl(weChatAccessToken.getOpenid (), weChatAccessToken.getAccess_token ());
-//            System.out.println (wechatUserinfo);
-//        }catch (Exception ex){
-//            ex.printStackTrace ();
-//        }
-//    }
 
     /**
      * 用户授权成功，获取微信回调的code

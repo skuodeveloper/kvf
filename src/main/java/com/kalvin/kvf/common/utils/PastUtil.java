@@ -1,6 +1,7 @@
 package com.kalvin.kvf.common.utils;
 
 import com.kalvin.kvf.common.entity.WeChatTicket;
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ public class PastUtil {
     /**
      * @return
      */
-    public static WeChatTicket getWechatTicket (String url) {
+    public static WeChatTicket getWechatTicket (String url) throws Exception {
         if (token == null) {
             token = weChatUtils.getJsApiToken ();
             jsapi_ticket = weChatUtils.getJsApiTicket (token);

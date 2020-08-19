@@ -50,10 +50,10 @@
         <property name="LOG_PATH" value="D://logs"/>
     </springProfile>
     <springProfile name="test">
-        <property name="LOG_PATH" value="/tmp/logs/kvf-admin"/>
+        <property name="LOG_PATH" value="/logs/kvf-admin"/>
     </springProfile>
     <springProfile name="prod">
-        <property name="LOG_PATH" value="/tmp/logs/kvf-admin"/>
+        <property name="LOG_PATH" value="/logs/kvf-admin"/>
     </springProfile>
 
     <!-- 文件的最大数量 -->

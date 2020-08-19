@@ -128,9 +128,10 @@ public class ShiroConfig {
         filterMap.put("/func/wxUser/getWxInfo", "anon");
         filterMap.put("/func/wxUser/getWxRank", "anon");
         filterMap.put("/func/wxUser/getParentWxInfo", "anon");
+        filterMap.put("/func/viewHistory/add", "anon");
 
-        filterMap.put("/func/wxUserJf/getByInvitedCode", "anon");
-
+        filterMap.put("/func/home/**", "anon");
+        filterMap.put("/func/wxUserJf/**", "anon");
         filterMap.put("/func/pesonStatistics/**", "anon");
         filterMap.put("/func/tempDeptStatistics/**", "anon");
         filterMap.put("/func/tempMemberStatistics/**", "anon");

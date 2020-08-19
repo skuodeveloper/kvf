@@ -12,14 +12,17 @@
             top: -41px;
             text-align: right;
         }
+
         .layui-carousel ul.layui-row {
             background: #ffffff;
             margin: 0;
         }
+
         #shortcut ul.layui-row li {
             text-align: center;
             /*width: 87px;*/
         }
+
         .layui-carousel ul.layui-row li a i {
             display: inline-block;
             width: 100%;
@@ -48,6 +51,7 @@
             padding-bottom: 10px;
             font-size: 12px;
         }
+
         .kvf-backlog-body p cite {
             font-style: normal;
             font-size: 30px;
@@ -176,7 +180,7 @@
 
         <div class="layui-col-md4">
             <div class="layui-card">
-                <div class="layui-card-header">待办事项</div>
+                <div class="layui-card-header">整体统计</div>
                 <div class="layui-card-body">
 
                     <div class="layui-carousel" id="backlog">
@@ -184,37 +188,38 @@
                             <ul class="layui-row layui-col-space10 layui-this">
                                 <li class="layui-col-xs6">
                                     <a lay-href="app/content/comment.html" class="kvf-backlog-body">
-                                        <h3>待审评论</h3>
-                                        <p><cite>66</cite></p>
+                                        <h3>注册人数</h3>
+                                        <p><cite id="all_zcrs">0</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs6">
                                     <a lay-href="app/forum/list.html" class="kvf-backlog-body">
-                                        <h3>待审帖子</h3>
-                                        <p><cite>12</cite></p>
+                                        <h3>答题人次</h3>
+                                        <p><cite id="all_dtrc">0</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs6">
                                     <a lay-href="template/goodslist.html" class="kvf-backlog-body">
-                                        <h3>待审商品</h3>
-                                        <p><cite>99</cite></p>
+                                        <h3>无父邀请码</h3>
+                                        <p><cite id="all_wfyqm">0</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs6">
-                                    <a href="javascript:;" onclick="layer.tips('不跳转', this, {tips: 3});" class="kvf-backlog-body">
-                                        <h3>待发货</h3>
-                                        <p><cite>20</cite></p>
+                                    <a href="javascript:;" onclick="layer.tips('不跳转', this, {tips: 3});"
+                                       class="kvf-backlog-body">
+                                        <h3>无邀请码</h3>
+                                        <p><cite id="all_wyqm">0</cite></p>
                                     </a>
                                 </li>
                             </ul>
-                            <ul class="layui-row layui-col-space10">
-                                <li class="layui-col-xs6">
-                                    <a href="javascript:;" class="kvf-backlog-body">
-                                        <h3>待审友情链接</h3>
-                                        <p><cite style="color: #FF5722;">5</cite></p>
-                                    </a>
-                                </li>
-                            </ul>
+                            <!--<ul class="layui-row layui-col-space10">-->
+                            <!--<li class="layui-col-xs6">-->
+                            <!--<a href="javascript:;" class="kvf-backlog-body">-->
+                            <!--<h3>待审友情链接</h3>-->
+                            <!--<p><cite style="color: #FF5722;">5</cite></p>-->
+                            <!--</a>-->
+                            <!--</li>-->
+                            <!--</ul>-->
                         </div>
                     </div>
                 </div>
@@ -223,7 +228,7 @@
 
         <div class="layui-col-md4">
             <div class="layui-card">
-                <div class="layui-card-header">其它</div>
+                <div class="layui-card-header">当日统计</div>
                 <div class="layui-card-body">
 
                     <div class="layui-carousel" id="other">
@@ -231,37 +236,38 @@
                             <ul class="layui-row layui-col-space10 layui-this">
                                 <li class="layui-col-xs6">
                                     <a lay-href="app/content/comment.html" class="kvf-backlog-body">
-                                        <h3>待审评论</h3>
-                                        <p><cite>66</cite></p>
+                                        <h3>注册人数</h3>
+                                        <p><cite id="today_zcrs">0</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs6">
                                     <a lay-href="app/forum/list.html" class="kvf-backlog-body">
-                                        <h3>待审帖子</h3>
-                                        <p><cite>12</cite></p>
+                                        <h3>答题人次</h3>
+                                        <p><cite id="today_dtrc">0</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs6">
                                     <a lay-href="template/goodslist.html" class="kvf-backlog-body">
-                                        <h3>待审商品</h3>
-                                        <p><cite>99</cite></p>
+                                        <h3>无父邀请码</h3>
+                                        <p><cite id="today_wfyqm">0</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs6">
-                                    <a href="javascript:;" onclick="layer.tips('不跳转', this, {tips: 3});" class="kvf-backlog-body">
-                                        <h3>待发货</h3>
-                                        <p><cite>20</cite></p>
+                                    <a href="javascript:;" onclick="layer.tips('不跳转', this, {tips: 3});"
+                                       class="kvf-backlog-body">
+                                        <h3>无邀请码</h3>
+                                        <p><cite id="today_wyqm">0</cite></p>
                                     </a>
                                 </li>
                             </ul>
-                            <ul class="layui-row layui-col-space10">
-                                <li class="layui-col-xs6">
-                                    <a href="javascript:;" class="kvf-backlog-body">
-                                        <h3>待审友情链接</h3>
-                                        <p><cite style="color: #FF5722;">5</cite></p>
-                                    </a>
-                                </li>
-                            </ul>
+                            <!--<ul class="layui-row layui-col-space10">-->
+                            <!--<li class="layui-col-xs6">-->
+                            <!--<a href="javascript:;" class="kvf-backlog-body">-->
+                            <!--<h3>待审友情链接</h3>-->
+                            <!--<p><cite style="color: #FF5722;">5</cite></p>-->
+                            <!--</a>-->
+                            <!--</li>-->
+                            <!--</ul>-->
                         </div>
                     </div>
                 </div>
@@ -302,25 +308,28 @@
 
         carousel.render({
             elem: '#shortcut'
-            ,width: '100%' //设置容器宽度
-            ,height: '200px'
-            ,arrow: 'none' //始终显示箭头
-            ,autoplay: false
+            , width: '100%' //设置容器宽度
+            , height: '200px'
+            , arrow: 'none' //始终显示箭头
+            , autoplay: false
         });
         carousel.render({
             elem: '#backlog'
-            ,width: '100%' //设置容器宽度
-            ,height: '200px'
-            ,arrow: 'none' //始终显示箭头
-            ,autoplay: false
+            , width: '100%' //设置容器宽度
+            , height: '200px'
+            , arrow: 'none' //始终显示箭头
+            , autoplay: false
         });
         carousel.render({
             elem: '#other'
-            ,width: '100%' //设置容器宽度
-            ,height: '200px'
-            ,arrow: 'none' //始终显示箭头
-            ,autoplay: false
+            , width: '100%' //设置容器宽度
+            , height: '200px'
+            , arrow: 'none' //始终显示箭头
+            , autoplay: false
         });
+
+        getAll();
+        getToday();
 
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('brokenline'));
@@ -328,13 +337,13 @@
         // 指定图表的配置项和数据
         var brokenOption = {
             title: {
-                text: '折线图堆叠'
+                text: '近七日'
             },
             tooltip: {
                 trigger: 'axis'
             },
             legend: {
-                data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+                data: ['注册人数', '答题人次', '无父邀请码', '无邀请码']
             },
             grid: {
                 left: '3%',
@@ -350,48 +359,40 @@
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['周一','周二','周三','周四','周五','周六','周日']
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
             },
             yAxis: {
                 type: 'value'
             },
             series: [
-                {
-                    name:'邮件营销',
-                    type:'line',
-                    stack: '总量',
-                    data:[120, 132, 101, 134, 90, 230, 210]
-                },
-                {
-                    name:'联盟广告',
-                    type:'line',
-                    stack: '总量',
-                    data:[220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name:'视频广告',
-                    type:'line',
-                    stack: '总量',
-                    data:[150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name:'直接访问',
-                    type:'line',
-                    stack: '总量',
-                    data:[320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name:'搜索引擎',
-                    type:'line',
-                    stack: '总量',
-                    data:[820, 932, 901, 934, 1290, 1330, 1320]
-                }
+                // {
+                //     name:'注册人数',
+                //     type:'line',
+                //     data:[120, 132, 101, 134, 90, 230, 210]
+                // },
+                // {
+                //     name:'答题人次',
+                //     type:'line',
+                //     data:[220, 182, 191, 234, 290, 330, 310]
+                // },
+                // {
+                //     name:'无父邀请码',
+                //     type:'line',
+                //     data:[150, 232, 201, 154, 190, 330, 410]
+                // },
+                // {
+                //     name:'无邀请码',
+                //     type:'line',
+                //     data:[320, 332, 301, 334, 390, 330, 320]
+                // }
             ]
         };
 
+        getJ7r();
+        getJ7rDate();
 
         // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(brokenOption);
+        // myChart.setOption(brokenOption);
 
         $(window).resize(function () {
             myChart.resize();
@@ -399,14 +400,14 @@
         });
 
         var myChart2 = echarts.init(document.getElementById('cpieline'));
-        var data = genData(50);
+
         var cpieOption = {
-            title : {
-                text: '同名数量统计',
-                subtext: '纯属虚构',
-                x:'center'
+            title: {
+                text: '人员类别统计',
+                // subtext: '纯属虚构',
+                x: 'center'
             },
-            tooltip : {
+            tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
             },
@@ -416,65 +417,118 @@
                 right: 10,
                 top: 20,
                 bottom: 20,
-                data: data.legendData,
-
-                selected: data.selected
+                // data: data.legendData,
+                // selected: data.selected
             },
-            series : [
+            series: [
                 {
-                    name: '姓名',
+                    name: '人员类别',
                     type: 'pie',
-                    radius : '55%',
+                    radius: '55%',
                     center: ['40%', '50%'],
-                    data: data.seriesData,
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
                             shadowOffsetX: 0,
                             shadowColor: 'rgba(0, 0, 0, 0.5)'
                         }
-                    }
+                    },
+                    // data: data.seriesData,
                 }
             ]
         };
 
-        function genData(count) {
-            var nameList = [
-                '赵', '钱', '孙', '李', '周', '吴', '郑', '王', '冯', '陈', '褚', '卫', '蒋', '沈', '韩', '杨', '朱', '秦', '尤', '许', '何', '吕', '施', '张', '孔', '曹', '严', '华', '金', '魏', '陶', '姜', '戚', '谢', '邹', '喻', '柏', '水', '窦', '章', '云', '苏', '潘', '葛', '奚', '范', '彭', '郎', '鲁', '韦', '昌', '马', '苗', '凤', '花', '方', '俞', '任', '袁', '柳', '酆', '鲍', '史', '唐', '费', '廉', '岑', '薛', '雷', '贺', '倪', '汤', '滕', '殷', '罗', '毕', '郝', '邬', '安', '常', '乐', '于', '时', '傅', '皮', '卞', '齐', '康', '伍', '余', '元', '卜', '顾', '孟', '平', '黄', '和', '穆', '萧', '尹', '姚', '邵', '湛', '汪', '祁', '毛', '禹', '狄', '米', '贝', '明', '臧', '计', '伏', '成', '戴', '谈', '宋', '茅', '庞', '熊', '纪', '舒', '屈', '项', '祝', '董', '梁', '杜', '阮', '蓝', '闵', '席', '季', '麻', '强', '贾', '路', '娄', '危'
-            ];
-            var legendData = [];
-            var seriesData = [];
-            var selected = {};
-            for (var i = 0; i < 50; i++) {
-                var name = Math.random() > 0.65
-                    ? makeWord(4, 1) + '·' + makeWord(3, 0)
-                    : makeWord(2, 1);
-                legendData.push(name);
-                seriesData.push({
-                    name: name,
-                    value: Math.round(Math.random() * 100000)
-                });
-                selected[name] = i < 6;
-            }
+        getPersonType();
+        // myChart2.setOption(cpieOption);
 
-            return {
-                legendData: legendData,
-                seriesData: seriesData,
-                selected: selected
-            };
-
-            function makeWord(max, min) {
-                var nameLen = Math.ceil(Math.random() * max + min);
-                var name = [];
-                for (var i = 0; i < nameLen; i++) {
-                    name.push(nameList[Math.round(Math.random() * nameList.length - 1)]);
+        /**
+         * 整体统计
+         */
+        function getAll() {
+            $.ajax({
+                url: "http://nhmsfz.fanchance.com/func/home/getAll",
+                type: "get",
+                dataType: "json",
+                success: function (r) {
+                    $('#all_zcrs').text(r.data.zcrs);
+                    $('#all_dtrc').text(r.data.dtrc);
+                    $('#all_wfyqm').text(r.data.wfyqm);
+                    $('#all_wyqm').text(r.data.wyqm);
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
                 }
-                return name.join('');
-            }
+            });
         }
 
-        myChart2.setOption(cpieOption);
+        /**
+         * 今日统计
+         */
+        function getToday() {
+            $.ajax({
+                url: "http://nhmsfz.fanchance.com/func/home/getToday",
+                type: "get",
+                dataType: "json",
+                success: function (r) {
+                    $('#today_zcrs').text(r.data.zcrs);
+                    $('#today_dtrc').text(r.data.dtrc);
+                    $('#today_wfyqm').text(r.data.wfyqm);
+                    $('#today_wyqm').text(r.data.wyqm);
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                }
+            });
+        }
 
+        /**
+         * 近七日数据统计
+         */
+        function getJ7r() {
+            $.ajax({
+                url: "http://nhmsfz.fanchance.com/func/home/getLast7days",
+                type: "get",
+                dataType: "json",
+                success: function (r) {
+                    brokenOption.series = r.data;
+                    myChart.setOption(brokenOption);
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                }
+            });
+        }
+
+        function getJ7rDate() {
+            var dataArr = [];
+            for (var i = 0; i < 7; i++) {
+                var time = new Date(new Date().setDate(new Date().getDate() + i - 6));
+                var month = `0${time.getMonth() + 1}`.slice(-2);
+                var strDate = `0${time.getDate()}`.slice(-2);
+                dataArr.push(`${month}-${strDate}`);
+            }
+
+            brokenOption.xAxis.data = dataArr;
+            myChart.setOption(brokenOption);
+        }
+
+        /**
+         * 人员类别数据统计
+         */
+        function getPersonType() {
+            $.ajax({
+                url: "http://nhmsfz.fanchance.com/func/personTypeStatistic/getPersonType",
+                type: "get",
+                dataType: "json",
+                success: function (r) {
+                    cpieOption.series[0].data = r.data;
+                    myChart2.setOption(cpieOption);
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                }
+            });
+        }
     });
 </script>
 

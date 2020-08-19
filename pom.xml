@@ -185,17 +185,6 @@
             <artifactId>spring-boot-starter-cache</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
-        <!--<dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>2.10.6</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>2.4.8</version>
-        </dependency>-->
-        <!-- shiro ehcache -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-ehcache</artifactId>
@@ -277,6 +266,12 @@
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-core</artifactId>
             <version>2.3.14</version>
+        </dependency>
+
+        <!-- logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
 

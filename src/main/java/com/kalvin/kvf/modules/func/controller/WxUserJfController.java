@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
+import com.kalvin.kvf.common.entity.WeChatAccessToken;
+import com.kalvin.kvf.common.entity.WechatUserinfo;
+import com.kalvin.kvf.common.utils.weChatUtils;
 import com.kalvin.kvf.modules.func.entity.WxUser;
 import com.kalvin.kvf.modules.func.entity.WxUserJf;
 import com.kalvin.kvf.modules.func.service.WxUserJfService;
@@ -95,21 +98,47 @@ public class WxUserJfController extends BaseController {
 
     @GetMapping(value = "getByInvitedCode")
     public R getByInvitedCode(@Param("invitedCode") String invitedCode, @Param("targetDate") String targetDate) {
-        List<WxUser> wxUser = wxUserService.list (new LambdaQueryWrapper<WxUser> ()
-        .eq (WxUser::getInvitedCode, invitedCode));
+        List<WxUser> wxUsers = wxUserService.list (new LambdaQueryWrapper<WxUser> ()
+                .eq (WxUser::getInvitedCode, invitedCode));
 
-        if(wxUser.size ()> 0) {
+        if (wxUsers.size () > 0) {
             List<WxUserJf> userJfs = wxUserJfService.list (new LambdaQueryWrapper<WxUserJf> ()
                     .eq (WxUserJf::getTargetInvitedCode, invitedCode)
                     .apply ("date_format(zc_time,'%Y-%m-%d') = '" + targetDate + "'")
                     .orderByDesc (WxUserJf::getZcTime));
 
             WxUserJfVo wxUserJfVo = new WxUserJfVo ();
-            wxUserJfVo.setWxUser (wxUser.get (0));
+            wxUserJfVo.setWxUser (wxUsers.get (0));
             wxUserJfVo.setWxUserJfs (userJfs);
             return R.ok (wxUserJfVo);
-        }else{
+        } else {
             return R.fail ("该邀请码不存在！");
+        }
+    }
+
+    @GetMapping(value = "getByWxCode")
+    public R getByWxCode(@Param("code") String code, @Param("targetDate") String targetDate) {
+        try {
+            WeChatAccessToken weChatAccessToken = weChatUtils.getAccessToken (code);
+            WechatUserinfo wechatUserinfo = weChatUtils.getWXUserInfoUrl (weChatAccessToken.getOpenid (), weChatAccessToken.getAccess_token ());
+            WxUser wxUser = wxUserService.getOne (new LambdaQueryWrapper<WxUser> ()
+                    .eq (WxUser::getOpenid, wechatUserinfo.getOpenid ()));
+
+            if(wxUser == null){
+                return R.fail ("您的用户数据不存在，请答题之后再查看！");
+            }else{
+                List<WxUserJf> userJfs = wxUserJfService.list (new LambdaQueryWrapper<WxUserJf> ()
+                        .eq (WxUserJf::getTargetInvitedCode, wxUser.getInvitedCode ())
+                        .apply ("date_format(zc_time,'%Y-%m-%d') = '" + targetDate + "'")
+                        .orderByDesc (WxUserJf::getZcTime));
+
+                WxUserJfVo wxUserJfVo = new WxUserJfVo ();
+                wxUserJfVo.setWxUser (wxUser);
+                wxUserJfVo.setWxUserJfs (userJfs);
+                return R.ok (wxUserJfVo);
+            }
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
         }
     }
 }

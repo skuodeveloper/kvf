@@ -13,6 +13,12 @@
             line-height: 101px;
             white-space: normal;
         }
+
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 160px;
+            /* margin-right: 10px; */
+        }
     </style>
 </head>
 <body style="background-color: #f2f2f2;">
@@ -39,15 +45,6 @@
                                                class="layui-input">
                                     </div>
                                 </div>
-
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">电话号码</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="tel" placeholder="请输入电话号码" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-
                                 <div class="layui-inline">
                                     <label class="layui-form-label">公司单位</label>
                                     <div class="layui-input-inline">
@@ -55,10 +52,38 @@
                                                class="layui-input">
                                     </div>
                                 </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">电话号码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="tel" placeholder="请输入电话号码" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline" style="margin-left:-21px;">
+                                    <input class="chk" type="checkbox" id="telnull" name="telnull" lay-skin="primary"
+                                           title="无">
+                                </div>
 
-
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">推广人数</label>
+                                    <div class="layui-input-inline" style="width: 80px;">
+                                        <input type="text" name="tgrsMin" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid">-</div>
+                                    <div class="layui-input-inline" style="width: 80px;">
+                                        <input type="text" name="tgrsMax" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
                             </div>
                             <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">根邀请码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="rootInvitedCode" placeholder="请输入根邀请码"
+                                               autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
                                 <div class="layui-inline">
                                     <label class="layui-form-label">父邀请码</label>
                                     <div class="layui-input-inline">
@@ -91,10 +116,10 @@
                                 </div>
 
                                 <div class="layui-inline">
-                                    <button class="layui-btn " lay-submit="" lay-filter="kTableSearchFilter">
+                                    <button class="layui-btn" lay-submit="" lay-filter="kTableSearchFilter">
                                         <i class="layui-icon layui-icon-search"></i>
                                     </button>
-                                    <button class="layui-btn " type="reset" data-event="refresh">
+                                    <button class="layui-btn" type="reset" data-event="refresh">
                                         <i class="layui-icon layui-icon-refresh-1"></i>
                                     </button>
                                 </div>
@@ -166,8 +191,9 @@
 <!--表格行工具栏模板-->
 <script type="text/html" id="rowToolbarTpl">
     <!--<div style="height: 90px;">-->
-        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
     <!--</div>-->
 </script>
 
@@ -216,6 +242,7 @@
                 , {field: 'companyName', title: '单位名称', sort: true, width: 130, align: 'center'}
                 , {field: 'tel', title: '电话号码', width: 130, align: 'center'}
                 , {field: 'qrcode', title: '二维码', templet: '#qrcodeTpl', width: 130, align: 'center'}
+                , {field: 'rootInvitedCode', title: '根邀请码', width: 130, align: 'center'}
                 , {field: 'parentInvitedCode', title: '父邀请码', width: 130, align: 'center'}
                 , {field: 'invitedCode', title: '本人邀请码', width: 130, align: 'center'}
                 , {field: 'tgrs', title: '推广人数', width: 130, align: 'center'}
@@ -296,6 +323,7 @@
                     }
                 });
             }
+
             if (layEvent === 'del') {
                 layer.confirm('确定删除吗？', function (index) {
                     //执行 Ajax 后重载
@@ -319,6 +347,12 @@
 
         // 监听查询
         form.on('submit(kTableSearchFilter)', function (obj) {
+            if ($('#telnull').prop("checked")) {
+                obj.field.telnull = 1;
+            } else {
+                obj.field.telnull = 0;
+            }
+
             renderTableData(obj.field);
             return false;
         });
@@ -337,13 +371,23 @@
             params = params ? params : {};
             tableIns.reload({
                 where: params,
-                page: {current: 1}
+                page: {curr: 1}
             });
         }
 
         // 绑定监听回车事件
         kvfKit.bindEnterEventForLayuiForm();
     });
+
+    /*自定义处理数字*/
+    function zhzs(value) {
+        value = value.replace(/[^\d]/g, '').replace(/^0{1,}/g, '');
+        if (value != '')
+            value = parseInt(value);
+        else
+            value = 0;
+        return value;
+    }
 
     function previewImg(obj) {
         var img = new Image();

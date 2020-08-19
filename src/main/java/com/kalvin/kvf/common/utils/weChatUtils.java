@@ -1,5 +1,6 @@
 package com.kalvin.kvf.common.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.kalvin.kvf.common.entity.MyX509TrustManager;
 import com.kalvin.kvf.common.entity.WeChatAccessToken;
 import com.kalvin.kvf.common.entity.WechatUserinfo;
@@ -19,8 +20,8 @@ import java.net.URL;
 
 public class weChatUtils {
     // 微信公众号的appId以及secret
-    private static String test_appId = "wx719c937ea903be65";
-    private static String test_secret = "b22eabdd155cd8174e2791c95d513a7e";
+//    private static String appId = "wx719c937ea903be65"; //test
+//    private static String secret = "b22eabdd155cd8174e2791c95d513a7e"; //test
 
     private static String appId = "wx5b66c0f1cfaae239";
     private static String secret = "856f2467cc71f138586c5a44b668c377";
@@ -49,6 +50,7 @@ public class weChatUtils {
                 .replace ("CODE", code);
         JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
         return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
+//        return JSON.parseObject (httpRequest (url, "POST", null), WeChatAccessToken.class);
     }
 
     /**
@@ -56,7 +58,7 @@ public class weChatUtils {
      */
     public static String getJsApiToken() {
         //凭证获取(GET)
-        String url = weChatUtils.getJsApiToken.replace ("APPID", test_appId).replace ("APPSECRET", test_secret);
+        String url = weChatUtils.getJsApiToken.replace ("APPID", appId).replace ("APPSECRET", secret);
         // 发起GET请求获取凭证
         JSONObject jsonObject = JSONObject.fromObject (httpRequest (url, "GET", null));
         String access_token = null;
@@ -103,6 +105,8 @@ public class weChatUtils {
                 refreshToken);
         JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
         return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
+
+//        return JSON.parseObject (httpRequest (url, "POST", null), WeChatAccessToken.class);
     }
 
     /**
@@ -116,6 +120,7 @@ public class weChatUtils {
         String url = weChatUtils.getWXUserInfoUrl.replace ("OPENID", openId).replace ("ACCESS_TOKEN", accessToken);
         JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
         return (WechatUserinfo) JSONObject.toBean (jsonObj, WechatUserinfo.class);
+//        return JSON.parseObject (httpRequest (url, "POST", null), WechatUserinfo.class);
     }
 
     /**

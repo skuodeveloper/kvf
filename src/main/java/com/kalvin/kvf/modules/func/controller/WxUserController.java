@@ -21,12 +21,15 @@ import com.kalvin.kvf.modules.sys.entity.User;
 import com.kalvin.kvf.modules.sys.service.IUserService;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.util.TextUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServlet;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,7 +91,6 @@ public class WxUserController extends BaseController {
             wxUser.setEnddate (calendar.getTime ());
         }
         Page<WxUser> page = wxUserService.listWxUserPage (wxUser);
-
         return R.ok (page);
     }
 
@@ -110,9 +112,13 @@ public class WxUserController extends BaseController {
     @PostMapping(value = "edit")
     public R edit(WxUser wxUser) {
         //生成二维码
-        wxUser.setQrcode (getQRCode (wxUser));
-        wxUserService.updateById (wxUser);
-        return R.ok ();
+        try {
+            wxUser.setQrcode (getQRCode (wxUser));
+            wxUserService.updateById (wxUser);
+            return R.ok ();
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
     }
 
     @RequiresPermissions("func:wxUser:del")
@@ -220,12 +226,16 @@ public class WxUserController extends BaseController {
             if (wxUsers.size () > 0) {
                 wxUser = wxUsers.get (0);
             } else if (score >= 60) {
+                if(wxUser.getParentInvitedCode ().startsWith ("F")) {
+                    wxUser.setRootInvitedCode (wxUser.getParentInvitedCode ());
+                }else {
+                    WxUser parent = wxUserService.getOne (new LambdaQueryWrapper<WxUser> ()
+                            .eq (WxUser::getInvitedCode, wxUser.getParentInvitedCode ()));
+                    if (parent != null) {
+                        wxUser.setRootInvitedCode (parent.getRootInvitedCode ());
+                    }
+                }
                 wxUserService.save (wxUser);
-                //生成邀请码
-                wxUser.setInvitedCode ("H" + (100000 + wxUser.getId ()));
-                //生成二维码
-                wxUser.setQrcode (getQRCode (wxUser));
-                wxUserService.saveOrUpdate (wxUser);
             }
 
             /***************测试记录表**************/
@@ -239,6 +249,14 @@ public class WxUserController extends BaseController {
             answerRecord.setCorrectNum (score / 10);
             answerRecord.setQuestionNum (10);
             answerRecordService.save (answerRecord);
+
+            if (wxUsers.size () == 0 && score >= 60) {
+                //生成邀请码
+                wxUser.setInvitedCode ("H" + (100000 + wxUser.getId ()));
+                //生成二维码
+                wxUser.setQrcode (getQRCode (wxUser));
+                wxUserService.saveOrUpdate (wxUser);
+            }
 
             /***************答题记录表****************/
             String json = testData.replaceAll ("PASSWWORD", "\"");
@@ -283,8 +301,13 @@ public class WxUserController extends BaseController {
         content = String.format (content, user.getInvitedCode (), StringFilter (user.getNickname ()));
 
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
+
         if (!TextUtils.isEmpty (user.getHeadimgurl ())) {
-            HttpUtils.download (user.getHeadimgurl (), logoPath);
+            try {
+                HttpUtils.download (user.getHeadimgurl (), logoPath);
+            } catch (Exception ex) {
+                logoPath = "D:\\QRCode\\nhga.jpg";
+            }
         } else {
             logoPath = "D:\\QRCode\\nhga.jpg";
         }
@@ -294,7 +317,13 @@ public class WxUserController extends BaseController {
         // 二维码的图片名
         String fileName = UUID.randomUUID ().toString ();
 
-        return "/qrcode/" + QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
+        String file;
+        try {
+            file = QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
+        } catch (Exception ex) {
+            file = QRCodeUtils.encode (content, null, destPath, fileName, true);
+        }
+        return "/qrcode/" + file;
     }
 }
 

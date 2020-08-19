@@ -27,7 +27,15 @@ public interface PersonTypeStatisticMapper extends BaseMapper<PersonTypeStatisti
      */
     List<PersonTypeStatistic> selectPersonTypeStatisticList(@Param("personTypeStatistic") PersonTypeStatistic personTypeStatistic, IPage page);
 
-    @Select("SELECT person_type as persontype, COUNT(*) count\n" +
+    @Select("SELECT person_type as persontype,\n" +
+            "CASE person_type\n" +
+            "WHEN 1 THEN '小区居民'\n" +
+            "WHEN 2 THEN '企业员工'\n" +
+            "WHEN 3 THEN '沿街店面'\n" +
+            "WHEN 4 THEN '商场商铺'\n" +
+            "ELSE '未填写'\n" +
+            "END name,\n" +
+            "COUNT(*) value\n" +
             "FROM func_person_type_statistic\n" +
             "GROUP BY person_type\n" +
             "ORDER BY person_type")

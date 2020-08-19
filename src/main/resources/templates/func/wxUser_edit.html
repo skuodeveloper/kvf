@@ -62,6 +62,12 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">根邀请码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="rootInvitedCode" th:value="${editInfo.rootInvitedCode}" placeholder="请输入根邀请码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">邀请码</label>
         <div class="layui-input-inline">
             <input type="text" name="invitedCode" th:value="${editInfo.invitedCode}" placeholder="请输入邀请码" autocomplete="off" class="layui-input">

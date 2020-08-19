@@ -87,6 +87,7 @@
 
     <div>
         <button id="finish" class="more">再次测试</button>
+        <!--<button id="history" class="more" style="margin-top: 20px">查看积分详情</button>-->
     </div>
 </div>
 <script>
@@ -145,15 +146,15 @@
             $('#p_percent').text(wxUserInfo.jf);
 
             $(document).on('click', '#finish', function () {
-
                 $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
             })
 
-            $(document).on('click', '#luckdraw', function () {
-                $(location).prop('href', 'luckdraw.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            $(document).on('click', '#history', function () {
+                $(location).prop('href', 'locationtest.html');
             })
         })
     }
 </script>
+<script type="text/javascript" src="//js.users.51.la/20911027.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PersonTypeCount {
-    private int persontype;
-    private int count;
+    private Integer persontype;
+    private String name;
+    private Integer value;
 }

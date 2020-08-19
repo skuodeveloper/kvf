@@ -18,12 +18,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -205,13 +208,11 @@ public class ScheduledConfig implements SchedulingConfigurer {
         }
     }
 
-
+//    @Scheduled(fixedDelay = 300000)
     @Scheduled(initialDelay = 1000, fixedRate = Long.MAX_VALUE)
     public void schedule_xx() {
-
         List<WxUser> wxUsers = wxUserService.list (new LambdaQueryWrapper<WxUser> ()
-        .isNull (WxUser::getInvitedCode));
-//        List<WxUser> wxUsers = wxUserService.list ();
+                .isNull (WxUser::getInvitedCode));
 
         for (WxUser wxUser : wxUsers) {
             //生成二维码
@@ -220,11 +221,12 @@ public class ScheduledConfig implements SchedulingConfigurer {
                 wxUser.setQrcode (getQRCode (wxUser));
                 wxUserService.saveOrUpdate (wxUser);
             } catch (Exception ex) {
+
                 ex.printStackTrace ();
             }
         }
 
-        System.out.println ("aaa");
+        System.out.println ("-----------------invitedCode null 检测结束!-------------------------");
     }
 
     private static String StringFilter(String str) throws PatternSyntaxException {
@@ -245,7 +247,11 @@ public class ScheduledConfig implements SchedulingConfigurer {
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
 
         if (!TextUtils.isEmpty (user.getHeadimgurl ())) {
-            HttpUtils.download (user.getHeadimgurl (), logoPath);
+            try {
+                HttpUtils.download (user.getHeadimgurl (), logoPath);
+            } catch (Exception ex) {
+                logoPath = "D:\\QRCode\\nhga.jpg";
+            }
         } else {
             logoPath = "D:\\QRCode\\nhga.jpg";
         }
@@ -255,6 +261,12 @@ public class ScheduledConfig implements SchedulingConfigurer {
         // 二维码的图片名
         String fileName = UUID.randomUUID ().toString ();
 
-        return "/qrcode/" + QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
+        String file;
+        try {
+            file = QRCodeUtils.encode (content, logoPath, destPath, fileName, true);
+        } catch (Exception ex) {
+            file = QRCodeUtils.encode (content,null, destPath, fileName, true);
+        }
+        return "/qrcode/" + file;
     }
 }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="common/base::pagetitle"></title>
+    <link th:replace="common/base::static"/>
+</head>
+<body>
+<div class="layui-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">userid</label>
+        <div class="layui-input-inline">
+            <input type="text" name="userid" th:value="${editInfo.userid}" placeholder="请输入userid" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">openid</label>
+        <div class="layui-input-inline">
+            <input type="text" name="openid" th:value="${editInfo.openid}" placeholder="请输入openid" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="nickname" th:value="${editInfo.nickname}" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">经度</label>
+        <div class="layui-input-inline">
+            <input type="text" name="longitude" th:value="${editInfo.longitude}" placeholder="请输入经度" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">纬度</label>
+        <div class="layui-input-inline">
+            <input type="text" name="latitude" th:value="${editInfo.latitude}" placeholder="请输入纬度" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">地址详情</label>
+        <div class="layui-input-inline">
+            <input type="text" name="address" th:value="${editInfo.address}" placeholder="请输入地址详情" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">访问时间</label>
+        <div class="layui-input-inline">
+            <input type="text" name="createTime" id="createTime" th:value="${#strings.replace(editInfo.createTime,'T',' ')}" placeholder="请输入访问时间" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit">
+        <input type="text" name="id" th:value="${editInfo.id}" autocomplete="off" class="layui-input">
+    </div>
+</div>
+
+<script th:replace="common/base::context"></script>
+<script th:replace="common/base::mainjs"></script>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var $ = layui.$, form = layui.form, laydate = layui.laydate;
+
+
+        laydate.render({
+            elem: '#createTime' // 指定元素
+        });
+
+        //监听提交
+        form.on('submit(kFormSubmit)', function(data){
+            var field = data.field; //获取提交的字段
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+            var url = field.id ? 'func/viewHistory/edit' : 'func/viewHistory/add';
+            //提交 Ajax 成功后，关闭当前弹层并重载表格
+            $.ajax({
+                type: req.type.post,
+                url: BASE_WEB + url,
+                data: field,
+                async: false,
+                success: function (r) {
+                    if (r.code === req.status.ok) {
+                        // 重载表格
+                        parent.layui.table.reload('kContentTable');
+                        parent.layer.close(index); //再执行关闭
+                    } else {
+                        kvfKit.errorMsg(r.msg);
+                    }
+                }
+            });
+
+        });
+    })
+</script>
+</body>
+</html>

@@ -17,6 +17,7 @@ import java.util.List;
 public class UserQueryVO extends BasePageEntity {
     private String username;
     private String realname;
+    private String inviteCode;
     private Integer status;
     private Long deptId;
     private List<Dept> depts;

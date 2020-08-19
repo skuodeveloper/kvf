@@ -17,9 +17,30 @@
                         <div class="layui-form layui-card-header kvf-card-header-auto">
                             <div class="layui-form-item">
                             <div class="layui-inline">
-                                <label class="layui-form-label">考试记录id</label>
+                                <label class="layui-form-label">userid</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="recordId" placeholder="请输入考试记录id" autocomplete="off" class="layui-input">
+                                    <input type="text" name="userid" placeholder="请输入userid" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">openid</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="openid" placeholder="请输入openid" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">昵称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="nickname" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">地址详情</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="address" placeholder="请输入地址详情" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
@@ -50,37 +71,40 @@
 
 <!--头部工具栏模板-->
 <script type="text/html" id="headToolbarTpl">
-    <button class="layui-btn layui-btn-sm " lay-event="add">添加</button>
-    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchdel">批量删除</button>
 </script>
 
 <!--表格行工具栏模板-->
 <script type="text/html" id="rowToolbarTpl">
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-location"></i>定位</a>
 </script>
 
 <!--表格列格式化模板 start-->
+<script type="text/html" id="createTimeTpl">
+<!--todo由于注释不统一规范，无法为你生成格式化代码，请自行处理-->
+<span>{{d.createTime}}</span>
+</script>
 <!--表格列格式化模板 end-->
 
 <script type="text/javascript" th:inline="javascript">
     layui.use(['element', 'form', 'layer', 'table', 'laydate'], function () {
         var elemet = layui.element, form = layui.form, layer = layui.layer, table = layui.table, laydate = layui.laydate;
         var tableId = 'kContentTable';
-        var area = ['449px', '95%'];
+        var area = ['80%', '90%'];
 
         // 实例化table
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
-            ,url: BASE_WEB + 'func/testPaper/list/data' // 数据接口
+            ,url: BASE_WEB + 'func/viewHistory/list/data' // 数据接口
             ,toolbar: '#headToolbarTpl'
             ,cols: [[ //表头
                 {type:'checkbox', fixed: 'left'}
-                ,{field: 'recordId', title: '$column.comment', width: 130, align: 'center' }
-                ,{field: 'questionBankId', title: '$column.comment', align: 'center' }
-                ,{field: 'answer', title: '$column.comment', width: 130, align: 'center' }
-                ,{field: 'isCorrect', title: '$column.comment', width: 130, align: 'center' }
-                ,{field: 'createTime', title: '$column.comment', width: 130, align: 'center' }
+                ,{field: 'userid', title: 'userid', width: 130, align: 'center' }
+                ,{field: 'openid', title: 'openid' ,width: 250, align: 'center' }
+                ,{field: 'nickname', title: '昵称', width: 130, align: 'center' }
+                ,{field: 'longitude', title: '经度', width: 130, align: 'center' }
+                ,{field: 'latitude', title: '纬度', width: 130, align: 'center' }
+                ,{field: 'address', title: '详细地址', width: 200, align: 'center' }
+                ,{field: 'createTime', title: '创建时间', width: 180, templet: '#createTimeTpl', align: 'center' }
                 ,{field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center' }
             ]]
         }));
@@ -90,47 +114,6 @@
             var checkStatus = table.checkStatus(obj.config.id);
             var checkData = checkStatus.data; // 得到选中的数据
             switch(obj.event) {
-                case 'add':
-                    layer.open({
-                        type: 2
-                        ,title: '添加'
-                        ,content: BASE_WEB + 'func/testPaper/edit'
-                        ,maxmin: true
-                        ,area: area   // 宽高
-                        ,btn: ['确定', '取消']
-                        ,yes: function(index, layero){
-                            //点击确认触发 iframe 内容中的按钮提交
-                            var submit = layero.find('iframe').contents().find("#kFormSubmit");
-                            submit.click();
-                        }
-                    });
-                    break;
-                case 'batchdel':
-                    if(checkData.length === 0){
-                        return kvfKit.warningMsg('请选择数据');
-                    }
-                    layer.confirm('确定删除吗？', function(index) {
-                        var ids = [];
-                        $.each(checkData, function(i, n){
-                            ids[i] = n.id;
-                        });
-
-                        //执行 Ajax 后重载
-                        $.ajax({
-                            type: req.type.post,
-                            url: BASE_WEB + 'func/testPaper/batchdel',
-                            data: {ids: ids.toString()},
-                            success: function (r) {
-                                if (r.code === req.status.ok) {
-                                    table.reload(tableId);
-                                    kvfKit.sucessMsg('已删除');
-                                } else {
-                                    kvfKit.errorMsg(r.msg);
-                                }
-                            }
-                        });
-                    });
-                    break;
             }
         });
 
@@ -143,34 +126,10 @@
             if (layEvent === 'edit') {
                 layer.open({
                     type: 2
-                    ,title: '编辑'
-                    ,content: BASE_WEB + 'func/testPaper/edit?id=' + data.id
+                    ,title: '坐标'
+                    ,content: BASE_WEB + 'func/viewHistory/location?id=' + data.id
                     ,maxmin: true
                     ,area: area   // 宽高
-                    ,btn: ['确定', '取消']
-                    ,yes: function(index, layero){
-                        //点击确认触发 iframe 内容中的按钮提交
-                        var submit = layero.find('iframe').contents().find("#kFormSubmit");
-                        submit.click();
-                    }
-                });
-            }
-            if (layEvent === 'del') {
-                layer.confirm('确定删除吗？', function(index) {
-                    //执行 Ajax 后重载
-                    $.ajax({
-                        type: req.type.post,
-                        url: BASE_WEB + 'func/testPaper/del/' + data.id,
-                        async: false,
-                        success: function (r) {
-                            if (r.code === req.status.ok) {
-                                table.reload(tableId);
-                                kvfKit.sucessMsg('已删除');
-                            } else {
-                                kvfKit.errorMsg(r.msg);
-                            }
-                        }
-                    });
                 });
             }
         });
@@ -203,7 +162,6 @@
 
         // 绑定监听回车事件
         kvfKit.bindEnterEventForLayuiForm();
-
     });
 </script>
 

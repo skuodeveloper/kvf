@@ -17,6 +17,7 @@ import java.util.Date;
  * <p>
  * 用户管理
  * </p>
+ *
  * @since 2020-07-23 18:07:18
  */
 @Data
@@ -28,13 +29,13 @@ public class WxUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 
+     *
      */
     private String openid;
 
@@ -69,12 +70,12 @@ public class WxUser extends BaseEntity {
     private String headimgurl;
 
     /**
-     * 
+     *
      */
     private String privilege;
 
     /**
-     * 
+     *
      */
     private String unionid;
 
@@ -109,19 +110,24 @@ public class WxUser extends BaseEntity {
     private String invitedCode;
 
     /**
-    是否计算过
+     * 是否计算过
      */
     private String calculate;
 
     /**
-    推广人数
+     * 推广人数
      */
     private Integer tgrs;
 
     /**
      * 积分
      */
-    private float jf;
+    private Float jf;
+
+    /**
+     * 根邀请码
+     */
+    private String rootInvitedCode;
 
     /**
      * 创建时间
@@ -143,4 +149,12 @@ public class WxUser extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date enddate;
 
+    @TableField(exist = false)
+    private Integer telnull;
+
+    @TableField(exist = false)
+    private Integer tgrsMin = 0;
+
+    @TableField(exist = false)
+    private Integer tgrsMax = Integer.MAX_VALUE;
 }

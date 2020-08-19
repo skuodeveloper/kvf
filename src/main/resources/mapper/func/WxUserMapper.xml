@@ -25,12 +25,13 @@
         <result column="tgrs" property="tgrs" />
         <result column="jf" property="jf" />
         <result column="calculate" property="calculate" />
+        <result column="root_invited_code" property="rootInvitedCode" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
        id, openid, nickname, sex, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code,
-       create_time, update_time,calculate,tgrs,jf
+       create_time, update_time,calculate,tgrs,jf,root_invited_code
     </sql>
 
     <select id="selectWxUserList" resultType="com.kalvin.kvf.modules.func.entity.WxUser">
@@ -72,6 +73,9 @@
             <if test="wxUser.companyName != null and wxUser.companyName != ''">
                 and company_name like concat("%", #{wxUser.companyName}, "%")
             </if>
+            <if test="wxUser.rootInvitedCode != null and wxUser.rootInvitedCode != ''">
+                and root_invited_code like concat("%", #{wxUser.rootInvitedCode}, "%")
+            </if>
             <if test="wxUser.parentInvitedCode != null and wxUser.parentInvitedCode != ''">
                 and parent_invited_code like concat("%", #{wxUser.parentInvitedCode}, "%")
             </if>
@@ -81,6 +85,9 @@
             <if test="wxUser.tel != null and wxUser.tel != ''">
                 and tel like concat(#{wxUser.tel}, "%")
             </if>
+            <if test="wxUser.telnull == 1">
+                and (tel is null or tel = '')
+            </if>
             <if test="wxUser.invitedCode != null and wxUser.invitedCode != ''">
                 and invited_code like concat(#{wxUser.invitedCode}, "%")
             </if>
@@ -89,6 +96,12 @@
             </if>
             <if test="wxUser.enddate != null">
                 and create_time &lt;= #{wxUser.enddate}
+            </if>
+            <if test="wxUser.tgrsMin != null">
+                and tgrs &gt;= #{wxUser.tgrsMin}
+            </if>
+            <if test="wxUser.tgrsMax != null">
+                and tgrs &lt;= #{wxUser.tgrsMax}
             </if>
         </trim>
         order by create_time desc

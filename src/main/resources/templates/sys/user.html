@@ -28,13 +28,23 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">姓名</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="realname" placeholder="请输入" autocomplete="off" class="layui-input">
+                                        <input type="text" name="realname" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-inline">
                                     <label class="layui-form-label">用户名</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="username" placeholder="请输入" autocomplete="off" class="layui-input">
+                                        <input type="text" name="username" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">邀请码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="inviteCode" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-inline">
@@ -46,6 +56,13 @@
                                             <option value="1">禁用</option>
                                         </select>
                                     </div>
+                                </div>
+
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">所属部门</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="deptId" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-inline">
                                     <button class="layui-btn " lay-submit="" lay-filter="kTableSearchFilter">
@@ -130,52 +147,88 @@
 <script type="text/html" id="rowToolbarTpl">
     <a class="layui-btn layui-bg-orange layui-btn-xs" lay-event="reset"><i class="layui-icon layui-icon-password"></i>重置密码</a>
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
 </script>
 
+<script th:src="@{/static/js/select-tree.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     layui.use(['element', 'form', 'layer', 'table'], function () {
         var elemet = layui.element, form = layui.form, layer = layui.layer, table = layui.table;
         var tableId = 'kContentTable';
 
+        // 下拉树
+        var deptSelectTreeObj = initSelectTree("deptId", {
+            async: {
+                enable: true,
+                type: req.type.get,
+                url: api.sys.deptListTree,
+                autoParam: ["id=parentId"],
+                otherParam: {},
+                dataFilter: function (treeId, parentNode, responseData) {
+                    if (!responseData.data) {
+                        return null;
+                    }
+                    var nodes = responseData.data;
+                    $.each(nodes, function (i, n) {
+                        if (n.type === 0 || n.type === 1) {
+                            n.isParent = true;
+                        }
+                    });
+                    return nodes;
+                }
+            },
+            callback: {
+                beforeClick: function (treeId, treeNode, clickFlag) {
+                    console.log(treeNode);
+                    if (treeNode.level === 0) { // 不可选中
+                        return false;
+                    }
+                }
+            }
+        });
+
+        var deptNode = deptSelectTreeObj.getNodeByParam("id", 0, null);
+        deptSelectTreeObj.expandNode(deptNode);
+
         // 实例化table
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
-            ,url: api.sys.userListData //数据接口
-            ,toolbar: '#headToolbarTpl'
-            ,cols: [[ //表头
-                {type:'checkbox', fixed: 'left'}
-                ,{field: 'realname', title: '姓名', width:100}
-                ,{field: 'username', title: '用户名', width:100}
-                ,{field: 'deptId', title: '所属部门', sort: true, templet: '#deptTpl'}
-                ,{field: 'roleNames', title: '角色', width:120, templet: '#roleNamesTpl'}
-                ,{field: 'sex', title: '性别', width:80, sort: true, templet: '#sexTpl'}
-                ,{field: 'phone', title: '手机号码', sort: true, width:150}
-                ,{field: 'qrcode', title: '二维码', templet: '#qrcodeTpl', width:220}
-                ,{field: 'inviteCode', title: '邀请码', sort: true, width:150}
-                ,{field: 'status', title: '用户状态', align: 'center', sort: true, templet: '#statusTpl', width: 100}
-                ,{field: 'createTime', title: '创建时间', width: 200, templet: "#timeTpl", align: 'center' }
-                ,{field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl'}
+            , url: api.sys.userListData //数据接口
+            , toolbar: '#headToolbarTpl'
+            , cols: [[ //表头
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'realname', title: '姓名', width: 100}
+                , {field: 'username', title: '用户名', width: 100}
+                , {field: 'deptId', title: '所属部门', sort: true, templet: '#deptTpl'}
+                , {field: 'roleNames', title: '角色', width: 120, templet: '#roleNamesTpl'}
+                , {field: 'sex', title: '性别', width: 80, sort: true, templet: '#sexTpl'}
+                , {field: 'phone', title: '手机号码', sort: true, width: 150}
+                , {field: 'qrcode', title: '二维码', templet: '#qrcodeTpl', width: 220}
+                , {field: 'inviteCode', title: '邀请码', sort: true, width: 150}
+                , {field: 'status', title: '用户状态', align: 'center', sort: true, templet: '#statusTpl', width: 100}
+                , {field: 'createTime', title: '创建时间', width: 200, templet: "#timeTpl", align: 'center'}
+                , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl'}
             ]]
-            ,height: 'full-150'
+            , height: 'full-150'
         }));
 
         var area = ['449px', '95%'];
 
         // 监听表格头部事件
-        table.on('toolbar(' + tableId + ')', function(obj){
+        table.on('toolbar(' + tableId + ')', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             var checkData = checkStatus.data; // 得到选中的数据
-            switch(obj.event) {
+            switch (obj.event) {
                 case 'add':
                     layer.open({
                         type: 2
-                        ,title: '添加用户'
-                        ,content: api.sys.userEditView
-                        ,maxmin: true
-                        ,area: area   // 宽高
-                        ,btn: ['确定', '取消']
-                        ,yes: function(index, layero){
+                        , title: '添加用户'
+                        , content: api.sys.userEditView
+                        , maxmin: true
+                        , area: area   // 宽高
+                        , btn: ['确定', '取消']
+                        , yes: function (index, layero) {
                             //点击确认触发 iframe 内容中的按钮提交
                             var submit = layero.find('iframe').contents().find("#kFormSubmit");
                             submit.click();
@@ -183,13 +236,13 @@
                     });
                     break;
                 case 'batchdel':
-                    if(checkData.length === 0){
+                    if (checkData.length === 0) {
                         return kvfKit.warningMsg('请选择数据');
                     }
-                    layer.confirm('确定删除吗？', function(index) {
+                    layer.confirm('确定删除吗？', function (index) {
 
                         var ids = [];
-                        $.each(checkData, function(i, n){
+                        $.each(checkData, function (i, n) {
                             ids[i] = n.id;
                         });
 
@@ -220,7 +273,7 @@
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
             if (layEvent === 'del') {
-                layer.confirm('确定删除吗？', function(index) {
+                layer.confirm('确定删除吗？', function (index) {
 
                     //执行 Ajax 后重载
                     $.ajax({
@@ -241,12 +294,12 @@
             if (layEvent === 'edit') {
                 layer.open({
                     type: 2
-                    ,title: '编辑用户'
-                    ,content:  api.sys.userEditView + '?id=' + data.id
-                    ,maxmin: true
-                    ,area: area   // 宽高
-                    ,btn: ['确定', '取消']
-                    ,yes: function(index, layero){
+                    , title: '编辑用户'
+                    , content: api.sys.userEditView + '?id=' + data.id
+                    , maxmin: true
+                    , area: area   // 宽高
+                    , btn: ['确定', '取消']
+                    , yes: function (index, layero) {
                         //点击确认触发 iframe 内容中的按钮提交
                         var submit = layero.find('iframe').contents().find("#kFormSubmit");
                         submit.click();
@@ -289,7 +342,7 @@
 
             tableIns.reload({
                 where: params,
-                page: {current: 1}
+                page: {curr: 1}
             });
         }
 
@@ -309,8 +362,8 @@
             type: 1,
             shade: 0.8,
             offset: 'auto',
-            area: [500 + 'px',550+'px'],  // area: [width + 'px',height+'px']  //原图显示
-            shadeClose:true,
+            area: [500 + 'px', 550 + 'px'],  // area: [width + 'px',height+'px']  //原图显示
+            shadeClose: true,
             scrollbar: false,
             title: "图片预览", //不显示标题
             content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响

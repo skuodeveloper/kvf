@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -91,8 +92,12 @@ public class UserController extends BaseController {
 
     @GetMapping(value = "list/data")
     public R listData(UserQueryVO queryVO) {
-        Page<User> page = userService.listUserPage (queryVO);
-        return R.ok (page);
+        try {
+            Page<User> page = userService.listUserPage (queryVO);
+            return R.ok (page);
+        }catch (Exception ex){
+            return R.fail (ex.getMessage ());
+        }
     }
 
     @RequiresPermissions("sys:user:add")

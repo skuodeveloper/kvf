@@ -39,11 +39,14 @@
             <if test="queryVO.realname != null and queryVO.realname != ''">
                 AND realname LIKE concat("%", #{queryVO.realname, jdbcType=VARCHAR}, "%")
             </if>
-            <!--<if test="phone != null">
-                AND phone LIKE concat("%", #{phone, jdbcType=BIGINT}, "%")
-            </if>-->
+            <if test="queryVO.inviteCode != null and queryVO.inviteCode != ''">
+                AND invite_code LIKE concat(#{queryVO.inviteCode, jdbcType=VARCHAR}, "%")
+            </if>
             <if test="queryVO.status != null">
                 AND status = #{queryVO.status, jdbcType=INTEGER}
+            </if>
+            <if test="queryVO.deptId != null">
+                AND dept_id = #{queryVO.deptId, jdbcType=INTEGER}
             </if>
             <if test="queryVO.depts != null">
                 AND dept_id IN

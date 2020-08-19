@@ -2,29 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>微信接口地址获取测试</title>
+    <title>积分详情</title>
 </head>
 <script src="js/jweixin-1.6.0.js"></script>
 <script src="js/jquery.min.js"></script>
-<script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=1M1TEW2Q0cZvrqGevH76lgH7EMrFimO1"></script>
 <body>
-<div style="width: 100%">
-    <button id="btnGet" style="width: 50%;height: 100px;font-size: 30px;margin: 200px">获取微信接口物理地址</button>
-</div>
+
 <script>
+    var href = window.location.href;
+    var url = href.split('#')[0];//截取当前地址栏的URL，（不带#hash部分）
+
     $.ajax({
         type: 'GET',
-        url: 'http://nhmsfz.fanchance.com//api/v1/wechat/getTickets',
+        url: 'http://nhmsfz.fanchance.com/api/v1/wechat/getTickets',
         data: {
-            url: window.location.href
+            url: url
         },
         dataType: 'json',
         success: function (r) {
             if (r.code === 200) {
                 var data = r.data;
+
                 wx.config({
                     // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                    appId: 'wx719c937ea903be65', // 必填，公众号的唯一标识
+                    // appId: 'wx719c937ea903be65', // 必填，公众号的唯一标识 test
+                    appId: 'wx5b66c0f1cfaae239',
                     timestamp: data.timestamp, // 必填，生成签名的时间戳
                     nonceStr: data.nonceStr, // 必填，生成签名的随机串
                     signature: data.signature,// 必填，签名
@@ -33,12 +35,10 @@
 
                 wx.ready(function () {
                     wx.getLocation({
+                        type: 'wgs84',
                         success: function (res) {
                             var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
                             var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                            var speed = res.speed; // 速度，以米/每秒计
-                            var accuracy = res.accuracy; // 位置精度
-                            alert("获取地理位置成功，经纬度为：（" + res.latitude + "，" + res.longitude + "）");
                             getWxLocation(latitude, longitude);
                         },
                         fail: function (error) {
@@ -53,20 +53,6 @@
         }
     })
 
-    //获取当前城市,行政区 // 百度地图API功能
-    function getBaiduLocation(longitude, latitude) {
-        var address = "";
-        var point = new BMap.Point(longitude, latitude);
-        var gc = new BMap.Geocoder();
-
-        gc.getLocation(point, function (rs) {
-            var addComp = rs.addressComponents;
-            //详细地址为省，市，行政区，街道，街道地址
-            address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
-            alert('百度接口地址:' + address);
-        });
-    }
-
     function getWxLocation(lat, lng) {
         $.ajax({
             type: 'get',
@@ -77,38 +63,28 @@
                 location: lat + "," + lng,//位置坐标
                 get_poi: "0",//是否返回周边POI列表：1.返回；0不返回(默认)
                 coord_type: "1",//输入的locations的坐标类型,1 GPS坐标
-                parameter: { "scene_type": "tohome", "poi_num": 20 },//附加控制功能
+                parameter: {"scene_type": "tohome", "poi_num": 20},//附加控制功能
                 output: "jsonp"
             },
             success: function (data, textStatus) {
                 if (data.status == 0) {
                     var address = data.result.formatted_addresses.recommend;
-                    alert(data.result.address + address);
+// alert(data.result.address + address);
+                    sessionStorage.setItem('address', address);
+                    sessionStorage.setItem('latitude', lat);
+                    sessionStorage.setItem('longitude', lng);
+                    window.location.href = 'userhistory.html';
                 } else {
                     alert(JSON.stringify(data));
                 }
             },
             error: function () {
-                alert("位置获取错误1，请联系管理员！")
+                alert("位置获取错误！")
             }
         });
     }
 
-    $(document).on('click', '#btnGet', function () {
-        wx.getLocation({
-            type: 'wgs84',
-            success: function (res) {
-                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                alert("获取地理位置成功，经纬度为：（" + res.latitude + "，" + res.longitude + "）");
-                getWxLocation(latitude, longitude);
-            },
-            fail: function (error) {
-                alert(JSON.stringify(error));
-            }
-        });
-
-    })
 </script>
+<script type="text/javascript" src="//js.users.51.la/20911027.js"></script>
 </body>
 </html>
