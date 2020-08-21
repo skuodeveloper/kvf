@@ -23,5 +23,19 @@ public interface WxUserMapper extends BaseMapper<WxUser> {
      */
     List<WxUser> selectWxUserList(@Param ("wxUser") WxUser wxUser, IPage page);
 
+    /**
+     * 查询列表(分页)
+     * @param wxUser 查询参数
+     * @return list
+     */
+    List<WxUser> drawWxUserList(@Param ("wxUser") WxUser wxUser);
+
+    /**
+     * 查询列表(分页)
+     * @param wxUser 查询参数
+     * @return list
+     */
+    List<WxUser> luckWxUserList(@Param ("wxUser") WxUser wxUser, IPage page);
+
     int updWxInfo(@Param ("wxUser") WxUser wxUser);
 }

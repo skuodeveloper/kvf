@@ -54,6 +54,17 @@
                                 </div>
 
                                 <div class="layui-inline">
+                                    <label class="layui-form-label">是否必答</label>
+                                    <div class="layui-input-inline">
+                                        <select class="layui-select" name="isnecessary">
+                                            <option value="">请选择</option>
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
                                     <button class="layui-btn " lay-submit="" lay-filter="kTableSearchFilter">
                                         <i class="layui-icon layui-icon-search"></i>
                                     </button>
@@ -110,6 +121,14 @@
     {{# } }}
 </script>
 
+<script type="text/html" id="necessaryTpl">
+    {{#  if(d.isnecessary == 1){ }}
+    <span class="layui-badge layui-bg-green">是</span>
+    {{#  } else { }}
+    <span class="layui-badge">否</span>
+    {{# } }}
+</script>
+
 <script type="text/html" id="subjectTypeTpl">
     {{# var data = kvfKit.get(api.sys.dictData + d.subjectType).data; }}
     {{# return data.name; }}
@@ -151,6 +170,7 @@
             , toolbar: '#headToolbarTpl'
             , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'id', width: 100, align: 'center'}
                 , {field: 'subjectType', title: '题目类型', width: 100, templet: '#subjectTypeTpl', align: 'center'}
                 , {field: 'type', title: '宣讲类型', width: 100, templet: '#typeTpl', align: 'center'}
                 , {field: 'example', title: '案例', width: 300, align: 'center'}
@@ -158,8 +178,8 @@
                 , {field: 'answer', title: '答案', width: 300, templet: '#answerTpl', align: 'center'}
                 , {field: 'score', title: '分数权重', width: 100, align: 'center'}
                 , {field: 'status', title: '状态', width: 100, templet: '#statusTpl', align: 'center'}
-                // ,{field: 'createBy', title: '创建人', width: 130, align: 'center' }
-                // ,{field: 'createTime', title: '创建时间', width: 130, align: 'center' }
+                , {field: 'isnecessary', title: '是否必答', width: 130, templet: '#necessaryTpl', align: 'center' }
+                , {field: 'createTime', title: '创建时间', width: 130, align: 'center' }
                 // ,{field: 'updateBy', title: '修改人', width: 130, align: 'center' }
                 // ,{field: 'updateTime', title: '修改时间', width: 130, align: 'center' }
                 , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}

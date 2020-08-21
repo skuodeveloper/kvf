@@ -1,5 +1,7 @@
 package com.kalvin.kvf.modules.func.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.controller.BaseCrudRestController;
@@ -148,29 +150,58 @@ public class QuestionBankController extends BaseCrudRestController {
 
     @GetMapping(value = "getRandQuestion")
     public R getRandQuestion() {
-        List<QuestionBank> questionBanks = questionBankService.list (
-                new QueryWrapper<QuestionBank> ()
-                        .eq ("status", 0)
-                        .orderByDesc ("RAND()")
-                        .last ("limit 10"));
+        try {
+            List<QuestionBank> questionBanks;
 
-        ObjectMapper mapper = new ObjectMapper ();
-        mapper.configure (JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        for (QuestionBank o : questionBanks) {
-            try {
-                List<AnswerDto> answerDtos = mapper.readValue (o.getAnswer (),
-                        new TypeReference<List<AnswerDto>> () {
-                        });
-                o.setAnswerDtos (answerDtos);
-            } catch (IOException ex) {
-                ex.printStackTrace ();
+            // 必答题目总数
+            int necessaryCnt = questionBankService.count (
+                    new LambdaQueryWrapper<QuestionBank> ()
+                            .eq (QuestionBank::getStatus, 0)
+                            .eq (QuestionBank::getIsnecessary, 1));
+
+            if (necessaryCnt >= 10) {
+                questionBanks = questionBankService.list (
+                        new QueryWrapper<QuestionBank> ()
+                                .eq ("status", 0)
+                                .eq ("isnecessary", 1)
+                                .orderByDesc ("RAND()")
+                                .last ("limit 10"));
+            } else if (necessaryCnt == 0) {
+                questionBanks = questionBankService.list (
+                        new QueryWrapper<QuestionBank> ()
+                                .eq ("status", 0)
+                                .orderByDesc ("RAND()")
+                                .last ("limit 10"));
+            } else {
+                questionBanks = questionBankService.list (
+                        new QueryWrapper<QuestionBank> ()
+                                .eq ("status", 0)
+                                .eq ("isnecessary", 1)
+                                .last ("limit " + necessaryCnt));
+
+                List<QuestionBank> notnecessary = questionBankService.list (
+                        new QueryWrapper<QuestionBank> ()
+                                .eq ("status", 0)
+                                .ne ("isnecessary", 1)
+                                .orderByDesc ("RAND()")
+                                .last ("limit " + (10 - necessaryCnt)));
+
+                questionBanks.addAll (notnecessary);
             }
+
+            for (QuestionBank o : questionBanks) {
+                List<AnswerDto> answerDtos = JSON.parseArray (o.getAnswer (), AnswerDto.class);
+                o.setAnswerDtos (answerDtos);
+            }
+
+            questionBanks.sort (Comparator.comparing (QuestionBank::getSubjectType));
+            List<QuestionBankVo> questionBankVos = super.convertToVoAndBindRelations (questionBanks, QuestionBankVo.class);
+
+            return R.ok (questionBankVos);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
         }
 
-        questionBanks.sort (Comparator.comparing (QuestionBank::getSubjectType));
-        List<QuestionBankVo> questionBankVos = super.convertToVoAndBindRelations (questionBanks, QuestionBankVo.class);
-
-        return R.ok (questionBankVos);
     }
 }
 

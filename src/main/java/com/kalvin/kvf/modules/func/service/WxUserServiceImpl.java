@@ -25,6 +25,13 @@ public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> impleme
     }
 
     @Override
+    public Page<WxUser> luckWxUserList(WxUser wxUser) {
+        Page<WxUser> page = new Page<>(wxUser.getCurrent(), wxUser.getSize());
+        List<WxUser> wxUsers = baseMapper.luckWxUserList(wxUser, page);
+        return page.setRecords(wxUsers);
+    }
+
+    @Override
     public int updWxInfo(WxUser wxUser){
         return baseMapper.updWxInfo (wxUser);
     }

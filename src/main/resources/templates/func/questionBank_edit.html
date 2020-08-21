@@ -77,6 +77,13 @@
             <input type="radio" name="status" value="1" title="禁用" autocomplete="off" class="layui-input" th:checked="${editInfo.status==1}">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否必答</label>
+        <div class="layui-input-block">
+            <input type="radio" name="isnecessary" value="0" title="否" autocomplete="off" class="layui-input" th:checked="${editInfo.isnecessary==0}">
+            <input type="radio" name="isnecessary" value="1" title="是" autocomplete="off" class="layui-input" th:checked="${editInfo.isnecessary==1}">
+        </div>
+    </div>
 
     <div class="layui-form-item layui-hide">
         <input type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit" value="确认添加">
@@ -118,13 +125,21 @@
                 questions.push( $(this).val() );
             });
 
+            var isChecked = false;
             $('input[type=checkbox]').each(function () {
                 var ques = new Answer();
                 ques.answer = questions[i];
                 ques.value = $(this).prop('checked');
                 answers.push(ques);
+
+                isChecked = isChecked || ques.value;
                 i++;
             });
+
+            if (!isChecked){
+                layer.msg("请选择答案!");
+                return;
+            }
 
             field.answer = JSON.stringify(answers).replace(/"/g,"PASSWWORD");// 框架把json的双引号去掉了
 

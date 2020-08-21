@@ -19,5 +19,12 @@ public interface WxUserService extends IService<WxUser> {
      */
     Page<WxUser> listWxUserPage(WxUser wxUser);
 
+    /**
+     * 获取列表。分页
+     * @param wxUser 查询参数
+     * @return page
+     */
+    Page<WxUser> luckWxUserList(WxUser wxUser);
+
     int updWxInfo(WxUser wxUser);
 }

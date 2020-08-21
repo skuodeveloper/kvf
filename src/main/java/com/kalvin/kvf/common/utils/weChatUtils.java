@@ -48,9 +48,9 @@ public class weChatUtils {
     public static WeChatAccessToken getAccessToken(String code) {
         String url = weChatUtils.getAccessTokenUrl.replace ("APPID", weChatUtils.appId).replace ("SECRET", secret)
                 .replace ("CODE", code);
-        JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
-        return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
-//        return JSON.parseObject (httpRequest (url, "POST", null), WeChatAccessToken.class);
+//        JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
+//        return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
+        return JSON.parseObject (httpRequest (url, "POST", null), WeChatAccessToken.class);
     }
 
     /**
@@ -103,10 +103,10 @@ public class weChatUtils {
     public static WeChatAccessToken getRefreshAccessToken(String refreshToken) {
         String url = weChatUtils.getRefreshAccessTokenUrl.replace ("APPID", weChatUtils.appId).replace ("REFRESH_TOKEN",
                 refreshToken);
-        JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
-        return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
+//        JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
+//        return (WeChatAccessToken) JSONObject.toBean (jsonObj, WeChatAccessToken.class);
 
-//        return JSON.parseObject (httpRequest (url, "POST", null), WeChatAccessToken.class);
+        return JSON.parseObject (httpRequest (url, "POST", null), WeChatAccessToken.class);
     }
 
     /**
@@ -118,9 +118,9 @@ public class weChatUtils {
      */
     public static WechatUserinfo getWXUserInfoUrl(String openId, String accessToken) {
         String url = weChatUtils.getWXUserInfoUrl.replace ("OPENID", openId).replace ("ACCESS_TOKEN", accessToken);
-        JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
-        return (WechatUserinfo) JSONObject.toBean (jsonObj, WechatUserinfo.class);
-//        return JSON.parseObject (httpRequest (url, "POST", null), WechatUserinfo.class);
+//        JSONObject jsonObj = JSONObject.fromObject (httpRequest (url, "POST", null));
+//        return (WechatUserinfo) JSONObject.toBean (jsonObj, WechatUserinfo.class);
+        return JSON.parseObject (httpRequest (url, "POST", null), WechatUserinfo.class);
     }
 
     /**

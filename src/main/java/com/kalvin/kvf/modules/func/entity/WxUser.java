@@ -25,9 +25,6 @@ import java.util.Date;
 @Accessors(chain = true)
 @TableName("func_wx_user")
 public class WxUser extends BaseEntity {
-
-    private static final long serialVersionUID = 1L;
-
     /**
      *
      */
@@ -157,4 +154,7 @@ public class WxUser extends BaseEntity {
 
     @TableField(exist = false)
     private Integer tgrsMax = Integer.MAX_VALUE;
+
+    @TableField(exist = false)
+    private String title;
 }

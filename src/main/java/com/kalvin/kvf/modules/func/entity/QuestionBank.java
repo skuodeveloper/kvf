@@ -68,6 +68,11 @@ public class QuestionBank extends BaseEntity {
     private Integer status;
 
     /**
+     * 是否必答
+     */
+    private Integer isnecessary;
+
+    /**
      * 题目类型
      */
     private Long subjectType;

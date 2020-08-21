@@ -68,7 +68,7 @@
                 and unionid like concat(#{wxUser.unionid}, "%")
             </if>
             <if test="wxUser.personType != null and wxUser.personType != ''">
-                and person_type like concat(#{wxUser.personType}, "%")
+                and person_type = #{wxUser.personType}
             </if>
             <if test="wxUser.companyName != null and wxUser.companyName != ''">
                 and company_name like concat("%", #{wxUser.companyName}, "%")
@@ -105,6 +105,52 @@
             </if>
         </trim>
         order by create_time desc
+    </select>
+
+    <select id="drawWxUserList" resultType="com.kalvin.kvf.modules.func.entity.WxUser">
+        select <include refid="Base_Column_List" /> from func_wx_user
+        <trim prefix="where" prefixOverrides="and">
+            <if test="wxUser.personType != null and wxUser.personType != ''">
+                and person_type = #{wxUser.personType}
+            </if>
+            <if test="wxUser.rootInvitedCode != null and wxUser.rootInvitedCode != ''">
+                and root_invited_code like concat("%", #{wxUser.rootInvitedCode}, "%")
+            </if>
+            <if test="wxUser.tel != null and wxUser.tel != ''">
+                and tel like concat(#{wxUser.tel}, "%")
+            </if>
+            <if test="wxUser.telnull == 1">
+                and (tel is null or tel = '')
+            </if>
+            <if test="wxUser.startdate != null">
+                and create_time &gt;= #{wxUser.startdate}
+            </if>
+            <if test="wxUser.enddate != null">
+                and create_time &lt;= #{wxUser.enddate}
+            </if>
+        </trim>
+        order by RAND()
+        limit #{wxUser.tgrs}
+    </select>
+
+    <select id="luckWxUserList" resultType="com.kalvin.kvf.modules.func.entity.WxUser">
+        select S1.* from func_wx_user S1
+        right join func_luck_wxuser S2
+        on  S1.id = S2.wx_id
+--      推广人数的实际值是抽奖记录id,后端已有设置
+        <trim prefix="where" prefixOverrides="and">
+            and S2.luck_id = #{wxUser.tgrs}
+
+            <if test="wxUser.personType != null and wxUser.personType != ''">
+                and S1.person_type = #{wxUser.personType}
+            </if>
+            <if test="wxUser.nickname != null and wxUser.nickname != ''">
+                and S1. nickname like concat("%", #{wxUser.nickname}, "%")
+            </if>
+            <if test="wxUser.tel != null and wxUser.tel != ''">
+                and S1.tel like concat(#{wxUser.tel}, "%")
+            </if>
+        </trim>
     </select>
 
     <!-- 更新审批表-->

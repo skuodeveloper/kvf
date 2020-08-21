@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServlet;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,13 +93,6 @@ public class WxUserController extends BaseController {
         return R.ok (page);
     }
 
-    @RequiresPermissions("func:wxUser:add")
-    @PostMapping(value = "add")
-    public R add(WxUser wxUser) {
-        wxUserService.save (wxUser);
-        return R.ok ();
-    }
-
     @RequiresPermissions("func:wxUser:del")
     @PostMapping(value = "batchdel")
     public R batchdel(@RequestParam("ids") List<Long> ids) {
@@ -160,7 +152,7 @@ public class WxUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "getParentWxInfo")
-    public R getParentWxInfo(@RequestParam String inviteCode) {
+    public R getParentWxInfo(@RequestParam(required = false) String inviteCode) {
         if (StringUtils.isEmpty (inviteCode)) {
             return R.ok ();
         }
@@ -226,9 +218,9 @@ public class WxUserController extends BaseController {
             if (wxUsers.size () > 0) {
                 wxUser = wxUsers.get (0);
             } else if (score >= 60) {
-                if(wxUser.getParentInvitedCode ().startsWith ("F")) {
+                if (wxUser.getParentInvitedCode ().startsWith ("F")) {
                     wxUser.setRootInvitedCode (wxUser.getParentInvitedCode ());
-                }else {
+                } else {
                     WxUser parent = wxUserService.getOne (new LambdaQueryWrapper<WxUser> ()
                             .eq (WxUser::getInvitedCode, wxUser.getParentInvitedCode ()));
                     if (parent != null) {
