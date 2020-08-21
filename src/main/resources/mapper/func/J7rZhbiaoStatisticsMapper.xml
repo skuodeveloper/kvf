@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.J7rZhbiaoStatisticsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.J7rZhbiaoStatistics">
+        <id column="tjrq" property="tjrq" />
+        <result column="type" property="type" />
+        <result column="add_count" property="addCount" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       tjrq, type, add_count, create_time
+    </sql>
+
+    <select id="selectJ7rZhbiaoStatisticsList" resultType="com.kalvin.kvf.modules.func.entity.J7rZhbiaoStatistics">
+        select <include refid="Base_Column_List" /> from func_j7r_zhbiao_statistics
+        <trim prefix="where" prefixOverrides="and">
+            <if test="j7rZhbiaoStatistics.type != null and j7rZhbiaoStatistics.type != ''">
+                and type like concat(#{j7rZhbiaoStatistics.type}, "%")
+            </if>
+            <if test="j7rZhbiaoStatistics.addCount != null">
+                and add_count = #{j7rZhbiaoStatistics.addCount}
+            </if>
+            <if test="j7rZhbiaoStatistics.createTime != null">
+                and create_time = #{j7rZhbiaoStatistics.createTime}
+            </if>
+        </trim>
+    </select>
+
+</mapper>

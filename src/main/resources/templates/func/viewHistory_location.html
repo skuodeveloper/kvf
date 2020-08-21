@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="common/base::pagetitle"></title>
+    <link th:replace="common/base::static"/>
+
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=DVCBZ-XFS3W-PS7RN-R6VOT-KSVMF-RGBCS"></script>
+
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript" th:inline="javascript">
+    var editInfo = [[${editInfo}]];
+    var longitude = editInfo.longitude;
+    var latitude = editInfo.latitude;
+
+    function init() {
+        //设置地图中心点
+        var myLatlng = new qq.maps.LatLng(latitude, longitude);
+        //定义工厂模式函数
+        var myOptions = {
+            zoom: 16,               //设置地图缩放级别
+            center: myLatlng,      //设置中心点样式
+            mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
+        }
+        //获取dom元素添加地图信息
+        var map = new qq.maps.Map(document.getElementById("container"), myOptions);
+
+        //添加定时器
+        setTimeout(function () {
+            var marker = new qq.maps.Marker({
+                position: myLatlng,
+                animation: qq.maps.MarkerAnimation.DROP,
+                map: map
+            });
+
+            var infoWin = new qq.maps.InfoWindow({
+                map: map
+            });
+
+            infoWin.setContent(editInfo.address);
+            infoWin.setPosition(myLatlng);
+
+            qq.maps.event.addListener(marker, 'click', function () {
+                infoWin.open();
+
+                setTimeout(function(){
+                    infoWin.close();
+                },3000);
+            })
+        }, 1000);
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
