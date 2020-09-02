@@ -8,6 +8,7 @@ import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
 import com.kalvin.kvf.common.utils.HttpUtils;
 import com.kalvin.kvf.common.utils.QRCodeUtils;
+import com.kalvin.kvf.common.utils.ShiroKit;
 import com.kalvin.kvf.modules.func.entity.AnswerRecord;
 import com.kalvin.kvf.modules.func.entity.QuestionBank;
 import com.kalvin.kvf.modules.func.entity.TestPaper;
@@ -89,6 +90,11 @@ public class WxUserController extends BaseController {
             //这个时间就是日期往后推一天的结果
             wxUser.setEnddate (calendar.getTime ());
         }
+
+        if(!ShiroKit.getUser ().getUsername ().equals ("admin")){
+            wxUser.setRootInvitedCode (ShiroKit.getUser ().getInviteCode ());
+        }
+
         Page<WxUser> page = wxUserService.listWxUserPage (wxUser);
         return R.ok (page);
     }

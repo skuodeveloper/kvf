@@ -157,4 +157,9 @@ public class WxUser extends BaseEntity {
 
     @TableField(exist = false)
     private String title;
+
+    /**
+     * 是否中奖
+     */
+    private Integer isPrice;
 }

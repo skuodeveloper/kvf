@@ -22,7 +22,7 @@
                 <option th:each="questiontype : ${questiontypes}"
                         th:value="${questiontype.id}"
                         th:text="${questiontype.name}"
-                        th:selected="${questiontype.id == editInfo.subjectType}">
+                        th:selected="${questiontype.id} eq ${editInfo.subjectType}">
                 </option>
             </select>
             <input type="text" class="layui-hide" name="st" th:value="${editInfo.subjectType}">
@@ -65,7 +65,7 @@
                 <option th:each="xuanchuantype : ${xuanchuantypes}"
                         th:value="${xuanchuantype.id}"
                         th:text="${xuanchuantype.name}"
-                        th:selected="${xuanchuantype.id == editInfo.type}">
+                        th:selected="${xuanchuantype.id} == ${editInfo.type}">
                 </option>
             </select>
         </div>

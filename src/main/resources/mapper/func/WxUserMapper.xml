@@ -31,7 +31,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
        id, openid, nickname, sex, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code,
-       create_time, update_time,calculate,tgrs,jf,root_invited_code
+       create_time, update_time,calculate,tgrs,jf,root_invited_code,is_price
     </sql>
 
     <select id="selectWxUserList" resultType="com.kalvin.kvf.modules.func.entity.WxUser">
@@ -116,11 +116,17 @@
             <if test="wxUser.rootInvitedCode != null and wxUser.rootInvitedCode != ''">
                 and root_invited_code like concat("%", #{wxUser.rootInvitedCode}, "%")
             </if>
-            <if test="wxUser.tel != null and wxUser.tel != ''">
-                and tel like concat(#{wxUser.tel}, "%")
-            </if>
             <if test="wxUser.telnull == 1">
-                and (tel is null or tel = '')
+                and ( tel is not null and tel != '')
+            </if>
+            <if test="wxUser.telnull == 2">
+                and ( tel is null or tel = '')
+            </if>
+            <if test="wxUser.jf != null">
+                and tgrs >= #{wxUser.jf}
+            </if>
+            <if test="wxUser.isPrice == 0">
+                and is_price = 0
             </if>
             <if test="wxUser.startdate != null">
                 and create_time &gt;= #{wxUser.startdate}

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.kalvin.kvf.modules.func.entity.WxUser;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -38,4 +39,13 @@ public interface WxUserMapper extends BaseMapper<WxUser> {
     List<WxUser> luckWxUserList(@Param ("wxUser") WxUser wxUser, IPage page);
 
     int updWxInfo(@Param ("wxUser") WxUser wxUser);
+
+    /**
+     *
+     * @return
+     */
+    @Update ("update func_wx_user a,func_luck_wxuser b \n" +
+            "set a.is_price = 0 \n" +
+            "where a.id = b.wx_id and b.luck_id = #{luckId}")
+    int updisPrice(@Param ("luckId") Long luckId);
 }

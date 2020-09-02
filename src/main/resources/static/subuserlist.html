@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>人员统计</title>
+
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/vue.min.js" type="text/javascript"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        li {
+            list-style: none;
+            height: 45px;
+            line-height: 45px;
+        }
+
+        .title {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            border: 1px solid bisque;
+            border-radius: 8px;
+            background-color: #1E90FF;
+            position: relative;
+            top: 5px;
+            margin: 0px auto;
+            color: white;
+        }
+
+    </style>
+</head>
+<body style="background-color: bisque">
+<div id="news" style="margin: 10px; height: 96%;border-radius: 8px">
+    <div style="width:100%;text-align: center;height: 40px;">
+        <p class="title">人员数量统计</p>
+    </div>
+
+    <ul style="margin-top: 20px;border-radius: 8px;background-color: white;">
+        <li>
+            <div style="float: left; width: 50%;text-align: center;font-size: 20px;font-weight: 500;color: #d84f4b;">
+                等级
+            </div>
+            <div style="float: left; width: 50%;text-align: center;font-size: 20px;font-weight: 500;color: #d84f4b;">
+                数量
+            </div>
+        </li>
+
+        <li v-for="(item,index) in wxRank">
+            <div style="float: left; width: 50%;height:45px;text-align: center;font-size: 20px;font-weight: 500">
+                {{item.nlevel}}级
+            </div>
+            <div style="float: left; width: 50%;height:45px;text-align: center;font-size: 20px;font-weight: 500">
+                {{item.count}}人
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script>
+    function getUrlParameter(name) {
+        name = name.replace(/[]/, "\[").replace(/[]/, "\[").replace(/[]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.parent.location.href);
+        if (results == null)
+            return "";
+        else {
+            return results[1];
+        }
+    }
+
+    var inviteCode = getUrlParameter('inviteCode');
+
+    var news = new Vue({
+        el: '#news',
+        data: {
+            wxRank: []
+        }
+    });
+
+    getSubLevel();
+
+    function getSubLevel() {
+        $.ajax({
+            url: "http://nhmsfz.fanchance.com/func/pesonStatistics/getSubLevel",
+            type: "get",
+            data: {inviteCode: inviteCode},
+            dataType: "json",
+            success: function (r) {
+                news.wxRank = r.data;
+                console.log(news.wxRank);
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+</body>
+</html>

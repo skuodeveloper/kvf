@@ -104,13 +104,13 @@ public class UserController extends BaseController {
     @Transactional
     @PostMapping(value = "add")
     public R add(User user, @RequestParam("roleIds") List<Long> roleIds) {
-        user.setQrcode (getQRCode (user));
         user.setDeptId (user.getDeptId () == null ? 0 : user.getDeptId ());
         user.setCreateTime (new Date ());
         // 生成用户初始密码并加密
         user.setPassword (CryptionKit.genUserPwd ());
         userService.saveOrUpdate (user);
         user.setInviteCode ("F" + (100000 + user.getId ()));
+        user.setQrcode (getQRCode (user));
         userService.saveOrUpdate (user);
         userRoleService.saveOrUpdateBatchUserRole (roleIds, user.getId ());
         return R.ok ();

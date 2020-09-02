@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>镇街道统计</title>
+
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/vue.min.js" type="text/javascript"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        li {
+            list-style: none;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .title {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            border: 1px solid bisque;
+            border-radius: 8px;
+            background-color: #1E90FF;
+            position: relative;
+            top: 5px;
+            margin: 0px auto;
+            color: white;
+        }
+
+        .head {
+            float: left;
+            width: 20%;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 500;
+            color: #d84f4b;
+        }
+
+        .pm {
+            float: left;
+            width: 18%;
+            text-align: center;
+            height: 40px;
+        }
+
+        .dw {
+            float: left;
+            width: 20%;
+            text-align: center;
+            font-weight: 600
+        }
+
+        .div1 {
+            width: 100%;
+            height: 40px;
+            text-align: center;
+            margin: 0px auto;
+            border-radius: 10px;
+            padding-top: 15px;
+        }
+
+        .ljrs {
+            width: 30%;
+            float: left;
+            margin-left: 3%;
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 5px 0px;
+        }
+
+        .jrrs {
+            width: 30%;
+            float: left;
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 5px 0px;
+            margin-left: 2%;
+        }
+    </style>
+</head>
+<body style="background-color: bisque">
+<div id="news" style="margin: 10px; height: 96%;border-radius: 8px">
+    <div style="width:100%;text-align: center;height: 40px;">
+        <p class="title">码上防诈排行榜（镇街道）</p></div>
+
+    <div class="div1">
+        <div class="ljrs">
+            <div style="color: blue">实有人数</div>
+            <div style="color: blue;font-size: 25px">777547</div>
+        </div>
+        <div class="jrrs">
+            <div>累计人数</div>
+            <div style="font-size: 25px">{{deptRank.allCount}}</div>
+        </div>
+        <div class="jrrs">
+            <div>今日人数</div>
+            <div style="font-size: 25px">{{deptRank.allCount - deptRank.todayCount}}</div>
+        </div>
+    </div>
+
+    <ul style="margin-top: 35px;border-radius: 8px;background-color: white;">
+        <li>
+            <div class="head" style="width: 18%">排名</div>
+            <div class="head">单位</div>
+            <div class="head">总数</div>
+            <div class="head">今日</div>
+            <div class="head">覆盖率</div>
+        </li>
+        <li v-for="(item,index) in deptRank.tempDeptStatisticsVos">
+            <div v-if="index == 0" class="pm"><img
+                    src="image/logo/冠军.png" width="32" style="vertical-align: middle;"></div>
+            <div v-else-if="index == 1" class="pm"><img
+                    src="image/logo/亚军.png" width="32" style="vertical-align: middle;"></div>
+            <div v-else-if="index == 2" class="pm"><img
+                    src="image/logo/季军.png" width="32" style="vertical-align: middle;"></div>
+            <div v-else class="pm">{{index+1}}</div>
+
+            <div class="dw">{{item.deptname.substr(0,2)}}</div>
+            <div class="dw">
+                {{item.personCount}}
+            </div>
+            <div class="dw">
+                {{item.personCount - item.lastdayDeptStatistics.personCount}}
+            </div>
+            <div class="dw">
+                {{item.fgl}}%
+            </div>
+        </li>
+    </ul>
+
+    <div style="margin: 20px">
+        <p id="time" style="font-size: 13px; color: blue; text-align: right;"></p>
+    </div>
+</div>
+<script>
+    var news = new Vue({
+        el: '#news',
+        data: {
+            deptRank: {},
+            zjdData: []
+        }
+    });
+
+    getZjd();
+    getDeptrank();
+
+    $('.ljrs').click(function () {
+        $(location).prop('href', 'zjdrank.html');
+    });
+
+    function getDeptrank() {
+        $.ajax({
+            url: "http://nhmsfz.fanchance.com/func/tempDeptStatistics/getDeptRank",
+            type: "get",
+            dataType: "json",
+            success: function (r) {
+                news.deptRank = r.data;
+
+                // $.each(news.deptRank.tempDeptStatisticsVos, function (Index, info) {
+                //     info.fgl = (info.personCount / news.zjdData[Index].total * 100).toFixed(2);
+                // });
+
+                news.deptRank.tempDeptStatisticsVos.sort(function (a, b) {
+                    return b.fgl - a.fgl
+                });
+
+                $('#time').text('统计截止时间：' + getNowFormatDate());
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+
+        return currentdate;
+    }
+
+    function getZjd() {
+        $.getJSON("js/nhq.json", function (data) {
+            news.zjdData = data;
+        })
+    }
+</script>
+<script type="text/javascript" src="//js.users.51.la/20911027.js"></script>
+</body>
+</html>

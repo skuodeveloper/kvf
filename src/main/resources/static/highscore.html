@@ -118,15 +118,6 @@
         });
     }
 
-    //获取推广人数和积分
-    $('.qrcode').click(function () {
-        //获取图片路径
-        var imgsrc = $(this).attr("src");
-        var opacityBottom = '<div class="opacityBottom" style = "display:none"><img class="bigImg" src="' + imgsrc + '"></div>';
-        $(document.body).append(opacityBottom);
-        toBigImg();//变大函数
-    });
-
     //微信用户信息
     var userInfoJs = sessionStorage.getItem('userInfo');
     if (userInfoJs == null) {
@@ -144,6 +135,19 @@
             //获取推广人数和积分，并显示
             $('#p_count').text(wxUserInfo.tgrs);
             $('#p_percent').text(wxUserInfo.jf);
+
+            //获取推广人数和积分
+            $('.qrcode').click(function () {
+                //获取图片路径
+                var imgsrc = $(this).attr("src");
+                var opacityBottom = '<div class="opacityBottom" style = "display:none"><img class="bigImg" src="' + imgsrc + '"></div>';
+                $(document.body).append(opacityBottom);
+                toBigImg();//变大函数
+            });
+
+            $('#p_count').click(function () {
+                $(location).prop('href', 'subuserlist.html?inviteCode=' + wxUserInfo.invitedCode);
+            });
 
             $(document).on('click', '#finish', function () {
                 $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);

@@ -31,22 +31,26 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">电话号码</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="tel" placeholder="请输入电话号码" autocomplete="off"
-                                               class="layui-input">
+                                        <select class="layui-select" name="telnull">
+                                            <option value="">请选择</option>
+                                            <option value="1">有</option>
+                                            <option value="2">无</option>
+                                        </select>
                                     </div>
-                                </div>
-                                <div class="layui-inline" style="margin-left:-21px;">
-                                    <input class="chk" type="checkbox" id="telnull" name="telnull" lay-skin="primary"
-                                           title="无">
                                 </div>
                                 <div class="layui-inline">
                                     <label class="layui-form-label">抽奖人数</label>
                                     <div class="layui-input-inline">
-                                        <input type="test" name="tgrs" placeholder="请输入抽奖人数" autocomplete="off"
+                                        <input type="text" name="tgrs" placeholder="请输入抽奖人数" autocomplete="off"
                                                lay-verify="number"
                                                class="layui-input">
                                     </div>
                                 </div>
+                                <div class="layui-inline" style="margin-left:-21px;">
+                                    <input class="chk" type="checkbox" id="isPrice" name="isPrice" lay-skin="primary"
+                                           title="允许重复中奖">
+                                </div>
+
                             </div>
                             <div class="layui-form-item">
                                 <div class="layui-inline">
@@ -71,7 +75,14 @@
                                                placeholder="yyyy-MM-dd">
                                     </div>
                                 </div>
-
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">推广人数</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="jf" placeholder="请输入最低推广人数" autocomplete="off"
+                                               lay-verify="number"
+                                               class="layui-input">
+                                    </div>
+                                </div>
                                 <div class="layui-inline">
                                     <button class="layui-btn" type="button" lay-submit=""
                                             lay-filter="kTableSearchFilter">
@@ -102,6 +113,8 @@
 <!--表格行工具栏模板-->
 <script type="text/html" id="rowToolbarTpl">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>查看</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
 </script>
 
 <!--表格列格式化模板 start-->
@@ -127,7 +140,7 @@
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
             , url: BASE_WEB + 'func/luckDraw/list/data' // 数据接口
-            // ,toolbar: '#headToolbarTpl'
+            , toolbar: '#headToolbarTpl'
             , cols: [[ //表头
                 {field: 'id', title: 'id', width: 130, align: 'center'}
                 , {field: 'title', title: '抽奖主题', width: 200, align: 'center'}
@@ -155,15 +168,44 @@
                     , area: area   // 宽高
                 });
             }
+
+            if (layEvent === 'del') {
+                layer.confirm('确定删除吗？', function (index) {
+                    var loading = layer.load(0, {
+                        shade: false,
+                    });
+
+                    // 执行 Ajax 后重载
+                    $.ajax({
+                        type: req.type.post,
+                        url: BASE_WEB + 'func/luckDraw/del/' + data.id,
+                        success: function (r) {
+                            layer.close(loading);
+                            if (r.code === req.status.ok) {
+                                table.reload(tableId);
+                                kvfKit.sucessMsg('已删除');
+                            } else {
+                                kvfKit.errorMsg(r.msg);
+                            }
+                        },
+                        error: function (data) {
+                            layer.close(loading);
+                            alert(JSON.stringify(data));
+                        }
+                    });
+
+                    layer.close(index);
+                });
+            }
         });
 
 
         // 监听查询
         form.on('submit(kTableSearchFilter)', function (obj) {
-            if ($('#telnull').prop("checked")) {
-                obj.field.telnull = 1;
+            if ($('#isPrice').prop("checked")) {
+                obj.field.isPrice = 1;
             } else {
-                obj.field.telnull = 0;
+                obj.field.isPrice = 0;
             }
 
             layer.prompt({
@@ -185,7 +227,6 @@
                     dataType: "json",
                     success: function (r) {
                         layer.close(loading);
-
                         renderTableData(obj.field);
                     },
                     error: function (data) {

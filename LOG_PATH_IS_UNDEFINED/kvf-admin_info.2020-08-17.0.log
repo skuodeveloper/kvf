@@ -1,9 +1,0 @@
-2020-08-17 09:31:12.776 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 09:34:24.662 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 10:09:04.160 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 10:21:03.088 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 14:11:40.544 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 15:20:57.155 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 15:44:47.304 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 16:08:06.219 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active
-2020-08-17 17:11:06.114 [main] INFO  o.s.b.devtools.restart.RestartApplicationListener - Restart disabled due to an agent-based reloader being active

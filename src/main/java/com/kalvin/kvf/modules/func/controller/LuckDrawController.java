@@ -2,6 +2,7 @@ package com.kalvin.kvf.modules.func.controller;
 
 import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
@@ -40,13 +41,13 @@ import java.util.Map;
 @RequestMapping("func/luckDraw")
 public class LuckDrawController extends BaseController {
     @Resource
-    WxUserMapper wxUserMapper;
+    private WxUserMapper wxUserMapper;
 
     @Autowired
     private WxUserService wxUserService;
 
     @Resource
-    LuckWxuserService luckWxuserService;
+    private LuckWxuserService luckWxuserService;
 
     @Resource
     private LuckDrawService luckDrawService;
@@ -81,6 +82,17 @@ public class LuckDrawController extends BaseController {
         }
     }
 
+    @GetMapping(value = "export/data/{luckid}")
+    public R exportData(@PathVariable Long luckid, WxUser wxUser) {
+        try {
+            wxUser.setTgrs (luckid.intValue ());
+            List<WxUser> wxUsers = wxUserMapper.luckWxUserList (wxUser, null);
+            return R.ok (wxUsers);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
+    }
+
     @RequiresPermissions("func:luckDraw:add")
     @PostMapping(value = "add")
     public R add(LuckDraw luckDraw) {
@@ -105,8 +117,16 @@ public class LuckDrawController extends BaseController {
     @RequiresPermissions("func:luckDraw:del")
     @PostMapping(value = "del/{id}")
     public R del(@PathVariable Long id) {
-        luckDrawService.removeById (id);
-        return R.ok ();
+        try {
+            wxUserMapper.updisPrice (id);
+            luckDrawService.removeById (id);
+            luckWxuserService.remove (new LambdaQueryWrapper<LuckWxuser> ()
+                    .eq (LuckWxuser::getLuckId, id));
+
+            return R.ok ();
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
     }
 
     @GetMapping(value = "get/{id}")
@@ -115,7 +135,7 @@ public class LuckDrawController extends BaseController {
     }
 
 
-    //    @RequiresPermissions("func:luckDraw:draw")
+    @RequiresPermissions("func:luckDraw:draw")
     @GetMapping(value = "draw")
     public R draw(WxUser wxUser) {
         try {
@@ -179,6 +199,10 @@ public class LuckDrawController extends BaseController {
                 luckWxuser.setWxId (o.getId ());
 
                 luckWxusers.add (luckWxuser);
+
+                //主表做标记，已抽奖
+                o.setIsPrice (1);
+                wxUserMapper.updateById (o);
             }
 
             luckWxuserService.saveBatch (luckWxusers);
