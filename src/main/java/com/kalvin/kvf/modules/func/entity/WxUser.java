@@ -47,6 +47,26 @@ public class WxUser extends BaseEntity {
     private Integer sex;
 
     /**
+     * 年龄
+     */
+    private Integer age;
+
+    /**
+     * 职业
+     */
+    private String work;
+
+    /**
+     * 兴趣爱好
+     */
+    private String interest;
+
+    /**
+     * 年收入
+     */
+    private String salary;
+
+    /**
      * 省份
      */
     private String province;

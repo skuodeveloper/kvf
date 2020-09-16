@@ -18,7 +18,7 @@
         }
 
         body {
-            background-image: url('/static/image/logo/background.png');
+            background-image: url('/static/image/logo/background2.png');
             background-repeat: no-repeat;
             background-size: 100%, 100%;
             background-color: #08a2dc;
@@ -38,7 +38,7 @@
         }
 
         .rule_button {
-            width: 70px;
+            width: 120px;
             height: 28px;
             margin-top: 15px;
             text-align: center;
@@ -97,7 +97,7 @@
             left: 20px;
             right: 20px;
             background-color: white;
-            height: 300px;
+            height: 350px;
             z-index: 99;
             border-radius: 6px;
         }
@@ -109,7 +109,7 @@
             border-radius: 50%;
             background: rgba(0, 0, 0, .5);
             position: absolute;
-            top: 350px;
+            top: 450px;
             margin: auto;
             color: white;
             font-size: 30px;
@@ -125,7 +125,7 @@
         p {
             padding: 10px;
             margin: 10px;
-            height: 240px;
+            height: 290px;
             text-align: left;
             line-height: 1.5;
             font-size: 14px;
@@ -137,33 +137,27 @@
 
 <body>
 <div id="app">
-    <div class="rule_button">活动规则</div>
+    <div class="rule_button">致用户的一封信</div>
 
     <aside class="ur-mask" style="display: none">
         <div class="top">
-            <div class="title">活动规则
+            <div class="title">致用户的一封信
             </div>
         </div>
 
         <div class="rule_content">
             <div style="margin-top: 30px;">
                 <p>
-                    一、活动时间：2020年8月1日至8月31日，共31天。<br>
-                    二、组织单位：<br>
-                    主办单位：南湖区反诈人民战争领导小组办公室<br>
-                    协办单位：中国工商银行股份有限公司嘉兴南湖支行<br>
-                    技术支持：嘉兴市公安局南湖区分局研发中心<br>
-                    三、参与对象：关注“红船卫士”微信公众号的南湖区用户。<br>
-                    四、活动内容：<br>
-                    关注“红船卫士”微信公众号，或直接扫码，点击底部“码上防诈”即可参赛。进入活动页面后，点击“进入挑战”按钮—完成答题并通过后—登记人员类型、所在单位、手机号码等基本信息参加抽奖。<br>
-                    竞赛题型全部为标准化试题，有是非题、单选题、多选题三种。系统将随机抽取题库中的10题进行问答，每题10分，共计100分。 每位参赛者根据积分高低进行排名奖励。<br>
-                    五、积分规则：扫码答题参加活动，按规则进行积分。<br>
-                    六、奖励办法：本次竞赛活动设立300个奖项。<br>
-                    特等奖：2个 （价值1000元的奖品）<br>
-                    一等奖：8个 （价值800元的奖品）<br>
-                    二等奖：18个 （价值500元的奖品）<br>
-                    三等奖：72个 （价值300元的奖品）<br>
-                    幸运奖：200个 （价值50元的奖品）<br>
+                    平安南湖我知晓   平安南湖我参与<br><br>
+
+                    亲爱的居民朋友们，您们好!<br>
+                    近年来，我区各类案件事故全面下降，社会治安环境持续向好，为我区经济社会高质量发展提供了有力保障。特别是2019年，我区的平安创建取得了全省第八的好成绩，这其中离不开我们每一位居民朋友参与和支持！平安是福，平安是金，平安是您我的共同期盼，在平安创建的路上，我们更需要您一如既往的参与和支持！<br>
+                    居民朋友们，日常我们参与平安建设活动的方式很多，如：安全用电、安全用气、关注消防安全、不闯红灯、驾驶电动车戴头盔、过马路走斑马线等等，只要您做了任何对家庭和社会平安和谐有益的事，就是参与了平安建设，就是平安建设参与者、志愿者！为此，我们倡议：<br>
+                    您是家庭的一员，请与您的家人携手起来，做好安全防范工作，家庭和睦、尊老爱幼，共创平安家庭。<br>
+                    您是单位的一员，请与您的同事携手起来，服从安全管理，开展安全自查，增强自身防范，共创平安单位。<br>
+                    您是村(社区)的一员，请与您的邻里携手起来，积极参与邻里守望、平安服务、义务巡逻等活动，共创平安村(社区)。<br>
+                    您是社会中的一员，请您做到遵纪守法、文明礼貌、诚实守信，依法表达利益诉求，积极传播平安和谐理念。<br>
+                    赠人玫瑰、手有余香。让我们从小事做起，从身边做起，从现在做起，建“平安南湖”，打造“首善之区”，共享平安之福。<br><br>
                 </p>
             </div>
         </div>
@@ -180,7 +174,7 @@
             <img src='/static/image/logo/line.png' style="width: 90%">
         </div>
 
-        <div style="width:20%; float: left" v-for="(item,index) in users">
+        <div style="width:19.8%; float: left" v-for="(item,index) in users">
             <img style="width:60%;" :src=item.headimgurl>
         </div>
     </div>
@@ -218,7 +212,7 @@
          */
         $.ajax({
             type: 'GET',
-            url: 'http://nhmsfz.fanchance.com/func/wxUser/getParentWxInfo',
+            url: 'http://jxnhga.vaiwan.com/func/wxUser/getParentWxInfo',
             data: {
                 inviteCode: inviteCode
             },
@@ -238,11 +232,11 @@
             error: function (error) {
                 throw new Error(error);
             }
-        })
+        });
 
         $.ajax({
             type: 'GET',
-            url: 'http://nhmsfz.fanchance.com/func/wxUser/getLastPersons',
+            url: 'http://jxnhga.vaiwan.com/func/wxUser/getLastPersons',
             dataType: 'json',
             success: function (r) {
                 if (r.code == 200) {
@@ -256,11 +250,11 @@
 
         $('.rule_button').click(function () {
             $('.ur-mask').show();
-        })
+        });
 
         $('.close').click(function () {
             $('.ur-mask').hide();
-        })
+        });
 
         $('#start').click(function () {
             if(news.users == null || news.users == ''){

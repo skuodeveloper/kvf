@@ -51,6 +51,17 @@ public class TestPaperController extends BaseController {
         return R.ok(page);
     }
 
+    @GetMapping(value = "list/data/{recordId}")
+    public R listData(@PathVariable Long recordId, TestPaper testPaper) {
+        try {
+            testPaper.setRecordId (recordId);
+            Page<TestPaper> page = testPaperService.listTestPaperPage (testPaper);
+            return R.ok (page);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
+    }
+
     @RequiresPermissions("func:testPaper:add")
     @PostMapping(value = "add")
     public R add(TestPaper testPaper) {

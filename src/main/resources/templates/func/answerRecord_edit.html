@@ -1,85 +1,102 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title th:replace="common/base::pagetitle"></title>
     <link th:replace="common/base::static"/>
-</head>
-<body>
-<div class="layui-form" style="padding: 20px 30px 0 0;">
-    <div class="layui-form-item">
-        <label class="layui-form-label">用户id</label>
-        <div class="layui-input-inline">
-            <input type="text" name="userid" th:value="${editInfo.userid}" placeholder="请输入用户id" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">得分</label>
-        <div class="layui-input-inline">
-            <input type="text" name="score" th:value="${editInfo.score}" placeholder="请输入得分" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">正确题数</label>
-        <div class="layui-input-inline">
-            <input type="text" name="correctNum" th:value="${editInfo.correctNum}" placeholder="请输入正确题数" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">答题题数</label>
-        <div class="layui-input-inline">
-            <input type="text" name="questionNum" th:value="${editInfo.questionNum}" placeholder="请输入答题题数" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">创建时间</label>
-        <div class="layui-input-inline">
-            <input type="text" name="createTime" id="createTime" th:value="${#strings.replace(editInfo.createTime,'T',' ')}" lay-verify="required" placeholder="请输入创建时间" autocomplete="off" class="layui-input">
-        </div>
-    </div>
 
-    <div class="layui-form-item layui-hide">
-        <input type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit">
-        <input type="text" name="id" th:value="${editInfo.id}" autocomplete="off" class="layui-input">
+</head>
+<body style="background-color: #f2f2f2;">
+<div id="kPage" class="layui-fluid" style="padding: 0">
+    <div class="layui-row">
+        <div class="layui-col-md12" id="kMainContentCol">
+            <div class="layui-fluid kvf-fluid-padding15">
+                <div class="layui-card">
+                    <form>
+                    </form>
+
+                    <div class="layui-card-body">
+                        <table id="kContentTable" lay-filter="kContentTable"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 
 <script th:replace="common/base::context"></script>
 <script th:replace="common/base::mainjs"></script>
-<script>
-    layui.use(['form', 'laydate'], function () {
-        var $ = layui.$, form = layui.form, laydate = layui.laydate;
 
-
-        laydate.render({
-            elem: '#createTime' // 指定元素
-        });
-
-        //监听提交
-        form.on('submit(kFormSubmit)', function(data){
-            var field = data.field; //获取提交的字段
-            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-
-            var url = field.id ? 'func/answerRecord/edit' : 'func/answerRecord/add';
-            //提交 Ajax 成功后，关闭当前弹层并重载表格
-            $.ajax({
-                type: req.type.post,
-                url: BASE_WEB + url,
-                data: field,
-                async: false,
-                success: function (r) {
-                    if (r.code === req.status.ok) {
-                        // 重载表格
-                        parent.layui.table.reload('kContentTable');
-                        parent.layer.close(index); //再执行关闭
-                    } else {
-                        kvfKit.errorMsg(r.msg);
-                    }
-                }
-            });
-
-        });
-    })
+<script type="text/html" id="sexTpl">
+    {{#  if(d.isCorrect == 0){ }}
+    <span class="layui-badge layui-bg-blue">错误</span>
+    {{#  } else if(d.isCorrect == 1) { }}
+    <span class="layui-badge">正确</span>
+    {{#  } else { }}
+    <span class="layui-badge layui-bg-gray">未知</span>
+    {{# } }}
 </script>
+
+<script type="text/html" id="timeTpl">
+    <span>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</span>
+</script>
+
+<script>
+    var recordId = [[${recordId}]];
+</script>
+<script type="text/javascript" th:inline="javascript">
+    layui.use(['element', 'form', 'layer', 'table', 'laydate'], function () {
+        var form = layui.form, layer = layui.layer, table = layui.table,
+            laydate = layui.laydate, elemet = layui.element;
+
+        var tableId = 'kContentTable';
+        var area = ['449px', '95%'];
+
+        // 实例化table
+        var tableIns = table.render($.extend(config.layui.table, {
+            elem: '#' + tableId
+            , url: BASE_WEB + 'func/answerRecord/list/data/' + recordId // 数据接口
+            , height: 'full-220' //距离底部高度
+            , cols: [[ //表头
+                {field: 'questionBankId', title: '题目id', width: 130, align: 'center'}
+                , {field: 'answer', title: '答案', width: 600, align: 'center'}
+                , {field: 'isCorrect', title: '答题结果', width: 130, templet: '#sexTpl', align: 'center'}
+                , {field: 'createTime', title: '答题时间', width: 200, templet: "#timeTpl", align: 'center'}
+            ]]
+        }));
+
+        // 监听查询
+        form.on('submit(kTableSearchFilter)', function (obj) {
+            renderTableData(obj.field);
+            return false;
+        });
+
+        var active = {
+            refresh: function () {
+                var $form = $('form');
+                $form[0].reset();
+                renderTableData(kvfKit.getFormJson($form));
+            }
+        };
+
+        kvfKit.activeInit(active);
+
+        function renderTableData(params) {
+            params = params ? params : {};
+
+            tableIns.reload({
+                where: params,
+                page: {curr: 1}
+            });
+        }
+
+        // 绑定监听回车事件
+        kvfKit.bindEnterEventForLayuiForm();
+    });
+
+</script>
+
 </body>
 </html>

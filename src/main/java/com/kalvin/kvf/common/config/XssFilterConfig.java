@@ -12,7 +12,7 @@ import java.util.Map;
  * XssFilter配置
  * Create by Kalvin on 2019/6/25.
  */
-@Configuration
+//@Configuration
 public class XssFilterConfig {
 
     /**

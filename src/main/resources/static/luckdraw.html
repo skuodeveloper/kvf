@@ -140,7 +140,7 @@
                 userInfo.personType = $('#personType').val();
                 userInfo.companyName = $('#companyName').val();
                 userInfo.tel = $('#tel').val();
-
+                userInfo.interest = null;
                 updateInfo();
             })
 
@@ -155,7 +155,7 @@
      */
     function updateInfo() {
         $.ajax({
-            url: "http://nhmsfz.fanchance.com/func/wxUser/updateInfo",
+            url: "http://jxnhga.vaiwan.com/func/wxUser/updateInfo",
             data: JSON.stringify(userInfo),
             async: true,
             headers: {

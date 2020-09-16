@@ -67,9 +67,9 @@
 </head>
 <body style="background-color: bisque">
 <div style="text-align: center;margin: 50px;padding-bottom: 80px;background-color: white;border-radius:20px">
-    <img style="height: 400px;margin-top: 50px" src="/static/image/logo/success.jpg">
+    <img style="height: 500px;margin-top: 50px" src="/static/image/logo/suc.jpg">
     <div>
-        <p style="font-size: 80px;margin: 20px">历史最高得分<span class="score">--</span></p>
+        <p style="font-size: 60px;margin: 20px">历史最高得分<span class="score">--</span></p>
     </div>
 
     <div id="successDiv">
@@ -130,7 +130,7 @@
 
             var wxUserInfo = JSON.parse(sessionStorage.getItem('userInfo'));
             var stmp = new Date().getTime();
-            $('.qrcode').attr('src', 'http://nhmsfz.fanchance.com/' + wxUserInfo.qrcode + '?v=' + stmp);
+            $('.qrcode').attr('src', 'http://jxnhga.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
 
             //获取推广人数和积分，并显示
             $('#p_count').text(wxUserInfo.tgrs);
@@ -150,8 +150,14 @@
             });
 
             $(document).on('click', '#finish', function () {
-                $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
-            })
+                if(wxUserInfo.interest == null) {
+                    // 没有填过个人信息的，先跳转到填写个人信息界面
+                    $(location).prop('href', 'inputinfo.html?inviteCode=' + inviteCode + '&realname=' + realname);
+                }
+                else {
+                    $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
+                }
+            });
 
             $(document).on('click', '#history', function () {
                 $(location).prop('href', 'locationtest.html');

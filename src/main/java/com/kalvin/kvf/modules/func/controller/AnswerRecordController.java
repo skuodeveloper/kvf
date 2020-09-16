@@ -2,6 +2,8 @@ package com.kalvin.kvf.modules.func.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.controller.BaseCrudRestController;
+import com.kalvin.kvf.modules.func.entity.TestPaper;
+import com.kalvin.kvf.modules.func.service.TestPaperService;
 import com.kalvin.kvf.modules.func.vo.AnswerRecordVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import java.util.List;
 @RestController
 @RequestMapping("func/answerRecord")
 public class AnswerRecordController extends BaseCrudRestController {
+@Autowired
+    private TestPaperService testPaperService;
 
     @Autowired
     private AnswerRecordService answerRecordService;
@@ -37,27 +41,25 @@ public class AnswerRecordController extends BaseCrudRestController {
     @GetMapping(value = "edit")
     public ModelAndView edit(Long id) {
         ModelAndView mv = new ModelAndView("func/answerRecord_edit");
-        AnswerRecord answerRecord;
-        if (id == null) {
-            answerRecord = new AnswerRecord();
-        } else {
-            answerRecord = answerRecordService.getById(id);
-        }
-        mv.addObject("editInfo", answerRecord);
+        mv.addObject("recordId", id);
         return mv;
     }
 
     @GetMapping(value = "list/data")
     public R listData(AnswerRecord answerRecord) {
         Page<AnswerRecord> page = answerRecordService.listAnswerRecordPage(answerRecord);
-
-//        Page<AnswerRecordVo> page1 = new Page<> ();
-//        page1.setCurrent (page.getCurrent ());
-//        page1.setSize (page.getSize ());
-//        page1.setTotal (page.getTotal ());
-//        List<AnswerRecordVo> answerRecordVos = super.convertToVoAndBindRelations (page.getRecords (), AnswerRecordVo.class);
-//        page1.setRecords (answerRecordVos);
         return R.ok(page);
+    }
+
+    @GetMapping(value = "list/data/{recordId}")
+    public R listData(@PathVariable Long recordId, TestPaper testPaper) {
+        try {
+            testPaper.setRecordId (recordId);
+            Page<TestPaper> page = testPaperService.listTestPaperPage (testPaper);
+            return R.ok (page);
+        } catch (Exception ex) {
+            return R.fail (ex.getMessage ());
+        }
     }
 
     @RequiresPermissions("func:answerRecord:add")

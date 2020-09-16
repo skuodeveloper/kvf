@@ -80,9 +80,7 @@
 
 <!--表格行工具栏模板-->
 <script type="text/html" id="rowToolbarTpl">
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i
-            class="layui-icon layui-icon-delete"></i>删除</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>查看</a>
 </script>
 
 <!--表格列格式化模板 start-->
@@ -98,13 +96,12 @@
         var elemet = layui.element, form = layui.form, layer = layui.layer, table = layui.table,
             laydate = layui.laydate;
         var tableId = 'kContentTable';
-        var area = ['449px', '95%'];
+        var area = ['80%', '90%'];
 
         // 实例化table
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
             , url: BASE_WEB + 'func/answerRecord/list/data' // 数据接口
-            // , toolbar: '#headToolbarTpl'
             , cols: [[ //表头
                  {field: 'userid', title: '用户id', width: 130, align: 'center'}
                 , {field: 'nickname', title: '用户昵称', width: 130, align: 'center'}
@@ -113,7 +110,7 @@
                 , {field: 'correctNum', title: '正确题数', width: 130, align: 'center'}
                 , {field: 'questionNum', title: '答题题数', width: 130, align: 'center'}
                 , {field: 'createTime', title: '测试时间', width: 200, templet: "#timeTpl", align: 'center'}
-                // , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}
+                , {field: '', title: '操作', width: 235, fixed: 'right', templet: '#rowToolbarTpl', align: 'center'}
             ]]
         }));
 
@@ -175,16 +172,10 @@
             if (layEvent === 'edit') {
                 layer.open({
                     type: 2
-                    , title: '编辑'
+                    , title: '答题明细记录'
                     , content: BASE_WEB + 'func/answerRecord/edit?id=' + data.id
                     , maxmin: true
-                    , area: area   // 宽高
-                    , btn: ['确定', '取消']
-                    , yes: function (index, layero) {
-                        //点击确认触发 iframe 内容中的按钮提交
-                        var submit = layero.find('iframe').contents().find("#kFormSubmit");
-                        submit.click();
-                    }
+                    , area: area
                 });
             }
             if (layEvent === 'del') {

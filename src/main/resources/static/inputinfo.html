@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>码上防诈</title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css">
+
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/xm-select.js" type="text/javascript"></script>
+    <script src="plugins/layui/layui.js" type="text/javascript"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .center-vertical {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .layui-form-item .layui-inline {
+            display: block;
+            margin-right: 40px;
+            margin-bottom: 0;
+            clear: both;
+        }
+
+        .more {
+            width: 200px;
+            height: 40px;
+            font-size: 15px;
+            font-family: "fantasy";
+            background-color: burlywood;
+            border-radius: 20px;
+            color: white;
+            border: white;
+        }
+
+        .layui-form-item .layui-inline {
+            display: block;
+            margin-right: 0;
+            margin-bottom: 0;
+            clear: both;
+        }
+
+        .layui-form-item .layui-input-inline {
+            display: block;
+            float: none;
+            left: -3px;
+            width: 45%;
+            margin: 0 0 10px 112px;
+        }
+    </style>
+</head>
+<body style="background-color: bisque;">
+<div class="layui-form" style="width: 100%;height: 98%;">
+    <div style="height: 100%">
+        <div class="layui-card" style="height: 95%;margin: 20px;border-radius: 8px;">
+
+            <div class="layui-form-item center-vertical">
+                <div style="height: 50px;text-align: center"><h2 style="color: blue">请填写个人信息</h2></div>
+
+                <div class="layui-inline" style="margin-top: 30px">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-inline">
+                        <select class="layui-select" id="sex" name="sex" lay-verify="required" title="性别">
+                            <option value="">请选择</option>
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">年龄</label>
+                    <div class="layui-input-inline">
+                        <input type="number" id="age" name="age" autocomplete="off" class="layui-input"
+                               lay-verify="required">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">职业</label>
+                    <div class="layui-input-inline">
+                        <select class="layui-select" id="work" name="work" lay-verify="required" title="职业">
+                            <option value="">请选择</option>
+                            <option value="机关事业单位">机关事业单位</option>
+                            <option value="自主创业">自主创业</option>
+                            <option value="务工人员">务工人员</option>
+                            <option value="学生">学生</option>
+                            <option value="失业人员">失业人员</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">年收入</label>
+                    <div class="layui-input-inline">
+                        <select class="layui-select" id="salary" name="salary" lay-verify="required" title="职业">
+                            <option value="">请选择</option>
+                            <option value="1">50000以下</option>
+                            <option value="2">50000~100000</option>
+                            <option value="3">100000~200000</option>
+                            <option value="4">200000以上</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="overflow: inherit; margin-left: 12%"> 您对以下哪些防诈题目感兴趣？</label>
+
+                </div>
+                <div class="layui-inline">
+                    <!--<label class="layui-form-label">标签</label>-->
+                    <div id="demo1" class="layui-input-inline"  style="width: 62%; margin-left: 18%" >
+                    </div>
+                </div>
+
+                <div class="layui-inline" style="margin-top: 50px">
+                    <div style=" margin: 35px;text-align: center">
+                        <button type="button" lay-submit="" lay-filter="kFormSubmit" id="kFormSubmit" class="more">
+                            下一步
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var demo1 = xmSelect.render({
+        // 这里绑定css选择器
+        el: '#demo1',
+        // 渲染的数据
+        data: [
+            {name: '恋爱', value: 1},
+            {name: '投资', value: 2},
+            {name: '贷款', value: 3},
+            {name: '游戏', value: 4}
+        ],
+    });
+
+    function getUrlParameter(name) {
+        name = name.replace(/[]/, "\[").replace(/[]/, "\[").replace(/[]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.parent.location.href);
+        if (results == null)
+            return "";
+        else {
+            return results[1];
+        }
+    }
+
+    var inviteCode = getUrlParameter('inviteCode');
+    var realname = getUrlParameter('realname');
+
+    //微信用户信息
+    var userInfoJs = sessionStorage.getItem('userInfo');
+    if (userInfoJs == null) {
+        $(location).prop('href', 'test.html?inviteCode=' + inviteCode + '&realname=' + realname);
+    } else {
+        var userInfo = JSON.parse(userInfoJs);//存储微信用户信息
+
+        layui.use(['form'], function () {
+            var $ = layui.$, form = layui.form;
+
+            //监听提交
+            form.on('submit(kFormSubmit)', function (data) {
+                userInfo.sex = $('#sex').val();
+                userInfo.age = $('#age').val();
+                userInfo.work = $('#work').val();
+                userInfo.salary = $('#salary').val();
+                userInfo.interest = JSON.stringify(demo1.getValue());
+
+                sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+                $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            });
+        });
+    }
+</script>
+<script type="text/javascript" src="//js.users.51.la/20911027.js"></script>
+</body>
+</html>

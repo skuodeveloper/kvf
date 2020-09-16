@@ -3,6 +3,7 @@ package com.kalvin.kvf.modules.func.controller;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
@@ -22,8 +23,6 @@ import com.kalvin.kvf.modules.sys.entity.User;
 import com.kalvin.kvf.modules.sys.service.IUserService;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.util.TextUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +90,7 @@ public class WxUserController extends BaseController {
             wxUser.setEnddate (calendar.getTime ());
         }
 
-        if(!ShiroKit.getUser ().getUsername ().equals ("admin")){
+        if (!ShiroKit.getUser ().getUsername ().equals ("admin")) {
             wxUser.setRootInvitedCode (ShiroKit.getUser ().getInviteCode ());
         }
 
@@ -222,6 +221,16 @@ public class WxUserController extends BaseController {
             }
 
             if (wxUsers.size () > 0) {
+                //更新个人信息 年龄 性别 职业
+                if (wxUser.getInterest () != null && wxUsers.get (0).getInterest () == null) {
+                    wxUserService.update (new LambdaUpdateWrapper<WxUser> ()
+                            .set (WxUser::getSex, wxUser.getSex ())
+                            .set (WxUser::getAge, wxUser.getAge ())
+                            .set (WxUser::getWork, wxUser.getWork ())
+                            .set (WxUser::getSalary, wxUser.getSalary ())
+                            .set (WxUser::getInterest, wxUser.getInterest ())
+                            .eq (WxUser::getOpenid, wxUser.getOpenid ()));
+                }
                 wxUser = wxUsers.get (0);
             } else if (score >= 60) {
                 if (wxUser.getParentInvitedCode ().startsWith ("F")) {

@@ -40,6 +40,8 @@ public interface WxUserMapper extends BaseMapper<WxUser> {
 
     int updWxInfo(@Param ("wxUser") WxUser wxUser);
 
+    int updSexAgeWork(@Param ("wxUser") WxUser wxUser);
+
     /**
      *
      * @return

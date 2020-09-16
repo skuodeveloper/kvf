@@ -20,10 +20,10 @@
         }
 
         .center-vertical {
-            /*margin: 20px;*/
+            margin: 20px;
             border-radius: 20px;
             position: relative;
-            top: 400px;
+            /*top: 400px;*/
         }
 
         .layui-form-item .layui-inline {
@@ -36,7 +36,7 @@
         p {
             padding: 10px;
             margin: 10px;
-            height: 150px;
+            height: 250px;
             border: solid 2px bisque;
             overflow: scroll;
             border-radius: 5px;
@@ -54,15 +54,26 @@
         }
     </style>
 </head>
-<body style="background: url('image/logo/intro1.png') no-repeat;background-size: 100% 100%">
-<div class="layui-form" style="width: 100%;height: 100%">
+<body style="background: url('image/logo/intro3.png') no-repeat;background-size: 100% 100%">
+<!--<body style="background-color: bisque">-->
+<div class="layui-form" style="width: 100%;height: 100%;position: fixed;top:25%">
 
     <div class="center-vertical">
         <div style="border-radius: 8px">
             <div class="layui-form-item">
-                <!--<div class="layui-inline" style="margin-right: 0;text-align: center">-->
-                <!--<img src="image/logo/intro.png" style="width: 60%">-->
-                <!--</div>-->
+                <div style="margin-top: 30px;">
+                    <!--<h2 style="text-align: center">致用户的一封信</h2>-->
+                    <p>
+                        亲爱的居民朋友们，您们好!<br>
+                        近年来，我区各类案件事故全面下降，社会治安环境持续向好，为我区经济社会高质量发展提供了有力保障。特别是2019年，我区的平安创建取得了全省第八的好成绩，这其中离不开我们每一位居民朋友参与和支持！平安是福，平安是金，平安是您我的共同期盼，在平安创建的路上，我们更需要您一如既往的参与和支持！<br>
+                        居民朋友们，日常我们参与平安建设活动的方式很多，如：安全用电、安全用气、关注消防安全、不闯红灯、驾驶电动车戴头盔、过马路走斑马线等等，只要您做了任何对家庭和社会平安和谐有益的事，就是参与了平安建设，就是平安建设参与者、志愿者！为此，我们倡议：<br>
+                        您是家庭的一员，请与您的家人携手起来，做好安全防范工作，家庭和睦、尊老爱幼，共创平安家庭。<br>
+                        您是单位的一员，请与您的同事携手起来，服从安全管理，开展安全自查，增强自身防范，共创平安单位。<br>
+                        您是村(社区)的一员，请与您的邻里携手起来，积极参与邻里守望、平安服务、义务巡逻等活动，共创平安村(社区)。<br>
+                        您是社会中的一员，请您做到遵纪守法、文明礼貌、诚实守信，依法表达利益诉求，积极传播平安和谐理念。<br>
+                        赠人玫瑰、手有余香。让我们从小事做起，从身边做起，从现在做起，建“平安南湖”，打造“首善之区”，共享平安之福。<br><br>
+                    </p>
+                </div>
 
                 <div class="layui-inline" style="margin-top: 50px;text-align: center; display: none;">
                     <label class="layui-form-label" style="color: white;font-size: 16px">邀请码</label>
@@ -73,14 +84,14 @@
                     </div>
                 </div>
 
-                <div class="layui-inline" style="margin-top: 50px;text-align: center;">
+                <div class="layui-inline layui-hide" style="margin-top: 30px;text-align: center;">
                     <div style="display: inline;font-size: 16px;color: white;margin-left: 40px">
                         <span>宣讲人：</span><span id="xjr">张三丰</span>
                     </div>
                 </div>
 
                 <div class="layui-inline" style="margin-right: 0">
-                    <div style=" margin: 35px;text-align: center">
+                    <div style=" margin: 30px;text-align: center">
                         <button id="kFormSubmit" type="button" class="more">开始测试</button>
                     </div>
                 </div>
@@ -116,7 +127,7 @@
 
     //从微信接口获取用户信息
     function getUserInfo() {
-        var oauth_url = 'http://nhmsfz.fanchance.com/api/v1/wechat/getUserInfo';
+        var oauth_url = 'http://jxnhga.vaiwan.com/api/v1/wechat/getUserInfo';
 
         $.ajax({
             type: 'GET',
@@ -126,6 +137,7 @@
                 code: code
             },
             success: function (r) {
+                console.log(r);
                 if (r.code == 200) {
                     userInfo = r.data;
                     getWxUserInfo();
@@ -143,21 +155,24 @@
     function getWxUserInfo() {
         $.ajax({
             type: 'GET',
-            url: 'http://nhmsfz.fanchance.com/func/wxUser/getWxInfo',
+            url: 'http://jxnhga.vaiwan.com/func/wxUser/getWxInfo',
             dataType: 'json',
             data: {
                 openid: userInfo.openid
             },
             success: function (r) {
-                if (r.code == 200) {
+                if (r.code === 200) {
                     if (r.data != null) {
                         r.data.parentInvitedCode = inviteCode; //将父邀请码重新置给userInfo
                         sessionStorage.setItem('userInfo', JSON.stringify(r.data));
                         $(location).prop('href', 'highscore.html?score=' + r.data.privilege + '&inviteCode=' + inviteCode + '&realname=' + realname);
+                    }else{
+                        console.log('1111');
                     }
                 }
             },
             error: function (error) {
+                console.log('2222');
                 throw new Error(error);
             }
         })
@@ -171,11 +186,15 @@
 
         //监听提交
         $(document).on('click', 'button', function () {
+            console.log(userInfo);
+
+
             userInfo.parentInvitedCode = $('#invitedCode').val();
             userInfo.privilege = '';
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
 
-            $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            $(location).prop('href', 'inputinfo.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            // $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
         })
     })
 

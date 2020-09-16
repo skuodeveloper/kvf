@@ -67,9 +67,9 @@
 </head>
 <body style="background-color: bisque">
 <div style="text-align: center;height:95%;margin: 50px;padding-bottom: 80px;background-color: white;border-radius:20px">
-    <img style="height: 400px;margin-top: 50px" src="/static/image/logo/success.jpg">
+    <img style="height: 500px;margin-top: 50px" src="/static/image/logo/suc.jpg">
     <div>
-        <p style="font-size: 80px;margin-top: 20px">本次得分<span class="score">90</span></p>
+        <p style="font-size: 60px;margin-top: 20px">本次得分<span class="score">90</span></p>
     </div>
 
     <div id="successDiv">
@@ -81,7 +81,6 @@
 
     <div>
         <button id="finish" class="more">完成测试</button>
-        <!--<button id="luckdraw" class="more" style="margin-top: 30px"> 填写信息，参与抽奖</button>-->
     </div>
 </div>
 <script>
@@ -112,7 +111,7 @@
 
             var wxUserInfo = JSON.parse(sessionStorage.getItem('wxUserInfo'));
             var stmp = new Date().getTime();
-            $('.qrcode').attr('src', 'http://nhmsfz.fanchance.com/' + wxUserInfo.qrcode + '?v=' + stmp);
+            $('.qrcode').attr('src', 'http://jxnhga.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
 
             $(document).on('click', '#finish', function () {
                 WeixinJSBridge.call('closeWindow');

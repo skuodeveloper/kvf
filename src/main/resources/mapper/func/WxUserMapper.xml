@@ -8,6 +8,10 @@
         <result column="openid" property="openid" />
         <result column="nickname" property="nickname" />
         <result column="sex" property="sex" />
+        <result column="age" property="age" />
+        <result column="work" property="work" />
+        <result column="interest" property="interest" />
+        <result column="salary" property="salary" />
         <result column="province" property="province" />
         <result column="city" property="city" />
         <result column="country" property="country" />
@@ -30,7 +34,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-       id, openid, nickname, sex, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code,
+       id, openid, nickname, sex, age, work, interest, province, city, country, headimgurl, privilege, unionid, person_type, company_name, tel, qrcode, parent_invited_code, invited_code,
        create_time, update_time,calculate,tgrs,jf,root_invited_code,is_price
     </sql>
 
@@ -159,13 +163,26 @@
         </trim>
     </select>
 
-    <!-- 更新审批表-->
+    <!-- 更新抽奖信息-->
     <update id="updWxInfo" parameterType="com.kalvin.kvf.modules.func.entity.WxUser">
         UPDATE func_wx_user
         SET
         person_type = #{wxUser.personType},
         company_name = #{wxUser.companyName},
         tel = #{wxUser.tel},
+        update_time = #{wxUser.updateTime}
+        where  openid = #{wxUser.openid}
+    </update>
+
+    <!-- 更新抽奖信息-->
+    <update id="updSexAgeWork" parameterType="com.kalvin.kvf.modules.func.entity.WxUser">
+        UPDATE func_wx_user
+        SET
+        sex = #{wxUser.sex},
+        age = #{wxUser.age},
+        work = #{wxUser.work},
+        salary = #{wxUser.salary},
+        interest = #{wxUser.interest},
         update_time = #{wxUser.updateTime}
         where  openid = #{wxUser.openid}
     </update>

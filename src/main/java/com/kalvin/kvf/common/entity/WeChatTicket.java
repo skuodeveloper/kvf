@@ -6,7 +6,7 @@ public class WeChatTicket {
      * signature : ab9305e43bd07f96dcdc298cf5ce58fb950e112b
      * appid : wx719c937ea903be65
      * jsapi_ticket : kgt8ON7yVITDhtdwci0qecnUdtwfcW0QFTKf9m0A5p4TbusnbVtAa94ZGSz0gMuIbPr5-NQGdg6AWIhQop41hA
-     * url : http://nhmsfz.fanchance.com//api/v1/wechat/getSign?null
+     * url : http://jxnhga.vaiwan.com//api/v1/wechat/getSign?null
      * nonceStr : 9579e3c0-ff16-440b-a605-5deccfb4fd8b
      * timestamp : 1597040174
      */
