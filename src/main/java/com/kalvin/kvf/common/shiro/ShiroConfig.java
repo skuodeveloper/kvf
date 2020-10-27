@@ -119,6 +119,7 @@ public class ShiroConfig {
 
 
         filterMap.put("/api/v1/wechat/**", "anon");
+        filterMap.put("/api/v2/wechat/**", "anon");
         filterMap.put("/MP_verify_9i8sAdAFW5cS7aym.txt", "anon");
         filterMap.put("/func/personTypeStatistic/**", "anon");
         filterMap.put("/func/questionBank/getRandQuestion", "anon");

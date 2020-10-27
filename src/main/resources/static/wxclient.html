@@ -127,7 +127,7 @@
 
     //从微信接口获取用户信息
     function getUserInfo() {
-        var oauth_url = 'http://jxnhga.vaiwan.com/api/v1/wechat/getUserInfo';
+        var oauth_url = 'http://nhmsfz.nhgaj.com/api/v1/wechat/getUserInfo';
 
         $.ajax({
             type: 'GET',
@@ -155,7 +155,7 @@
     function getWxUserInfo() {
         $.ajax({
             type: 'GET',
-            url: 'http://jxnhga.vaiwan.com/func/wxUser/getWxInfo',
+            url: 'http://nhmsfz.nhgaj.com/func/wxUser/getWxInfo',
             dataType: 'json',
             data: {
                 openid: userInfo.openid
@@ -172,7 +172,6 @@
                 }
             },
             error: function (error) {
-                console.log('2222');
                 throw new Error(error);
             }
         })
@@ -186,9 +185,6 @@
 
         //监听提交
         $(document).on('click', 'button', function () {
-            console.log(userInfo);
-
-
             userInfo.parentInvitedCode = $('#invitedCode').val();
             userInfo.privilege = '';
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo));

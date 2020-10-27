@@ -241,7 +241,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
     @SneakyThrows
     private String getQRCode(WxUser user) {
         /*******************生成反诈测试宣传二维码************************/
-        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
+        String content = "http://msfz.nhgaj.com/static/test.html?inviteCode=%s&realname=%s";
         content = String.format (content, user.getInvitedCode (), StringFilter (user.getNickname ()));
 
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";

@@ -130,7 +130,7 @@ public class UserController extends BaseController {
     @SneakyThrows
     private String getQRCode(User user) {
         /*******************生成反诈测试宣传二维码************************/
-        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
+        String content = "http://msfz.nhgaj.com/static/test.html?inviteCode=%s&realname=%s";
         content = String.format (content, user.getInviteCode (), user.getRealname ());
         String logoPath = "D:\\QRCode\\nhga.jpg";
         String destPath = "D:\\QRCode\\";// 二维码保存的路径

@@ -90,7 +90,7 @@ public class WxUserController extends BaseController {
             wxUser.setEnddate (calendar.getTime ());
         }
 
-        if (!ShiroKit.getUser ().getUsername ().equals ("admin")) {
+        if (!ShiroKit.getUser ().getUsername ().startsWith ("admin")) {
             wxUser.setRootInvitedCode (ShiroKit.getUser ().getInviteCode ());
         }
 
@@ -189,6 +189,12 @@ public class WxUserController extends BaseController {
                     .last ("limit 1"));
 
             wxUser.setPrivilege (String.valueOf (answerRecord.getScore ()));
+
+            if (wxUser != null) {
+                // 重新生成二维码
+                wxUser.setQrcode (getQRCode (wxUser));
+                wxUserService.saveOrUpdate (wxUser);
+            }
             return R.ok (wxUser);
         } catch (Exception ex) {
             return R.fail (ex.getMessage ());
@@ -304,15 +310,15 @@ public class WxUserController extends BaseController {
     @SneakyThrows
     private String getQRCode(WxUser user) {
         /*******************生成反诈测试宣传二维码************************/
-        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
+//        String content = "http://abcdef.vaiwan.com/static/test.html?inviteCode=%s&realname=%s";
+        String content = "http://msfz.nhgaj.com/static/test.html?inviteCode=%s&realname=%s";
         content = String.format (content, user.getInvitedCode (), StringFilter (user.getNickname ()));
-
         String logoPath = "D:\\QRCode\\headImage\\" + user.getOpenid () + ".jpg";
-
         if (!TextUtils.isEmpty (user.getHeadimgurl ())) {
             try {
                 HttpUtils.download (user.getHeadimgurl (), logoPath);
             } catch (Exception ex) {
+                System.out.println ("5.debug");
                 logoPath = "D:\\QRCode\\nhga.jpg";
             }
         } else {

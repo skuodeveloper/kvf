@@ -5,7 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title th:replace="common/base::pagetitle"></title>
     <link th:replace="common/base::static"/>
+    <style>
+        .layui-table-header .layui-table-cell {
+            text-align: center;
+            height: 35px;
+            line-height: 35px;
+        }
 
+        .layui-table-cell {
+            font-size: 14px;
+            padding: 0 5px;
+            height: auto;
+            overflow: visible;
+            text-overflow: inherit;
+            white-space: normal;
+            word-break: break-all;
+        }
+
+    </style>
 </head>
 <body style="background-color: #f2f2f2;">
 <div id="kPage" class="layui-fluid" style="padding: 0">
@@ -58,10 +75,76 @@
         var tableIns = table.render($.extend(config.layui.table, {
             elem: '#' + tableId
             , url: BASE_WEB + 'func/answerRecord/list/data/' + recordId // 数据接口
-            , height: 'full-220' //距离底部高度
+            , height: 'full-110' //距离底部高度
             , cols: [[ //表头
                 {field: 'questionBankId', title: '题目id', width: 130, align: 'center'}
-                , {field: 'answer', title: '答案', width: 600, align: 'center'}
+                , {
+                    title: '案例', width: 300, align: 'center', templet: function (d) {
+                        return d.questionBank.example;
+                    }
+                }
+                , {
+                    title: '问题', width: 300, align: 'center', templet: function (d) {
+                        console.log(d);
+                        return d.questionBank.question;
+                    }
+                }
+                , {
+                    title: '标准答案', width: 300, templet: function (d) {
+                        var list = JSON.parse(d.questionBank.answer);
+                        var str = '';
+                        list.forEach(function (o, i, a) {
+                            var idx = '';
+                            switch (i) {
+                                case 0:
+                                    idx = 'A';
+                                    break;
+                                case 1:
+                                    idx = 'B';
+                                    break;
+                                case 2:
+                                    idx = 'C';
+                                    break;
+                                case 3:
+                                    idx = 'D';
+                                    break;
+                                case 4:
+                                    idx = 'E';
+                                    break;
+                            }
+                            str += idx + '.' + o.answer + ':' + o.value + '<br>';
+                        });
+                        return str;
+                    }, align: 'left'
+                }
+                , {
+                    field: 'answer', title: '答案', width: 300, templet: function (d) {
+                        var list = JSON.parse(d.answer);
+                        var str = '';
+                        list.forEach(function (o, i, a) {
+                            var idx = '';
+                            switch (i) {
+                                case 0:
+                                    idx = 'A';
+                                    break;
+                                case 1:
+                                    idx = 'B';
+                                    break;
+                                case 2:
+                                    idx = 'C';
+                                    break;
+                                case 3:
+                                    idx = 'D';
+                                    break;
+                                case 4:
+                                    idx = 'E';
+                                    break;
+                            }
+                            str += idx + '.' + o.answer + ':' + o.value + '<br>';
+                        });
+                        return str;
+                    }, align: 'left'
+                }
                 , {field: 'isCorrect', title: '答题结果', width: 130, templet: '#sexTpl', align: 'center'}
                 , {field: 'createTime', title: '答题时间', width: 200, templet: "#timeTpl", align: 'center'}
             ]]

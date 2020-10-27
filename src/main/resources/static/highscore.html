@@ -130,7 +130,7 @@
 
             var wxUserInfo = JSON.parse(sessionStorage.getItem('userInfo'));
             var stmp = new Date().getTime();
-            $('.qrcode').attr('src', 'http://jxnhga.vaiwan.com/' + wxUserInfo.qrcode + '?v=' + stmp);
+            $('.qrcode').attr('src', 'http://nhmsfz.nhgaj.com/' + wxUserInfo.qrcode + '?v=' + stmp);
 
             //获取推广人数和积分，并显示
             $('#p_count').text(wxUserInfo.tgrs);

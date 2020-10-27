@@ -167,7 +167,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'http://jxnhga.vaiwan.com/func/viewHistory/add',
+                url: 'http://nhmsfz.nhgaj.com/func/viewHistory/add',
                 dataType: 'json',
                 data: viewHistory,
                 success: function (r) {
@@ -183,7 +183,7 @@
         function getByWxCode(code) {
             $.ajax({
                 type: 'GET',
-                url: 'http://jxnhga.vaiwan.com/func/wxUserJf/getByWxCode',
+                url: 'http://nhmsfz.nhgaj.com/func/wxUserJf/getByWxCode',
                 dataType: 'json',
                 async:false,
                 data: {
@@ -218,7 +218,7 @@
         function getWxUserJf() {
             $.ajax({
                 type: 'GET',
-                url: 'http://jxnhga.vaiwan.com/func/wxUserJf/getByInvitedCode',
+                url: 'http://nhmsfz.nhgaj.com/func/wxUserJf/getByInvitedCode',
                 data: {
                     invitedCode: inviteCode,
                     targetDate: news.jrdate

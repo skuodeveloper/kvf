@@ -5,6 +5,7 @@ import com.diboot.core.controller.BaseCrudRestController;
 import com.kalvin.kvf.modules.func.entity.TestPaper;
 import com.kalvin.kvf.modules.func.service.TestPaperService;
 import com.kalvin.kvf.modules.func.vo.AnswerRecordVo;
+import com.kalvin.kvf.modules.func.vo.TestPaperVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,15 @@ public class AnswerRecordController extends BaseCrudRestController {
         try {
             testPaper.setRecordId (recordId);
             Page<TestPaper> page = testPaperService.listTestPaperPage (testPaper);
-            return R.ok (page);
+
+            List<TestPaperVo> testPaperVos = super.convertToVoAndBindRelations (page.getRecords (), TestPaperVo.class);
+
+            Page<TestPaperVo> pageVo = new Page<> ();
+            pageVo.setCurrent (page.getCurrent ());
+            pageVo.setTotal (page.getTotal ());
+            pageVo.setSize (page.getSize ());
+            pageVo.setRecords (testPaperVos);
+            return R.ok (pageVo);
         } catch (Exception ex) {
             return R.fail (ex.getMessage ());
         }
