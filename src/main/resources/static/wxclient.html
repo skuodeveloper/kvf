@@ -189,8 +189,9 @@
             userInfo.privilege = '';
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
 
-            $(location).prop('href', 'inputinfo.html?inviteCode=' + inviteCode + '&realname=' + realname);
-            // $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            /**以下跳过信息填写界面*/
+            // $(location).prop('href', 'inputinfo.html?inviteCode=' + inviteCode + '&realname=' + realname);
+            $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
         })
     })
 

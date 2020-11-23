@@ -2,7 +2,7 @@
 spring:
   # 使用环境
   profiles:
-    active: test
+    active: dev
 
 
 

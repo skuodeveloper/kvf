@@ -164,7 +164,7 @@
             type: "post",
             dataType: 'json',
             success: function (r) {
-                if (r.code == 200) {
+                if (r.code === 200) {
                     $(location).prop('href', 'success.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                 }
             },

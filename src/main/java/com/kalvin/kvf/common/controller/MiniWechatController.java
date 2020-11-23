@@ -32,16 +32,17 @@ public class MiniWechatController {
     }
 
     /**
-     * 用户授权获取ticket,sign
+     * 用户授权成功，获取微信回调的code
      */
-    @GetMapping("/getTickets")
-    public R getTickets(@RequestParam ("url") String url){
+    @GetMapping("/getQRCode")
+    public R getQRCode(@RequestParam(value = "inviteCode") String inviteCode){
         try {
-            WeChatTicket weChatTicket = PastUtil.getWechatTicket(url);
-
-            return R.ok (weChatTicket);
+            String qrcode = MiniWechatUtils.downloadMiniCode(inviteCode);
+            return R.ok (qrcode);
         }catch (Exception ex){
             return R.fail (ex.getMessage ());
         }
     }
+
+
 }

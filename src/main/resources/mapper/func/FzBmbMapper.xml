@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kalvin.kvf.modules.func.mapper.FzBmbMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kalvin.kvf.modules.func.entity.FzBmb">
+        <id column="id" property="id" />
+        <result column="xm" property="xm" />
+        <result column="tel" property="tel" />
+        <result column="zjd" property="zjd" />
+        <result column="create_time" property="createTime" />
+        <result column="fztype" property="fztype" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, xm, tel, zjd, create_time, fztype
+    </sql>
+
+    <select id="selectFzBmbList" resultType="com.kalvin.kvf.modules.func.entity.FzBmb">
+        select <include refid="Base_Column_List" /> from func_fz_bmb
+        <trim prefix="where" prefixOverrides="and">
+            <if test="fzBmb.xm != null and fzBmb.xm != ''">
+                and xm like concat(#{fzBmb.xm}, "%")
+            </if>
+            <if test="fzBmb.tel != null and fzBmb.tel != ''">
+                and tel like concat(#{fzBmb.tel}, "%")
+            </if>
+        </trim>
+    </select>
+
+</mapper>

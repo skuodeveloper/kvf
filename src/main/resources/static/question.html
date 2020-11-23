@@ -381,8 +381,11 @@
             success: function (r) {
                 if (r.code == 200) {
                     sessionStorage.setItem('wxUserInfo', JSON.stringify(r.data));
+
+                    /**以下去掉了个人信息填写**/
                     if (score >= 60) {
-                        $(location).prop('href', 'luckdraw.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
+                        // $(location).prop('href', 'luckdraw.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
+                        $(location).prop('href', 'success.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                     } else {
                         $(location).prop('href', 'fail.html?score=' + score + '&inviteCode=' + inviteCode + '&realname=' + realname);
                     }

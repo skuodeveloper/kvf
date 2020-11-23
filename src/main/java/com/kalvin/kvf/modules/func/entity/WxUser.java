@@ -117,6 +117,11 @@ public class WxUser extends BaseEntity {
     private String qrcode;
 
     /**
+     * 小程序二维码
+     */
+    private String miniqrcode;
+
+    /**
      * 父邀请码
      */
     private String parentInvitedCode;

@@ -137,6 +137,7 @@ public class ShiroConfig {
         filterMap.put("/func/pesonStatistics/**", "anon");
         filterMap.put("/func/tempDeptStatistics/**", "anon");
         filterMap.put("/func/tempMemberStatistics/**", "anon");
+        filterMap.put("/func/fzBmb/**", "anon");
         filterMap.put("/qrcode/**", "anon");
 
 

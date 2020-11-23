@@ -150,13 +150,13 @@
             });
 
             $(document).on('click', '#finish', function () {
-                if(wxUserInfo.interest == null) {
+                // if(wxUserInfo.interest == null) {
                     // 没有填过个人信息的，先跳转到填写个人信息界面
-                    $(location).prop('href', 'inputinfo.html?inviteCode=' + inviteCode + '&realname=' + realname);
-                }
-                else {
+                //     $(location).prop('href', 'inputinfo.html?inviteCode=' + inviteCode + '&realname=' + realname);
+                // }
+                // else {
                     $(location).prop('href', 'question.html?inviteCode=' + inviteCode + '&realname=' + realname);
-                }
+                // }
             });
 
             $(document).on('click', '#history', function () {

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kalvin.kvf.common.controller.BaseController;
 import com.kalvin.kvf.common.dto.R;
 import com.kalvin.kvf.common.utils.HttpUtils;
+import com.kalvin.kvf.common.utils.MiniWechatUtils;
 import com.kalvin.kvf.common.utils.QRCodeUtils;
 import com.kalvin.kvf.common.utils.ShiroKit;
 import com.kalvin.kvf.modules.func.entity.AnswerRecord;
@@ -183,14 +184,13 @@ public class WxUserController extends BaseController {
     public R getWxInfo(@RequestParam String openid) {
         try {
             WxUser wxUser = wxUserService.getOne (new QueryWrapper<WxUser> ().eq ("openid", openid));
-            AnswerRecord answerRecord = answerRecordService.getOne (new QueryWrapper<AnswerRecord> ()
-                    .eq ("userid", wxUser.getId ())
-                    .orderByDesc ("score")
-                    .last ("limit 1"));
-
-            wxUser.setPrivilege (String.valueOf (answerRecord.getScore ()));
 
             if (wxUser != null) {
+                AnswerRecord answerRecord = answerRecordService.getOne (new QueryWrapper<AnswerRecord> ()
+                        .eq ("userid", wxUser.getId ())
+                        .orderByDesc ("score")
+                        .last ("limit 1"));
+                wxUser.setPrivilege (String.valueOf (answerRecord.getScore ()));
                 // 重新生成二维码
                 wxUser.setQrcode (getQRCode (wxUser));
                 wxUserService.saveOrUpdate (wxUser);
@@ -267,7 +267,11 @@ public class WxUserController extends BaseController {
                 //生成邀请码
                 wxUser.setInvitedCode ("H" + (100000 + wxUser.getId ()));
                 //生成二维码
-                wxUser.setQrcode (getQRCode (wxUser));
+                if (TextUtils.isEmpty (wxUser.getMiniqrcode ())) {
+                    wxUser.setQrcode (getQRCode (wxUser));
+                } else {
+                    wxUser.setMiniqrcode (getMiniQRCode (wxUser));
+                }
                 wxUserService.saveOrUpdate (wxUser);
             }
 
@@ -305,6 +309,16 @@ public class WxUserController extends BaseController {
         Pattern p = Pattern.compile (regEx);
         Matcher m = p.matcher (str);
         return m.replaceAll ("").trim ();
+    }
+
+    /**
+     * 获取小程序的二维码
+     *
+     * @param user
+     * @return
+     */
+    private String getMiniQRCode(WxUser user) {
+        return MiniWechatUtils.downloadMiniCode (user.getInvitedCode ());
     }
 
     @SneakyThrows
